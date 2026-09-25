@@ -58,3 +58,25 @@ test('uses locally bundled Open Sans for the site interface', () => {
   assert.doesNotMatch(globalStyles, /Arial|Helvetica/);
   assert.doesNotMatch(styles, /Arial|Helvetica/);
 });
+
+test('pairs editorial serif headings with the Open Sans interface', () => {
+  assert.match(styles, /\.brand\s*{[\s\S]*?Georgia, serif;/);
+  assert.match(styles, /h1,\s*h2\s*{[\s\S]*?Georgia, serif;/);
+  assert.match(styles, /\.principal__copy h3\s*{[\s\S]*?Georgia, serif;/);
+  assert.match(styles, /\.about__grid h3\s*{[\s\S]*?Georgia, serif;/);
+  assert.match(styles, /nav\s*{[\s\S]*?'Open Sans', sans-serif;/);
+});
+
+test('keeps the sticky header slim and uses a small dashed brand mark', () => {
+  assert.match(template, /<span class="brand__mark" aria-hidden="true"><\/span>/);
+  assert.match(styles, /header\s*{[\s\S]*?border-radius:\s*0;/);
+  assert.match(styles, /header\s*{[\s\S]*?padding:\s*14px 5%;/);
+  assert.match(styles, /\.brand__mark\s*{[\s\S]*?border:\s*1px dashed/);
+  assert.match(styles, /\.brand__mark\s*{[\s\S]*?height:\s*8px;/);
+  assert.match(styles, /\.brand__mark\s*{[\s\S]*?width:\s*8px;/);
+});
+
+test('masks the dark pixel row baked into the hero illustration', () => {
+  assert.match(styles, /\.hero__visual img\s*{[\s\S]*?clip-path:\s*inset\(0 0 2px 0\);/);
+  assert.match(styles, /\.hero__visual img\s*{[\s\S]*?margin-bottom:\s*-2px;/);
+});
