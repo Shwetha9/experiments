@@ -1,1 +1,43 @@
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fffaf4;color:#332d31;font-family:Arial,sans-serif}a:focus-visible{outline:3px solid #332d31;outline-offset:4px}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+@import '@fontsource/open-sans/400.css';
+@import '@fontsource/open-sans/600.css';
+@import '@fontsource/open-sans/700.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: #f4f5f2;
+  color: #17201c;
+  font-family: 'Open Sans', sans-serif;
+}
+
+html[data-theme='dark'] body {
+  background: #101714;
+  color: #edf3ee;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid #e35b33;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}

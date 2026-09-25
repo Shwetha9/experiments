@@ -1,10 +1,208 @@
-<header><a class="brand" href="#top">Shwetha<span>◌</span></a><nav aria-label="Primary navigation"><a href="#notes">Notes</a><a href="#about">About</a><a href="#contact">Contact</a></nav></header>
-<main id="top"><section class="hero"><p class="eyebrow">A personal archive of words, light & feeling</p><div><h1>For the softly <em>curious.</em></h1><p class="lede">I make room for words, images, and ideas that want to be held a little longer.</p><a class="button" href="#notes">Come in gently <span>↘</span></a></div><div class="hero-art" aria-hidden="true"><i></i><i></i><i></i><b>☀</b></div></section>
-<section id="notes" class="intro"><p class="eyebrow">01 / Ways of working</p><h2>What I can do <em>for you</em></h2><div class="cards">@for (card of offerings; track card.title) {<article class="card {{card.tone}}"><span>✦</span><h3>{{card.title}}</h3><p>{{card.body}}</p></article>}</div></section>
-<section><p class="eyebrow">02 / A few things to share</p><h2>What I can <em>teach you</em></h2><div class="cards">@for (card of teachings; track card.title) {<article class="card {{card.tone}}"><span>⌁</span><h3>{{card.title}}</h3><p>{{card.body}}</p></article>}</div></section>
-<section class="cannot"><p class="eyebrow">03 / The honest bit</p><h2>What I cannot <em>teach you</em></h2><p>Your particular way of seeing. The little private constellation of memories that makes a colour, a photograph, or a sentence mean something only to you. That part is yours to keep discovering.</p></section>
-<section><p class="eyebrow">04 / Field notes</p><h2>Shwetha-isms</h2><div class="isms">@for (item of aphorisms; track item) {<blockquote>“{{item}}”</blockquote>}</div></section>
-<section class="poetry"><p class="eyebrow">05 / A pocketful of poems</p><h2>Small arrangements of <em>weather.</em></h2><div class="poems">@for (poem of poems; track poem.title) {<article><h3>{{poem.title}}</h3>@for (line of poem.lines; track line) {<p>{{line}}</p>}</article>}</div></section>
-<section><p class="eyebrow">06 / Looking closely</p><h2>Photography, or <em>almost memories.</em></h2><div class="photos">@for (photo of photographs; track photo.title) {<article class="photo {{photo.tone}}"><div class="frame"><i></i><i></i></div><h3>{{photo.title}}</h3><p>{{photo.body}}</p></article>}</div></section>
-<section id="about" class="about"><p class="eyebrow">07 / Hello</p><h2>I collect moments that<br><em>almost disappear.</em></h2><p>I’m Shwetha: a thoughtful maker with a soft spot for poetry, photography, good design, quiet beauty, and the occasional perfectly placed comma. This is less a portfolio than a small open notebook.</p></section>
-<section id="contact" class="contact"><p class="eyebrow">08 / Stay awhile</p><h2>Have something on your mind?</h2><p>Write to me. I will read it with a cup of tea nearby.</p><a class="button" href="mailto:hello@shwetha.studio">Email Shwetha <span>↗</span></a></section></main><footer>Made slowly, with feeling. <span>© Shwetha</span></footer>
+<div class="site">
+  <header>
+    <a class="brand" href="#top">Shwetha<span>◌</span></a>
+    <div class="header-actions">
+      <nav aria-label="Primary navigation">
+        <a href="#engineering">Engineering</a>
+        <a href="#notes">What I do</a>
+        <a href="#about">Beyond code</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button
+        type="button"
+        class="theme-toggle"
+        (click)="toggleTheme()"
+        [attr.aria-pressed]="isDark()"
+        [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+      >
+        {{ isDark() ? '☀' : '☾' }}
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero__copy">
+        <p class="eyebrow">Principal Engineer · Frontend enthusiast · Relentless learner</p>
+        <h1>I build ambitious web systems—and help teams grow into them.</h1>
+        <p class="lede">
+          I’m Shwetha, a Principal Engineer with a deep love for frontend engineering, scalable
+          architecture, observability, and ideas that refuse to stay small.
+        </p>
+        <a class="button" href="#engineering">See how I work <span>↘</span></a>
+      </div>
+      <figure class="editorial-visual hero__visual">
+        <img
+          data-editorial-illustration
+          src="/images/quiet-curiosity.png"
+          width="1050"
+          height="504"
+          alt="Shwetha pausing beside a window, books, and a wide landscape."
+          fetchpriority="high"
+        />
+      </figure>
+    </section>
+
+    <section id="engineering" class="principal">
+      <div class="principal__heading">
+        <p class="eyebrow">Principal engineering</p>
+        <h2>Technical ambition, grounded in people.</h2>
+      </div>
+
+      <div class="principal__story">
+        <figure class="editorial-visual principal__visual">
+          <img
+            data-editorial-illustration
+            src="/images/building-systems.png"
+            width="876"
+            height="456"
+            alt="Shwetha moving through the stages of building reliable systems."
+            loading="lazy"
+          />
+        </figure>
+        <article class="principal__copy">
+          <p class="eyebrow">From uncertainty to useful software</p>
+          <h3>I create the conditions for teams to move.</h3>
+          <p>
+            I drive projects from the first uncertain conversation through to reliable delivery.
+            That means shaping technical direction, making trade-offs visible, and helping people
+            build with confidence.
+          </p>
+          <p>
+            I like ambitious technology paired with practical guardrails: security treated as
+            design material, observability built in early, and decisions explained clearly enough
+            to earn trust.
+          </p>
+        </article>
+      </div>
+
+      <div class="principal__story principal__story--reverse">
+        <figure class="editorial-visual principal__visual">
+          <img
+            data-editorial-illustration
+            src="/images/human-ai-adoption.png"
+            width="1050"
+            height="528"
+            alt="Shwetha fitting a bright piece into a larger system while exploring thoughtful AI adoption."
+            loading="lazy"
+          />
+        </figure>
+        <article class="principal__copy">
+          <p class="eyebrow">AI adoption, with judgment</p>
+          <h3>The model is only one piece of the system.</h3>
+          <p>
+            I help teams understand where LLMs are genuinely useful, where they are not, and how to
+            fit them into real development workflows without losing sight of security, privacy, or
+            the people doing the work.
+          </p>
+          <p>
+            The field changes daily. I find that energising. Every project is a chance to learn,
+            test an assumption, and build something more capable than what came before.
+          </p>
+          <a class="button" href="#contact">Talk engineering <span>↘</span></a>
+        </article>
+      </div>
+    </section>
+
+    <section id="notes" class="intro">
+      <p class="eyebrow">What I bring</p>
+      <h2>What I can do for you</h2>
+      <div class="cards">
+        @for (card of offerings; track card.title) {
+          <article class="card {{ card.tone }}">
+            <span aria-hidden="true">✦</span>
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.body }}</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section>
+      <p class="eyebrow">Knowledge shared</p>
+      <h2>What I can teach you</h2>
+      <div class="cards">
+        @for (card of teachings; track card.title) {
+          <article class="card {{ card.tone }}">
+            <span aria-hidden="true">⌁</span>
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.body }}</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="cannot">
+      <p class="eyebrow">What stays yours</p>
+      <h2>What I cannot teach you</h2>
+      <p>
+        Taste by prescription. I can share patterns, questions, and hard-won lessons, but judgment
+        comes from paying attention, making choices, and being willing to own them.
+      </p>
+    </section>
+
+    <section id="about" class="about">
+      <div class="about__heading">
+        <p class="eyebrow">Beyond code</p>
+        <h2>My attention refuses to stay in one genre.</h2>
+      </div>
+      <div class="about__grid">
+        <article>
+          <h3>Always listening</h3>
+          <p>
+            My playlists run from Pink Floyd to Madonna, Carnatic music to Chopin. I love the
+            architecture of a raga, the nerve of a pop chorus, and a guitar line that takes its time.
+          </p>
+        </article>
+        <article>
+          <h3>Always reading</h3>
+          <p>
+            I return to John Donne’s <em>Meditations</em> and Charlotte Brontë for language that
+            thinks and feels at full volume.
+          </p>
+        </article>
+        <article>
+          <h3>Always writing</h3>
+          <p>
+            I’m a proud NYFA alum, and I write poems and scripts because some ideas need characters,
+            rhythm, and a scene—not a sprint ticket.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <p class="eyebrow">Things I keep saying</p>
+      <h2>Shwetha-isms</h2>
+      <div class="isms">
+        @for (item of aphorisms; track item) {
+          <blockquote>“{{ item }}”</blockquote>
+        }
+      </div>
+    </section>
+
+    <section class="poetry">
+      <p class="eyebrow">When code is not the language</p>
+      <h2>A few poems from the margins.</h2>
+      <div class="poems">
+        @for (poem of poems; track poem.title) {
+          <article>
+            <h3>{{ poem.title }}</h3>
+            @for (line of poem.lines; track line) {
+              <p>{{ line }}</p>
+            }
+          </article>
+        }
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <p class="eyebrow">Let’s talk</p>
+      <h2>Have an idea worth building?</h2>
+      <p>Tell me what you’re imagining, what is not working, or what could be possible.</p>
+      <a class="button" href="mailto:hello@shwetha.studio">Start a conversation <span>↗</span></a>
+    </section>
+  </main>
+
+  <footer>Designed and built by Shwetha. <span>© Shwetha</span></footer>
+</div>

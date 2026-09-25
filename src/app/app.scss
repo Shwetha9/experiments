@@ -1,1 +1,536 @@
-:host{display:block}header,main,footer{max-width:1180px;margin:auto}header{padding:25px 5vw;display:flex;justify-content:space-between;align-items:center}.brand{font:600 25px Georgia,serif}.brand span{color:#d87f87}nav{display:flex;gap:22px;font-size:14px}a{color:inherit;text-decoration:none}section{padding:92px 5vw}.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#927b80}.hero{min-height:680px;background:#f8e1e5;border-radius:28px;position:relative;overflow:hidden;display:grid;align-content:center}.hero h1,h2{font:500 clamp(43px,7vw,86px)/.96 Georgia,serif;letter-spacing:-.05em;margin:10px 0 24px;max-width:750px}.hero em,h2 em{font-weight:400}.lede{font-size:19px;line-height:1.6;max-width:460px}.button{display:inline-flex;gap:28px;border:1.5px solid;padding:15px 22px;border-radius:999px;margin-top:20px;font-weight:600}.hero-art{position:absolute;right:6%;bottom:7%;width:310px;height:310px}.hero-art i{position:absolute;border-radius:999px}.hero-art i:nth-child(1){width:280px;height:280px;background:#b8d8cf}.hero-art i:nth-child(2){width:180px;height:180px;background:#f4c887;right:0;bottom:0}.hero-art i:nth-child(3){width:68px;height:160px;background:#826f8c;right:76px;bottom:30px;border-radius:50px}.hero-art b{position:absolute;top:40px;right:38px;font-size:40px}.intro{padding-top:130px}.cards,.photos,.isms,.poems{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card,.photo,.poems article{border:1px solid #dfd3cc;border-radius:18px;padding:28px;min-height:230px;transition:.2s}.card:hover,.photo:hover{transform:translateY(-5px);box-shadow:0 14px 28px #59434618}.card span{font-size:28px}.card h3,.photo h3,.poems h3{font:500 26px Georgia,serif;margin:35px 0 12px}.card p,.photo p,.about>p,.cannot>p,.contact>p{line-height:1.6;color:#625a5d}.peach{background:#f8e1cd}.sage{background:#dce9de}.lavender{background:#e8e0f2}.blush{background:#f7e0e4}.cannot{background:#e6e0f0;border-radius:22px}.cannot>p{font:500 24px/1.5 Georgia,serif;max-width:760px}.isms{grid-template-columns:repeat(2,1fr)}blockquote{margin:0;padding:35px;font:500 28px/1.25 Georgia,serif;border-top:1px solid #b9aab0}.poetry{background:#fff2dc}.poems{grid-template-columns:repeat(2,1fr)}.poems article{background:#fffaf4}.poems p{margin:5px 0;font:20px Georgia,serif}.photo{padding:14px}.frame{height:220px;position:relative;overflow:hidden;border-radius:12px;background:#f8ddd7}.photo:nth-child(2) .frame{background:#96c1aa}.photo:nth-child(3) .frame{background:#cab7d5}.frame i{position:absolute;border-radius:999px;background:#f5c56a}.frame i:first-child{width:160px;height:160px;right:16px;top:30px}.frame i:last-child{width:210px;height:80px;left:-30px;bottom:-20px;background:#3a6f69}.about{display:grid;grid-template-columns:1.1fr .9fr;gap:45px}.about p{font-size:19px}.contact{text-align:center;background:#dce9de;border-radius:26px}.contact h2{margin-left:auto;margin-right:auto;font-size:clamp(40px,6vw,70px)}footer{padding:40px 5vw;display:flex;justify-content:space-between;color:#746b6e;font-size:13px}@media(max-width:720px){section{padding:65px 6vw}.hero{min-height:590px}.hero-art{opacity:.55;right:-95px;bottom:-40px}.cards,.photos,.isms,.poems,.about{grid-template-columns:1fr}.hero h1,h2{font-size:48px}nav{gap:12px}.card{min-height:0}}
+:host {
+  display: block;
+}
+
+.site {
+  --canvas: #f3f6f3;
+  --surface: #ffffff;
+  --text: #132522;
+  --muted: #5d6d68;
+  --line: #ccd8d3;
+  --mint: #d9f0ed;
+  --butter: #fff0d0;
+  --sky: #e3edf5;
+  --blush: #f8dfdc;
+  --card-text: #17201c;
+  --card-muted: #55625d;
+  background: var(--canvas);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+:host-context(html[data-theme='dark']) .site {
+  --canvas: #121715;
+  --surface: #1b211e;
+  --text: #f4f1e9;
+  --muted: #b9c2bc;
+  --line: #3b4540;
+  --mint: #bfe3dc;
+  --butter: #f3d7a1;
+  --sky: #cddbf0;
+  --blush: #efc4c8;
+  --card-text: #17201c;
+  --card-muted: #4f5d57;
+}
+
+header,
+main,
+footer {
+  max-width: 1440px;
+  margin: auto;
+}
+
+header {
+  align-items: center;
+  backdrop-filter: blur(18px);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  border-radius: 18px;
+  border-top: 3px solid #df6f52;
+  box-shadow: 0 12px 34px rgb(10 24 18 / 10%);
+  display: flex;
+  justify-content: space-between;
+  margin: 12px auto 0;
+  padding: 18px 4%;
+  position: sticky;
+  top: 0;
+  width: calc(100% - 24px);
+  z-index: 100;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand {
+  font: 700 28px/1 'Open Sans', sans-serif;
+}
+
+.brand span {
+  color: #df6f52;
+}
+
+.header-actions,
+nav {
+  align-items: center;
+  display: flex;
+}
+
+.header-actions {
+  gap: 18px;
+}
+
+nav {
+  border-right: 1px solid var(--line);
+  gap: 26px;
+  font-size: 13px;
+  padding-right: 20px;
+}
+
+nav a {
+  padding: 10px 2px;
+  position: relative;
+}
+
+nav a::after {
+  background: #df6f52;
+  border-radius: 999px;
+  bottom: 4px;
+  content: '';
+  height: 2px;
+  left: 2px;
+  position: absolute;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms ease;
+  width: calc(100% - 4px);
+}
+
+nav a:hover::after,
+nav a:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.theme-toggle {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex;
+  font: 20px/1 'Open Sans', sans-serif;
+  height: 36px;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 180ms ease, transform 180ms ease;
+  width: 36px;
+}
+
+.theme-toggle:hover {
+  background: var(--mint);
+  color: var(--card-text);
+  transform: rotate(12deg);
+}
+
+section {
+  padding: 84px 5%;
+}
+
+section[id] {
+  scroll-margin-top: 110px;
+}
+
+.eyebrow {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  margin: 0 0 18px;
+}
+
+h1,
+h2,
+h3,
+p {
+  text-wrap: pretty;
+}
+
+h1,
+h2 {
+  font: 600 clamp(42px, 5vw, 72px) / 1.02 'Open Sans', sans-serif;
+  letter-spacing: -0.055em;
+  margin: 0 0 24px;
+}
+
+.hero {
+  align-items: center;
+  background: var(--surface);
+  display: grid;
+  gap: clamp(36px, 5vw, 82px);
+  grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1.18fr);
+  min-height: 620px;
+  border-radius: 0 0 28px 28px;
+}
+
+.hero__copy {
+  max-width: 540px;
+}
+
+.hero h1 {
+  font-weight: 600;
+}
+
+.lede {
+  color: var(--muted);
+  font-size: 19px;
+  line-height: 1.6;
+  max-width: 510px;
+}
+
+.editorial-visual {
+  background: #f7f8f5;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  margin: 0;
+  overflow: hidden;
+}
+
+.editorial-visual img {
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.button {
+  align-items: center;
+  background: transparent;
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  color: inherit;
+  display: inline-flex;
+  font-weight: 700;
+  gap: 30px;
+  margin-top: 20px;
+  padding: 16px 25px;
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+
+.button:hover {
+  background: var(--mint);
+  transform: translateY(-2px);
+}
+
+.cards {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.card {
+  border: 1px solid color-mix(in srgb, var(--line), transparent 35%);
+  border-radius: 20px;
+  color: var(--card-text);
+  min-height: 280px;
+  padding: 34px;
+  box-shadow: 0 12px 30px rgb(24 40 34 / 7%);
+}
+
+.card span {
+  font-size: 27px;
+}
+
+.card h3,
+.poems h3 {
+  font: 700 24px/1.15 'Open Sans', sans-serif;
+  margin: 52px 0 13px;
+}
+
+.card p {
+  color: var(--card-muted);
+  line-height: 1.6;
+}
+
+.about > p,
+.cannot > p,
+.contact > p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.sage {
+  background: var(--mint);
+}
+
+.peach {
+  background: var(--butter);
+}
+
+.lavender {
+  background: var(--sky);
+}
+
+.blush {
+  background: var(--blush);
+}
+
+.cannot {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  margin-bottom: 24px;
+  margin-top: 24px;
+}
+
+.cannot > p {
+  font: 600 23px/1.55 'Open Sans', sans-serif;
+  max-width: 780px;
+}
+
+.isms,
+.poems {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+blockquote {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  font: 500 26px/1.3 Georgia, serif;
+  margin: 0;
+  padding: 34px;
+}
+
+.poetry {
+  background: color-mix(in srgb, var(--surface) 70%, var(--canvas));
+  border-radius: 28px;
+  margin-bottom: 24px;
+  margin-top: 24px;
+}
+
+.poems article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 30px;
+}
+
+.poems h3 {
+  font-family: Georgia, serif;
+  font-weight: 600;
+  margin-top: 0;
+}
+
+.poems p {
+  font: 20px/1.4 Georgia, serif;
+  margin: 5px 0;
+}
+
+.principal {
+  background: var(--mint);
+  border-radius: 28px;
+  color: var(--card-text);
+  margin-bottom: 24px;
+  margin-top: 24px;
+  padding-bottom: 110px;
+  padding-top: 100px;
+}
+
+.principal__heading {
+  max-width: 900px;
+}
+
+.principal__story {
+  align-items: center;
+  display: grid;
+  gap: clamp(40px, 6vw, 90px);
+  grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
+  margin-top: 72px;
+}
+
+.principal__story--reverse {
+  grid-template-columns: minmax(320px, 0.88fr) minmax(0, 1.12fr);
+}
+
+.principal__story--reverse .principal__visual {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.principal__story--reverse .principal__copy {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.principal__copy {
+  max-width: 540px;
+}
+
+.principal__copy h3 {
+  font: 600 clamp(30px, 3.2vw, 48px) / 1.08 'Open Sans', sans-serif;
+  letter-spacing: -0.035em;
+  margin: 0 0 24px;
+}
+
+.principal__copy p:not(.eyebrow) {
+  color: var(--card-muted);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.about {
+  background: var(--surface);
+  border-radius: 28px;
+  margin-bottom: 24px;
+  margin-top: 24px;
+}
+
+.about__heading {
+  max-width: 850px;
+}
+
+.about__grid {
+  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 52px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.about__grid article {
+  padding: 32px;
+}
+
+.about__grid article + article {
+  border-left: 1px solid var(--line);
+}
+
+.about__grid h3 {
+  font: 600 25px/1.2 'Open Sans', sans-serif;
+  margin: 0 0 20px;
+}
+
+.about__grid p {
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.contact {
+  background: var(--butter);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  color: var(--card-text);
+  margin: 30px 5%;
+  padding: 80px;
+  text-align: center;
+}
+
+.contact > p,
+.principal .eyebrow {
+  color: var(--card-muted);
+}
+
+.contact h2 {
+  font-size: clamp(38px, 5vw, 64px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+footer {
+  color: var(--muted);
+  display: flex;
+  font-size: 13px;
+  justify-content: space-between;
+  padding: 42px 5%;
+}
+
+@media (max-width: 900px) {
+  .hero,
+  .principal__story,
+  .principal__story--reverse {
+    grid-template-columns: 1fr;
+  }
+
+  .principal__story--reverse .principal__visual,
+  .principal__story--reverse .principal__copy {
+    grid-column: 1;
+  }
+
+  .principal__story--reverse .principal__visual {
+    grid-row: 1;
+  }
+
+  .principal__story--reverse .principal__copy {
+    grid-row: 2;
+  }
+
+  .hero__copy,
+  .principal__copy {
+    max-width: 680px;
+  }
+}
+
+@media (max-width: 720px) {
+  header {
+    align-items: flex-start;
+    border-radius: 16px;
+    padding: 16px 5%;
+    width: calc(100% - 20px);
+  }
+
+  nav {
+    display: none;
+  }
+
+  section {
+    padding: 62px 6%;
+  }
+
+  .hero {
+    min-height: auto;
+    padding-bottom: 48px;
+    padding-top: 64px;
+  }
+
+  h1,
+  h2 {
+    font-size: 43px;
+  }
+
+  .cards,
+  .isms,
+  .poems,
+  .about__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about__grid article + article {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .card {
+    min-height: 250px;
+  }
+
+  .principal {
+    padding-bottom: 72px;
+    padding-top: 72px;
+  }
+
+  .principal__story {
+    margin-top: 54px;
+  }
+
+  .contact {
+    margin: 15px 6%;
+    padding: 55px 7%;
+  }
+}
