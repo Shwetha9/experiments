@@ -3,98 +3,87 @@ import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const template = readFileSync(new URL('../src/app/app.html', import.meta.url), 'utf8');
+const component = readFileSync(new URL('../src/app/app.ts', import.meta.url), 'utf8');
 const documentTemplate = readFileSync(new URL('../src/index.html', import.meta.url), 'utf8');
 const styles = readFileSync(new URL('../src/app/app.scss', import.meta.url), 'utf8');
 const globalStyles = readFileSync(new URL('../src/styles.scss', import.meta.url), 'utf8');
-const packageJson = JSON.parse(
-  readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
-);
+const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
-test('presents Shwetha as an ambitious principal engineer with a full creative life', () => {
-  assert.match(template, /I build ambitious web systems/);
+const modelsUrl = new URL('../src/app/models/portfolio-content.ts', import.meta.url);
+const landingContentUrl = new URL('../src/app/content/landing-content.ts', import.meta.url);
+const archiveContentUrl = new URL('../src/app/content/archive-content.ts', import.meta.url);
+
+test('separates focused landing content from the writing archive', () => {
+  assert.equal(existsSync(modelsUrl), true);
+  assert.equal(existsSync(landingContentUrl), true);
+  assert.equal(existsSync(archiveContentUrl), true);
+
+  const models = readFileSync(modelsUrl, 'utf8');
+  const landingContent = readFileSync(landingContentUrl, 'utf8');
+  const archiveContent = readFileSync(archiveContentUrl, 'utf8');
+
+  assert.match(models, /export interface LandingContent/);
+  assert.match(landingContent, /Some ideas stopped being impossible/);
+  assert.match(landingContent, /The brief changed\. Engineering discipline did not\./);
+  assert.doesNotMatch(landingContent, /poem|poetry|Shwetha-isms/i);
+  assert.match(archiveContent, /A comma can change the entire mood/);
+  assert.match(archiveContent, /Full-stack development/);
+  assert.match(archiveContent, /Morning, unhurried/);
+});
+
+test('renders the focused possibility practice person narrative', () => {
+  assert.match(component, /landingContent/);
+  assert.match(template, /href="#possibility">Possibility/);
+  assert.match(template, /href="#practice">Practice/);
+  assert.match(template, /href="#leadership">Leadership/);
+  assert.match(template, /href="#beyond">Beyond/);
+  assert.ok(template.indexOf('id="possibility"') < template.indexOf('id="practice"'));
+  assert.ok(template.indexOf('id="practice"') < template.indexOf('id="leadership"'));
+  assert.ok(template.indexOf('id="leadership"') < template.indexOf('id="beyond"'));
+});
+
+test('keeps archive material off the landing page', () => {
+  assert.doesNotMatch(template, /Shwetha-isms|A few poems|Morning, unhurried|Small instruction/);
+  assert.doesNotMatch(template, /What I can do for you|What I can teach you|What I cannot teach you/);
   assert.doesNotMatch(template, /I(?:’|')m Shwetha|I am Shwetha/i);
-  assert.match(template, /Pink Floyd/);
-  assert.match(template, /Madonna/);
-  assert.match(template, /Carnatic music/);
-  assert.match(template, /Chopin/);
-  assert.match(template, /John Donne/);
-  assert.match(template, /Charlotte Brontë/);
-  assert.match(template, /NYFA/);
-  assert.match(template, /poems and scripts/);
 });
 
-test('leads with engineering and removes the overly sentimental phrases', () => {
-  const engineeringIndex = template.indexOf('id="engineering"');
-  const servicesIndex = template.indexOf('id="notes"');
-
-  assert.ok(engineeringIndex > -1);
-  assert.ok(engineeringIndex < servicesIndex);
-  assert.doesNotMatch(template, /For the softly curious/i);
-  assert.doesNotMatch(template, /Come in gently/i);
-  assert.doesNotMatch(template, /Made slowly, with feeling/i);
+test('uses an editorial beyond section rather than three boxed columns', () => {
+  assert.match(styles, /\.beyond\s*{[\s\S]*?display:\s*grid;/);
+  assert.match(styles, /\.beyond__notes\s*{[\s\S]*?border-top:/);
+  assert.doesNotMatch(styles, /\.about__grid/);
 });
 
-test('uses a sticky rounded header with safe anchor offsets', () => {
-  assert.match(styles, /header\s*{[\s\S]*?position:\s*sticky;/);
-  assert.match(styles, /header\s*{[\s\S]*?top:\s*0;/);
-  assert.match(styles, /header\s*{[\s\S]*?backdrop-filter:\s*blur\(/);
-  assert.match(styles, /section\[id\]\s*{[\s\S]*?scroll-margin-top:\s*110px;/);
+test('uses a warm restrained dark palette', () => {
+  assert.match(styles, /--canvas:\s*#171816;/);
+  assert.match(styles, /--surface:\s*#20211e;/);
+  assert.match(styles, /--text:\s*#f3efe5;/);
+  assert.match(styles, /--mint:\s*#b8d3c5;/);
+  assert.match(styles, /--butter:\s*#ddc79b;/);
+  assert.match(styles, /--coral:\s*#dc8067;/);
+  assert.doesNotMatch(styles, /#cddbf0|#efc4c8/);
 });
 
-test('keeps pastel cards luminous in dark mode and rounds only internal panels', () => {
-  assert.match(styles, /--mint:\s*#bfe3dc;/);
-  assert.match(styles, /--butter:\s*#f3d7a1;/);
-  assert.match(styles, /--sky:\s*#cddbf0;/);
-  assert.match(styles, /--blush:\s*#efc4c8;/);
-  assert.doesNotMatch(styles, /--mint:\s*#1b4540;/);
-  assert.match(styles, /\.card\s*{[\s\S]*?border-radius:\s*20px;/);
-  assert.match(styles, /\.editorial-visual\s*{[\s\S]*?border-radius:\s*24px;/);
-  assert.match(styles, /\.hero,\s*\.principal,\s*\.cannot,\s*\.about,\s*\.poetry,\s*\.contact\s*{[\s\S]*?border-radius:\s*0;/);
+test('keeps theme switching accessible through html data-theme', () => {
+  assert.match(template, /\[attr\.aria-pressed\]="isDark\(\)"/);
+  assert.match(component, /documentElement\.dataset\['theme'\]/);
+  assert.match(styles, /:host-context\(html\[data-theme='dark'\]\)/);
 });
 
-test('uses locally bundled Open Sans for the site interface', () => {
+test('uses locally bundled Open Sans with editorial serif headings', () => {
   assert.equal(typeof packageJson.dependencies['@fontsource/open-sans'], 'string');
   assert.match(globalStyles, /@fontsource\/open-sans\/400\.css/);
-  assert.match(globalStyles, /@fontsource\/open-sans\/600\.css/);
-  assert.match(globalStyles, /@fontsource\/open-sans\/700\.css/);
   assert.match(globalStyles, /font-family:\s*'Open Sans', sans-serif;/);
-  assert.doesNotMatch(globalStyles, /Arial|Helvetica/);
-  assert.doesNotMatch(styles, /Arial|Helvetica/);
-});
-
-test('pairs editorial serif headings with the Open Sans interface', () => {
   assert.match(styles, /\.brand\s*{[\s\S]*?Georgia, serif;/);
   assert.match(styles, /h1,\s*h2\s*{[\s\S]*?Georgia, serif;/);
-  assert.match(styles, /\.principal__copy h3\s*{[\s\S]*?Georgia, serif;/);
-  assert.match(styles, /\.about__grid h3\s*{[\s\S]*?Georgia, serif;/);
-  assert.match(styles, /nav\s*{[\s\S]*?'Open Sans', sans-serif;/);
+  assert.doesNotMatch(globalStyles, /Arial|Helvetica/);
 });
 
-test('keeps the sticky header slim and uses a small dashed brand mark', () => {
-  assert.match(template, /<span class="brand__mark" aria-hidden="true"><\/span>/);
-  assert.match(styles, /header\s*{[\s\S]*?border-radius:\s*0;/);
-  assert.match(styles, /header\s*{[\s\S]*?padding:\s*14px 5%;/);
-  assert.match(styles, /\.brand__mark\s*{[\s\S]*?border:\s*1px dashed/);
-  assert.match(styles, /\.brand__mark\s*{[\s\S]*?height:\s*8px;/);
-  assert.match(styles, /\.brand__mark\s*{[\s\S]*?width:\s*8px;/);
-});
-
-test('masks the dark pixel row baked into the hero illustration', () => {
-  assert.match(styles, /\.hero__visual img\s*{[\s\S]*?clip-path:\s*inset\(0 0 2px 0\);/);
-  assert.match(styles, /\.hero__visual img\s*{[\s\S]*?margin-bottom:\s*-2px;/);
-});
-
-test('spans the viewport without outer gutters in either theme', () => {
+test('keeps the full-width sticky header and broken-circle identity', () => {
+  assert.match(styles, /header\s*{[\s\S]*?position:\s*sticky;/);
   assert.match(styles, /header,\s*main,\s*footer\s*{[\s\S]*?width:\s*100%;/);
-  assert.doesNotMatch(styles, /header,\s*main,\s*footer\s*{[\s\S]*?max-width:\s*1440px;/);
-});
-
-test('blends full-width sections with subtle alternating editorial slants', () => {
-  assert.match(styles, /\.principal::before,\s*\.about::before,\s*\.poetry::before,\s*\.contact::before/);
-  assert.match(styles, /height:\s*24px;/);
-  assert.match(styles, /clip-path:\s*polygon\(0 72%, 100% 28%, 100% 100%, 0 100%\);/);
-  assert.match(styles, /clip-path:\s*polygon\(0 28%, 100% 72%, 100% 100%, 0 100%\);/);
-  assert.match(styles, /\.hero,\s*\.principal,\s*\.cannot,\s*\.about,\s*\.poetry,\s*\.contact\s*{[\s\S]*?margin-block:\s*0;/);
+  assert.match(template, /<span class="brand__mark" aria-hidden="true"><\/span>/);
+  assert.match(styles, /\.brand__mark\s*{[\s\S]*?border:\s*1px dashed/);
 });
 
 test('uses the coral broken-circle brand mark as the favicon', () => {

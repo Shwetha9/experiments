@@ -98,9 +98,9 @@ Offer a concise cultural portrait rather than a catalogue:
 - music spanning Pink Floyd, Madonna, Carnatic music, and Chopin;
 - literature including John Donne and Charlotte Brontë;
 - NYFA and scriptwriting;
-- poetry as the single creative form retained on the landing page.
+- poetry as part of Shwetha’s wider creative practice, without displaying poems on the landing page.
 
-Include one short poem or fragment written and approved by Shwetha. Do not use generic generated poetry. The section should show range and attention without weakening the engineering narrative.
+Keep the section concise and prose-led. It should show range and attention without weakening the engineering narrative or reproducing poems before Shwetha chooses work she wants to publish.
 
 ### 6. Contact
 
@@ -119,7 +119,7 @@ The following material should not appear in the primary landing flow:
 - the full Shwetha-isms collection;
 - the three-part teaching framing;
 - extended music and literature lists;
-- multiple poems;
+- all poems;
 - a conventional chronological résumé.
 
 Preserve this material in structured content for a future archive or “Beyond engineering” page. Do not delete it as part of the landing redesign.
@@ -150,7 +150,7 @@ Move portfolio copy out of the root component into typed content modules. Keep r
 
 Suggested structure:
 
-- `src/app/content/landing-content.ts` — hero, section headings, practice items, leadership copy, poetry preview, contact;
+- `src/app/content/landing-content.ts` — hero, section headings, practice items, leadership copy, cultural notes, contact;
 - `src/app/content/archive-content.ts` — Shwetha-isms, additional poems, teaching material, and cultural notes;
 - `src/app/models/portfolio-content.ts` — reusable content interfaces.
 
