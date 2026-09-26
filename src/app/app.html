@@ -104,15 +104,37 @@
         @for (influence of content.beyond.influences; track influence.source; let index = $index) {
           <article class="influence influence--{{ influence.tone }}">
             <span class="influence__number" aria-hidden="true">0{{ index + 1 }}</span>
-            <p class="influence__source">{{ influence.source }}</p>
             <div class="influence__copy">
+              <p class="influence__source">{{ influence.source }}</p>
+              <blockquote class="influence__quote">“{{ influence.quote }}”</blockquote>
               <h3>{{ influence.title }}</h3>
               <p>{{ influence.reflection }}</p>
+              <button type="button" class="influence__link" (click)="openQuote(influence)">
+                Read passage <span aria-hidden="true">↗</span>
+              </button>
             </div>
           </article>
         }
       </div>
     </section>
+
+    <dialog
+      #quoteDialog
+      class="quote-dialog"
+      aria-labelledby="quote-dialog-title"
+      (cancel)="closeQuote()"
+      (click)="handleQuoteDialogClick($event)"
+    >
+      @if (selectedInfluence(); as influence) {
+        <article class="quote-dialog__inner">
+          <button type="button" class="quote-dialog__close" aria-label="Close quote" (click)="closeQuote()">×</button>
+          <p class="quote-dialog__source">{{ influence.source }}</p>
+          <h2 id="quote-dialog-title">{{ influence.title }}</h2>
+          <blockquote>“{{ influence.fullQuote }}”</blockquote>
+          <p>{{ influence.reflection }}</p>
+        </article>
+      }
+    </dialog>
 
     <section id="contact" class="contact">
       <p class="eyebrow">{{ content.contact.eyebrow }}</p>

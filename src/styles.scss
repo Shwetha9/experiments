@@ -33,6 +33,58 @@ button:focus-visible {
   outline-offset: 4px;
 }
 
+.quote-dialog {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  color: var(--text);
+  max-height: min(82vh, 760px);
+  max-width: 760px;
+  padding: 0;
+  width: calc(100% - 32px);
+}
+
+.quote-dialog::backdrop {
+  backdrop-filter: blur(4px);
+  background: rgb(10 15 13 / 64%);
+}
+
+.quote-dialog__inner {
+  padding: clamp(32px, 6vw, 68px);
+  position: relative;
+}
+
+.quote-dialog__close {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font-size: 30px;
+  position: absolute;
+  right: 22px;
+  top: 16px;
+}
+
+.quote-dialog__source {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+.quote-dialog h2 {
+  font-size: clamp(32px, 5vw, 54px);
+}
+
+.quote-dialog blockquote {
+  font: 500 clamp(23px, 3vw, 34px) / 1.45 Georgia, serif;
+  margin: 34px 0;
+}
+
+.quote-dialog article > p:last-child {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
