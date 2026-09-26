@@ -130,10 +130,10 @@ test('keeps the full-width sticky header and broken-circle identity', () => {
 });
 
 test('keeps editorial visuals below their source resolution', () => {
-  assert.match(styles, /\.possibility \.editorial-visual\s*{[\s\S]*?max-width:\s*700px;/);
+  assert.match(styles, /\.possibility \.editorial-visual\s*{[\s\S]*?max-width:\s*560px;/);
   assert.match(styles, /\.possibility h2\s*{[\s\S]*?font-size:\s*clamp\(38px, 3\.2vw, 58px\)/);
-  assert.match(styles, /\.hero__visual\s*{[\s\S]*?max-width:\s*820px;/);
-  assert.match(styles, /\.leadership \.editorial-visual\s*{[\s\S]*?max-width:\s*700px;/);
+  assert.match(styles, /\.hero__visual\s*{[\s\S]*?max-width:\s*700px;/);
+  assert.match(styles, /\.leadership \.editorial-visual\s*{[\s\S]*?max-width:\s*560px;/);
 });
 
 test('routes to a privacy-first Growing Human preview that never fakes an AI answer', () => {

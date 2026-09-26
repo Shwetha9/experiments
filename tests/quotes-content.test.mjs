@@ -4,11 +4,13 @@ import test from 'node:test';
 
 const routes = readFileSync(new URL('../src/app/app.routes.ts', import.meta.url), 'utf8');
 const appConfig = readFileSync(new URL('../src/app/app.config.ts', import.meta.url), 'utf8');
+const landing = readFileSync(new URL('../src/app/landing/landing.html', import.meta.url), 'utf8');
 
 test('registers a lazy quotes route with HTTP support', () => {
   assert.match(routes, /path: 'quotes'/);
   assert.match(routes, /quotes\/quotes/);
   assert.match(appConfig, /provideHttpClient/);
+  assert.match(landing, /href="\/quotes">Quotes<\/a>/);
 });
 
 test('defines all API Ninjas quote capabilities', () => {

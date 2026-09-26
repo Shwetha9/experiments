@@ -214,8 +214,8 @@ h2 {
   margin-bottom: -2px;
 }
 .hero__visual {
-  justify-self: end;
-  max-width: 820px;
+  justify-self: center;
+  max-width: 700px;
 }
 
 .button {
@@ -255,8 +255,8 @@ h2 {
   font-size: 16px;
 }
 .possibility .editorial-visual {
-  justify-self: end;
-  max-width: 700px;
+  justify-self: center;
+  max-width: 560px;
 }
 
 .practice {
@@ -317,7 +317,7 @@ h2 {
   max-width: 590px;
 }
 .leadership .editorial-visual {
-  max-width: 700px;
+  max-width: 560px;
 }
 .leadership .section-copy > p:not(.eyebrow),
 .leadership .eyebrow {
@@ -551,7 +551,7 @@ footer {
   }
   .possibility .editorial-visual {
     justify-self: center;
-    max-width: 700px;
+    max-width: 560px;
   }
 }
 
