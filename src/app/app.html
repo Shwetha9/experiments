@@ -95,14 +95,21 @@
     </section>
 
     <section id="beyond" class="beyond">
-      <div class="section-copy">
+      <div class="beyond__intro">
         <p class="eyebrow">{{ content.beyond.eyebrow }}</p>
         <h2>{{ content.beyond.title }}</h2>
         <p>{{ content.beyond.body }}</p>
       </div>
-      <div class="beyond__notes">
-        @for (note of content.beyond.notes; track note) {
-          <p>{{ note }}</p>
+      <div class="beyond__influences">
+        @for (influence of content.beyond.influences; track influence.source; let index = $index) {
+          <article class="influence influence--{{ influence.tone }}">
+            <span class="influence__number" aria-hidden="true">0{{ index + 1 }}</span>
+            <p class="influence__source">{{ influence.source }}</p>
+            <div class="influence__copy">
+              <h3>{{ influence.title }}</h3>
+              <p>{{ influence.reflection }}</p>
+            </div>
+          </article>
         }
       </div>
     </section>

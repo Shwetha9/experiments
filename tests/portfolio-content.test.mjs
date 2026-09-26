@@ -24,7 +24,7 @@ test('separates focused landing content from the writing archive', () => {
 
   assert.match(models, /export interface LandingContent/);
   assert.match(landingContent, /title: 'I build ambitious web systems—and help teams grow into them\.'/);
-  assert.match(landingContent, /body: 'Some ideas stopped being impossible while we were busy planning them\./);
+  assert.match(landingContent, /possibility:[\s\S]*?title: 'Some ideas stopped being impossible while we were busy planning them\.'/);
   assert.match(landingContent, /The brief changed\. Engineering discipline did not\./);
   assert.doesNotMatch(landingContent, /poem|poetry|Shwetha-isms/i);
   assert.match(archiveContent, /A comma can change the entire mood/);
@@ -41,6 +41,7 @@ test('renders the focused possibility practice person narrative', () => {
   assert.ok(template.indexOf('id="possibility"') < template.indexOf('id="practice"'));
   assert.ok(template.indexOf('id="practice"') < template.indexOf('id="leadership"'));
   assert.ok(template.indexOf('id="leadership"') < template.indexOf('id="beyond"'));
+  assert.ok(template.indexOf('</section>') < template.indexOf('id="possibility"'));
 });
 
 test('keeps archive material off the landing page', () => {
@@ -50,8 +51,26 @@ test('keeps archive material off the landing page', () => {
 });
 
 test('uses an editorial beyond section rather than three boxed columns', () => {
-  assert.match(styles, /\.beyond\s*{[\s\S]*?display:\s*grid;/);
-  assert.match(styles, /\.beyond__notes\s*{[\s\S]*?border-top:/);
+  const models = readFileSync(modelsUrl, 'utf8');
+  const landingContent = readFileSync(landingContentUrl, 'utf8');
+
+  assert.match(models, /export interface Influence/);
+  assert.match(landingContent, /John Donne · Meditation XVII/);
+  assert.match(landingContent, /Nathaniel Hawthorne · The Custom-House/);
+  assert.match(landingContent, /Leonard Cohen · Anthem/);
+  assert.match(landingContent, /No one works alone\./);
+  assert.match(landingContent, /Growth needs unfamiliar ground\./);
+  assert.match(landingContent, /Imperfection lets possibility in\./);
+  assert.match(landingContent, /extraordinary time to build software/);
+  assert.match(landingContent, /be more ambitious together/);
+  assert.doesNotMatch(landingContent, /There is a crack|That's how the light gets in/);
+  assert.match(template, /class="beyond__influences"/);
+  assert.match(template, /class="influence influence--\{\{ influence\.tone \}\}"/);
+  assert.doesNotMatch(template, /beyond__coda/);
+  assert.doesNotMatch(landingContent, /The rest of the shelf/);
+  assert.match(styles, /\.beyond__influences\s*{[\s\S]*?display:\s*grid;/);
+  assert.match(styles, /\.influence:nth-child\(2\)/);
+  assert.match(styles, /\.influence__number/);
   assert.doesNotMatch(styles, /\.about__grid/);
 });
 

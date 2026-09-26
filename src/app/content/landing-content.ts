@@ -4,13 +4,13 @@ export const landingContent: LandingContent = {
   hero: {
     eyebrow: 'Principal Engineer · Product thinker · AI systems builder',
     title: 'I build ambitious web systems—and help teams grow into them.',
-    body: 'Some ideas stopped being impossible while we were busy planning them. Product thinking, AI architecture, security guardrails, and engineering teams belong in the same conversation. That is how ambitious ideas become dependable systems.',
+    body: 'Product thinking, AI architecture, security guardrails, and engineering teams belong in the same conversation. That is how ambitious ideas become dependable systems.',
   },
   possibility: {
     eyebrow: 'What changed',
-    title: 'The brief changed. Engineering discipline did not.',
+    title: 'Some ideas stopped being impossible while we were busy planning them.',
     paragraphs: [
-      'AI has moved the edge of what teams can attempt. The interesting work is no longer adding a model to a product; it is deciding where intelligence belongs, what it must never be allowed to do, and how people stay in control.',
+      'The brief changed. Engineering discipline did not. AI has moved the edge of what teams can attempt. The interesting work is no longer adding a model to a product; it is deciding where intelligence belongs, what it must never be allowed to do, and how people stay in control.',
       'A product-owner past keeps the work anchored in usefulness. A frontend-engineering instinct keeps complexity legible. Principal engineering connects those decisions across architecture, delivery, observability, and the people responsible for all of it.',
     ],
   },
@@ -34,12 +34,27 @@ export const landingContent: LandingContent = {
   },
   beyond: {
     eyebrow: 'Beyond the stack',
-    title: 'Range changes the questions you ask.',
-    body: 'Engineering is the centre of the work, not the limit of the conversation. Music, literature, cinema, and writing sharpen attention to rhythm, structure, character, and consequence.',
-    notes: [
-      'Pink Floyd to Madonna; Carnatic music to Chopin.',
-      'John Donne and Charlotte Brontë for language with conviction.',
-      'A proud NYFA alum who still thinks in scenes, scripts, and edits.',
+    title: 'Three ideas I return to.',
+    body: 'It is an extraordinary time to build software. Ideas that once needed entire organisations—or seemed impossible—can now be explored by small, thoughtful teams. The opportunity is not to automate imagination away, but to be more ambitious together: pairing new capability with judgment, responsibility, and care for the people who will live with what we make.',
+    influences: [
+      {
+        source: 'John Donne · Meditation XVII',
+        title: 'No one works alone.',
+        reflection: 'No system, team, or decision stands alone. Leadership means staying alert to the effect one choice has on everyone who must live with it.',
+        tone: 'sage',
+      },
+      {
+        source: 'Nathaniel Hawthorne · The Custom-House',
+        title: 'Growth needs unfamiliar ground.',
+        reflection: 'A product career became an engineering one, and engineering is now being reshaped by AI. Growth has repeatedly arrived by leaving familiar ground before certainty did.',
+        tone: 'butter',
+      },
+      {
+        source: 'Leonard Cohen · Anthem',
+        title: 'Imperfection lets possibility in.',
+        reflection: 'Useful work is not flawless work. When something breaks, name it, repair it, document it, and build the guardrail that makes the next attempt wiser.',
+        tone: 'coral',
+      },
     ],
   },
   contact: {

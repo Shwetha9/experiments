@@ -9,6 +9,13 @@ export interface Poem {
   readonly lines: readonly string[];
 }
 
+export interface Influence {
+  readonly source: string;
+  readonly title: string;
+  readonly reflection: string;
+  readonly tone: 'sage' | 'butter' | 'coral';
+}
+
 export interface LandingContent {
   readonly hero: { readonly eyebrow: string; readonly title: string; readonly body: string };
   readonly possibility: {
@@ -30,7 +37,7 @@ export interface LandingContent {
     readonly eyebrow: string;
     readonly title: string;
     readonly body: string;
-    readonly notes: readonly string[];
+    readonly influences: readonly Influence[];
   };
   readonly contact: {
     readonly eyebrow: string;
