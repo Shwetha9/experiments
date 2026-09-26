@@ -10,7 +10,7 @@ test('registers a lazy quotes route with HTTP support', () => {
   assert.match(routes, /path: 'quotes'/);
   assert.match(routes, /quotes\/quotes/);
   assert.match(appConfig, /provideHttpClient/);
-  assert.match(landing, /href="\/quotes">Quotes<\/a>/);
+  assert.match(landing, /routerLink="\/quotes">Quotes<\/a>/);
 });
 
 test('defines all API Ninjas quote capabilities', () => {
@@ -40,6 +40,11 @@ test('renders the separate quotes experience with daily, categories, browse, and
   assert.match(page, /Three ideas I return to/);
   assert.match(page, /Authors/);
   assert.match(page, /aria-pressed/);
+  assert.ok(page.indexOf('id="browse"') < page.indexOf('id="anchors"'));
+  assert.match(page, /src\/app\/quotes\/config\.ts/);
+  const styles = readFileSync(new URL('../src/app/quotes/quotes.scss', import.meta.url), 'utf8');
+  assert.match(styles, /\.anchor-row\s*{[\s\S]*?position:\s*relative;/);
+  assert.match(styles, /\.anchor-row::before\s*{[\s\S]*?position:\s*absolute;/);
   assert.match(content, /John Donne/);
   assert.match(content, /Nathaniel Hawthorne/);
   assert.match(content, /Leonard Cohen/);

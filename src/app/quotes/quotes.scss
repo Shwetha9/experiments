@@ -222,13 +222,16 @@ blockquote {
   gap: clamp(24px, 6vw, 96px);
   grid-template-columns: 80px minmax(0, 1fr);
   padding: 42px 0 58px;
+  position: relative;
 }
 
 .anchor-row::before {
   background: var(--coral);
   content: '';
   height: 4px;
-  margin-top: -44px;
+  left: 0;
+  position: absolute;
+  top: -2px;
   width: 74px;
 }
 

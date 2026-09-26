@@ -43,27 +43,7 @@
             }
           </div>
         } @else {
-          <p class="quote-status" aria-live="polite">{{ errorMessage(dailyState()) }}</p>
-        }
-      </div>
-    </section>
-
-    <section id="anchors" class="anchors" aria-labelledby="anchors-title">
-      <div class="section-heading">
-        <p class="eyebrow">Three ideas I return to</p>
-        <h2 id="anchors-title">The people and sentences that keep the work human.</h2>
-      </div>
-      <div class="anchors__list">
-        @for (anchor of anchors; track anchor.source; let index = $index) {
-          <article class="anchor-row anchor-row--{{ anchor.tone }}">
-            <span class="anchor-row__number" aria-hidden="true">0{{ index + 1 }}</span>
-            <div>
-              <p class="eyebrow">{{ anchor.source }}</p>
-              <blockquote>“{{ anchor.quote }}”</blockquote>
-              <h3>{{ anchor.title }}</h3>
-              <button type="button" class="text-link" (click)="openAnchor(anchor)">Read full passage <span aria-hidden="true">↗</span></button>
-            </div>
-          </article>
+          <p class="quote-status" aria-live="polite">{{ errorMessage(dailyState()) }} Edit <code>src/app/quotes/config.ts</code> to connect it.</p>
         }
       </div>
     </section>
@@ -104,6 +84,26 @@
       } @else if (browseState() !== 'idle' && browseState() !== 'loading') {
         <p class="quote-status">{{ errorMessage(browseState()) }}</p>
       }
+    </section>
+
+    <section id="anchors" class="anchors" aria-labelledby="anchors-title">
+      <div class="section-heading">
+        <p class="eyebrow">Three ideas I return to</p>
+        <h2 id="anchors-title">The people and sentences that keep the work human.</h2>
+      </div>
+      <div class="anchors__list">
+        @for (anchor of anchors; track anchor.source; let index = $index) {
+          <article class="anchor-row anchor-row--{{ anchor.tone }}">
+            <span class="anchor-row__number" aria-hidden="true">0{{ index + 1 }}</span>
+            <div>
+              <p class="eyebrow">{{ anchor.source }}</p>
+              <blockquote>“{{ anchor.quote }}”</blockquote>
+              <h3>{{ anchor.title }}</h3>
+              <button type="button" class="text-link" (click)="openAnchor(anchor)">Read full passage <span aria-hidden="true">↗</span></button>
+            </div>
+          </article>
+        }
+      </div>
     </section>
 
     <section class="authors" aria-labelledby="authors-title">
