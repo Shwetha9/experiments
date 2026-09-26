@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const template = readFileSync(new URL('../src/app/app.html', import.meta.url), 'utf8');
+const documentTemplate = readFileSync(new URL('../src/index.html', import.meta.url), 'utf8');
 const styles = readFileSync(new URL('../src/app/app.scss', import.meta.url), 'utf8');
 const globalStyles = readFileSync(new URL('../src/styles.scss', import.meta.url), 'utf8');
 const packageJson = JSON.parse(
@@ -11,6 +12,7 @@ const packageJson = JSON.parse(
 
 test('presents Shwetha as an ambitious principal engineer with a full creative life', () => {
   assert.match(template, /I build ambitious web systems/);
+  assert.doesNotMatch(template, /I(?:’|')m Shwetha|I am Shwetha/i);
   assert.match(template, /Pink Floyd/);
   assert.match(template, /Madonna/);
   assert.match(template, /Carnatic music/);
@@ -39,14 +41,15 @@ test('uses a sticky rounded header with safe anchor offsets', () => {
   assert.match(styles, /section\[id\]\s*{[\s\S]*?scroll-margin-top:\s*110px;/);
 });
 
-test('keeps pastel cards luminous in dark mode and softens panel edges', () => {
+test('keeps pastel cards luminous in dark mode and rounds only internal panels', () => {
   assert.match(styles, /--mint:\s*#bfe3dc;/);
   assert.match(styles, /--butter:\s*#f3d7a1;/);
   assert.match(styles, /--sky:\s*#cddbf0;/);
   assert.match(styles, /--blush:\s*#efc4c8;/);
   assert.doesNotMatch(styles, /--mint:\s*#1b4540;/);
   assert.match(styles, /\.card\s*{[\s\S]*?border-radius:\s*20px;/);
-  assert.match(styles, /\.contact\s*{[\s\S]*?border-radius:\s*24px;/);
+  assert.match(styles, /\.editorial-visual\s*{[\s\S]*?border-radius:\s*24px;/);
+  assert.match(styles, /\.hero,\s*\.principal,\s*\.cannot,\s*\.about,\s*\.poetry,\s*\.contact\s*{[\s\S]*?border-radius:\s*0;/);
 });
 
 test('uses locally bundled Open Sans for the site interface', () => {
@@ -79,4 +82,29 @@ test('keeps the sticky header slim and uses a small dashed brand mark', () => {
 test('masks the dark pixel row baked into the hero illustration', () => {
   assert.match(styles, /\.hero__visual img\s*{[\s\S]*?clip-path:\s*inset\(0 0 2px 0\);/);
   assert.match(styles, /\.hero__visual img\s*{[\s\S]*?margin-bottom:\s*-2px;/);
+});
+
+test('spans the viewport without outer gutters in either theme', () => {
+  assert.match(styles, /header,\s*main,\s*footer\s*{[\s\S]*?width:\s*100%;/);
+  assert.doesNotMatch(styles, /header,\s*main,\s*footer\s*{[\s\S]*?max-width:\s*1440px;/);
+});
+
+test('blends full-width sections with subtle alternating editorial slants', () => {
+  assert.match(styles, /\.principal::before,\s*\.about::before,\s*\.poetry::before,\s*\.contact::before/);
+  assert.match(styles, /height:\s*24px;/);
+  assert.match(styles, /clip-path:\s*polygon\(0 72%, 100% 28%, 100% 100%, 0 100%\);/);
+  assert.match(styles, /clip-path:\s*polygon\(0 28%, 100% 72%, 100% 100%, 0 100%\);/);
+  assert.match(styles, /\.hero,\s*\.principal,\s*\.cannot,\s*\.about,\s*\.poetry,\s*\.contact\s*{[\s\S]*?margin-block:\s*0;/);
+});
+
+test('uses the coral broken-circle brand mark as the favicon', () => {
+  const faviconUrl = new URL('../public/favicon.svg', import.meta.url);
+
+  assert.match(documentTemplate, /type="image\/svg\+xml" href="favicon\.svg"/);
+  assert.equal(existsSync(faviconUrl), true);
+
+  const favicon = readFileSync(faviconUrl, 'utf8');
+  assert.match(favicon, /stroke="#df6f52"/);
+  assert.match(favicon, /stroke-dasharray=/);
+  assert.doesNotMatch(favicon, /<text|Angular/i);
 });

@@ -18,6 +18,7 @@
   color: var(--text);
   min-height: 100vh;
   transition: background-color 180ms ease, color 180ms ease;
+  width: 100%;
 }
 
 :host-context(html[data-theme='dark']) .site {
@@ -37,8 +38,8 @@
 header,
 main,
 footer {
-  max-width: 1440px;
-  margin: auto;
+  margin: 0;
+  width: 100%;
 }
 
 header {
@@ -458,6 +459,66 @@ blockquote {
   margin-right: auto;
 }
 
+.hero,
+.principal,
+.cannot,
+.about,
+.poetry,
+.contact {
+  border-radius: 0;
+  margin-block: 0;
+}
+
+.principal,
+.about,
+.poetry,
+.contact {
+  position: relative;
+}
+
+.principal::before,
+.about::before,
+.poetry::before,
+.contact::before {
+  content: '';
+  height: 24px;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: -23px;
+}
+
+.principal::before,
+.poetry::before {
+  clip-path: polygon(0 72%, 100% 28%, 100% 100%, 0 100%);
+}
+
+.about::before,
+.contact::before {
+  clip-path: polygon(0 28%, 100% 72%, 100% 100%, 0 100%);
+}
+
+.principal::before {
+  background: var(--mint);
+}
+
+.about::before {
+  background: var(--surface);
+}
+
+.poetry::before {
+  background: color-mix(in srgb, var(--surface) 70%, var(--canvas));
+}
+
+.contact::before {
+  background: var(--butter);
+}
+
+.contact {
+  margin: 0;
+}
+
 footer {
   color: var(--muted);
   display: flex;
@@ -545,7 +606,7 @@ footer {
   }
 
   .contact {
-    margin: 15px 6%;
+    margin: 0;
     padding: 55px 7%;
   }
 }
