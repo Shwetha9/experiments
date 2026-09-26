@@ -3,6 +3,7 @@
     <a class="brand" href="#top">Shwetha<span class="brand__mark" aria-hidden="true"></span></a>
     <div class="header-actions">
       <nav aria-label="Primary navigation">
+        <a href="/quotes">Quotes</a>
         <a href="#possibility">Possibility</a>
         <a href="#practice">Practice</a>
         <a href="#leadership">Leadership</a>
@@ -127,7 +128,14 @@
     >
       @if (selectedInfluence(); as influence) {
         <article class="quote-dialog__inner">
-          <button type="button" class="quote-dialog__close" aria-label="Close quote" (click)="closeQuote()">×</button>
+          <button
+            type="button"
+            class="quote-dialog__close"
+            aria-label="Close quote"
+            (click)="closeQuote()"
+          >
+            ×
+          </button>
           <p class="quote-dialog__source">{{ influence.source }}</p>
           <h2 id="quote-dialog-title">{{ influence.title }}</h2>
           <blockquote>“{{ influence.fullQuote }}”</blockquote>
@@ -135,6 +143,23 @@
         </article>
       }
     </dialog>
+
+    <section id="work" class="work" aria-labelledby="work-title">
+      <p class="eyebrow">Selected work · A byproduct of ambition</p>
+      <article class="work__item">
+        <hgroup>
+          <h2 id="work-title">Growing Human</h2>
+          <p class="work__tagline">Big questions. Real feelings. Useful life skills.</p>
+        </hgroup>
+        <p>
+          A safe, age-aware place for young people to ask big questions and practise useful human
+          skills—designed with guardrails before the first message.
+        </p>
+        <a class="work__link" routerLink="/growing-human">
+          Explore Growing Human <span aria-hidden="true">↗</span>
+        </a>
+      </article>
+    </section>
 
     <section id="contact" class="contact">
       <p class="eyebrow">{{ content.contact.eyebrow }}</p>
@@ -144,5 +169,7 @@
     </section>
   </main>
 
-  <footer><span>Principal engineering, product judgment, ambitious systems.</span><span>© Shwetha</span></footer>
+  <footer>
+    <span>Principal engineering, product judgment, ambitious systems.</span><span>© Shwetha</span>
+  </footer>
 </div>
