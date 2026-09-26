@@ -237,7 +237,7 @@ h1, h2 {
   border-top: 1px solid var(--line);
   display: grid;
   gap: clamp(22px, 4vw, 68px);
-  grid-template-columns: 70px minmax(190px, .55fr) minmax(320px, 1fr);
+  grid-template-columns: 70px minmax(0, 1fr);
   max-width: 1180px;
   padding: 38px 0 44px;
   position: relative;
@@ -250,8 +250,6 @@ h1, h2 {
   top: -2px;
   width: 74px;
 }
-.influence:nth-child(2) { margin-left: 8%; }
-.influence:nth-child(3) { margin-left: 3%; }
 .influence--sage::before { background: #629282; }
 .influence--butter::before { background: #c39a45; }
 .influence--coral::before { background: var(--coral); }
@@ -265,10 +263,15 @@ h1, h2 {
   font-size: 12px;
   letter-spacing: .06em;
   line-height: 1.55;
-  margin: 6px 0 0;
+  margin: 4px 0 18px;
+}
+.influence__quote {
+  font: 500 clamp(24px, 2.8vw, 40px)/1.32 Georgia, serif;
+  margin: 0 0 30px;
+  max-width: 980px;
 }
 .influence__copy h3 {
-  font: 600 clamp(29px, 3.2vw, 46px)/1.08 Georgia, serif;
+  font: 600 clamp(24px, 2.4vw, 34px)/1.15 Georgia, serif;
   letter-spacing: -.035em;
   margin: 0 0 18px;
 }
@@ -278,6 +281,16 @@ h1, h2 {
   line-height: 1.7;
   margin: 0;
   max-width: 680px;
+}
+.influence__link {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  color: inherit;
+  cursor: pointer;
+  font: 600 13px/1.4 'Open Sans', sans-serif;
+  margin-top: 22px;
+  padding: 0 0 3px;
 }
 .contact { background: var(--butter); color: var(--card-text); text-align: center; }
 .contact h2 { margin-left: auto; margin-right: auto; max-width: 1000px; }
@@ -315,7 +328,7 @@ footer {
   .possibility .section-copy { grid-row: 1; }
   .practice__items { grid-template-columns: repeat(2, 1fr); }
   .beyond__intro { grid-template-columns: 1fr; }
-  .influence { grid-template-columns: 60px minmax(160px, .5fr) minmax(0, 1fr); }
+  .influence { grid-template-columns: 60px minmax(0, 1fr); }
 }
 
 @media (max-width: 720px) {
@@ -326,16 +339,11 @@ footer {
   .hero h1, h1, h2 { font-size: 43px; }
   .practice__items { grid-template-columns: 1fr; margin-top: 42px; }
   .practice-card { min-height: 250px; }
-  .influence,
-  .influence:nth-child(2),
-  .influence:nth-child(3) {
+  .influence {
     gap: 14px;
     grid-template-columns: 50px 1fr;
-    margin-left: 0;
     padding: 30px 0 36px;
   }
-  .influence__source { align-self: center; }
-  .influence__copy { grid-column: 2; }
   .possibility::before, .leadership::before, .beyond::before, .contact::before { height: 14px; top: -13px; }
   footer { flex-direction: column; gap: 10px; padding: 34px 6%; }
 }

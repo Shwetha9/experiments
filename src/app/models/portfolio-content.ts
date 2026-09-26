@@ -11,6 +11,8 @@ export interface Poem {
 
 export interface Influence {
   readonly source: string;
+  readonly quote: string;
+  readonly fullQuote: string;
   readonly title: string;
   readonly reflection: string;
   readonly tone: 'sage' | 'butter' | 'coral';
