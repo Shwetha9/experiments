@@ -3,9 +3,10 @@
     <a class="brand" href="#top">Shwetha<span class="brand__mark" aria-hidden="true"></span></a>
     <div class="header-actions">
       <nav aria-label="Primary navigation">
-        <a href="#engineering">Engineering</a>
-        <a href="#notes">What I do</a>
-        <a href="#about">Beyond code</a>
+        <a href="#possibility">Possibility</a>
+        <a href="#practice">Practice</a>
+        <a href="#leadership">Leadership</a>
+        <a href="#beyond">Beyond</a>
         <a href="#contact">Contact</a>
       </nav>
       <button
@@ -15,7 +16,7 @@
         [attr.aria-pressed]="isDark()"
         [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
       >
-        {{ isDark() ? '☀' : '☾' }}
+        <span aria-hidden="true">{{ isDark() ? '☀' : '☾' }}</span>
       </button>
     </div>
   </header>
@@ -23,186 +24,103 @@
   <main id="top">
     <section class="hero">
       <div class="hero__copy">
-        <p class="eyebrow">Principal Engineer · Frontend enthusiast · Relentless learner</p>
-        <h1>I build ambitious web systems—and help teams grow into them.</h1>
-        <p class="lede">
-          I’m Shwetha, a Principal Engineer with a deep love for frontend engineering, scalable
-          architecture, observability, and ideas that refuse to stay small.
-        </p>
-        <a class="button" href="#engineering">See how I work <span>↘</span></a>
+        <p class="eyebrow">{{ content.hero.eyebrow }}</p>
+        <h1>{{ content.hero.title }}</h1>
+        <p class="lede">{{ content.hero.body }}</p>
+        <a class="button" href="#possibility">Start with what changed <span>↘</span></a>
       </div>
       <figure class="editorial-visual hero__visual">
         <img
-          data-editorial-illustration
           src="/images/quiet-curiosity.png"
           width="1050"
           height="504"
-          alt="Shwetha pausing beside a window, books, and a wide landscape."
+          alt="Shwetha considering a landscape beside books and a window."
           fetchpriority="high"
         />
       </figure>
     </section>
 
-    <section id="engineering" class="principal">
-      <div class="principal__heading">
-        <p class="eyebrow">Principal engineering</p>
-        <h2>Technical ambition, grounded in people.</h2>
+    <section id="possibility" class="possibility">
+      <div class="section-copy">
+        <p class="eyebrow">{{ content.possibility.eyebrow }}</p>
+        <h2>{{ content.possibility.title }}</h2>
+        @for (paragraph of content.possibility.paragraphs; track paragraph) {
+          <p>{{ paragraph }}</p>
+        }
       </div>
-
-      <div class="principal__story">
-        <figure class="editorial-visual principal__visual">
-          <img
-            data-editorial-illustration
-            src="/images/building-systems.png"
-            width="876"
-            height="456"
-            alt="Shwetha moving through the stages of building reliable systems."
-            loading="lazy"
-          />
-        </figure>
-        <article class="principal__copy">
-          <p class="eyebrow">From uncertainty to useful software</p>
-          <h3>I create the conditions for teams to move.</h3>
-          <p>
-            I drive projects from the first uncertain conversation through to reliable delivery.
-            That means shaping technical direction, making trade-offs visible, and helping people
-            build with confidence.
-          </p>
-          <p>
-            I like ambitious technology paired with practical guardrails: security treated as
-            design material, observability built in early, and decisions explained clearly enough
-            to earn trust.
-          </p>
-        </article>
-      </div>
-
-      <div class="principal__story principal__story--reverse">
-        <figure class="editorial-visual principal__visual">
-          <img
-            data-editorial-illustration
-            src="/images/human-ai-adoption.png"
-            width="1050"
-            height="528"
-            alt="Shwetha fitting a bright piece into a larger system while exploring thoughtful AI adoption."
-            loading="lazy"
-          />
-        </figure>
-        <article class="principal__copy">
-          <p class="eyebrow">AI adoption, with judgment</p>
-          <h3>The model is only one piece of the system.</h3>
-          <p>
-            I help teams understand where LLMs are genuinely useful, where they are not, and how to
-            fit them into real development workflows without losing sight of security, privacy, or
-            the people doing the work.
-          </p>
-          <p>
-            The field changes daily. I find that energising. Every project is a chance to learn,
-            test an assumption, and build something more capable than what came before.
-          </p>
-          <a class="button" href="#contact">Talk engineering <span>↘</span></a>
-        </article>
-      </div>
+      <figure class="editorial-visual">
+        <img
+          src="/images/human-ai-adoption.png"
+          width="1050"
+          height="528"
+          alt="An engineer fitting a bright piece into a larger system."
+          loading="lazy"
+        />
+      </figure>
     </section>
 
-    <section id="notes" class="intro">
-      <p class="eyebrow">What I bring</p>
-      <h2>What I can do for you</h2>
-      <div class="cards">
-        @for (card of offerings; track card.title) {
-          <article class="card {{ card.tone }}">
-            <span aria-hidden="true">✦</span>
-            <h3>{{ card.title }}</h3>
-            <p>{{ card.body }}</p>
+    <section id="practice" class="practice">
+      <div class="section-heading">
+        <p class="eyebrow">{{ content.practice.eyebrow }}</p>
+        <h2>{{ content.practice.title }}</h2>
+      </div>
+      <div class="practice__items">
+        @for (item of content.practice.items; track item.title; let index = $index) {
+          <article class="practice-card {{ item.tone }}">
+            <span class="practice-card__index" aria-hidden="true">0{{ index + 1 }}</span>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.body }}</p>
           </article>
         }
       </div>
     </section>
 
-    <section>
-      <p class="eyebrow">Knowledge shared</p>
-      <h2>What I can teach you</h2>
-      <div class="cards">
-        @for (card of teachings; track card.title) {
-          <article class="card {{ card.tone }}">
-            <span aria-hidden="true">⌁</span>
-            <h3>{{ card.title }}</h3>
-            <p>{{ card.body }}</p>
-          </article>
+    <section id="leadership" class="leadership">
+      <figure class="editorial-visual">
+        <img
+          src="/images/building-systems.png"
+          width="876"
+          height="456"
+          alt="An engineer moving upward through stages of a system."
+          loading="lazy"
+        />
+      </figure>
+      <div class="section-copy">
+        <p class="eyebrow">{{ content.leadership.eyebrow }}</p>
+        <h2>{{ content.leadership.title }}</h2>
+        @for (paragraph of content.leadership.paragraphs; track paragraph) {
+          <p>{{ paragraph }}</p>
         }
       </div>
     </section>
 
-    <section class="cannot">
-      <p class="eyebrow">What stays yours</p>
-      <h2>What I cannot teach you</h2>
-      <p>
-        Taste by prescription. I can share patterns, questions, and hard-won lessons, but judgment
-        comes from paying attention, making choices, and being willing to own them.
-      </p>
-    </section>
-
-    <section id="about" class="about">
-      <div class="about__heading">
-        <p class="eyebrow">Beyond code</p>
-        <h2>My attention refuses to stay in one genre.</h2>
+    <section id="beyond" class="beyond">
+      <div class="beyond__intro">
+        <p class="eyebrow">{{ content.beyond.eyebrow }}</p>
+        <h2>{{ content.beyond.title }}</h2>
+        <p>{{ content.beyond.body }}</p>
       </div>
-      <div class="about__grid">
-        <article>
-          <h3>Always listening</h3>
-          <p>
-            My playlists run from Pink Floyd to Madonna, Carnatic music to Chopin. I love the
-            architecture of a raga, the nerve of a pop chorus, and a guitar line that takes its time.
-          </p>
-        </article>
-        <article>
-          <h3>Always reading</h3>
-          <p>
-            I return to John Donne’s <em>Meditations</em> and Charlotte Brontë for language that
-            thinks and feels at full volume.
-          </p>
-        </article>
-        <article>
-          <h3>Always writing</h3>
-          <p>
-            I’m a proud NYFA alum, and I write poems and scripts because some ideas need characters,
-            rhythm, and a scene—not a sprint ticket.
-          </p>
-        </article>
-      </div>
-    </section>
-
-    <section>
-      <p class="eyebrow">Things I keep saying</p>
-      <h2>Shwetha-isms</h2>
-      <div class="isms">
-        @for (item of aphorisms; track item) {
-          <blockquote>“{{ item }}”</blockquote>
-        }
-      </div>
-    </section>
-
-    <section class="poetry">
-      <p class="eyebrow">When code is not the language</p>
-      <h2>A few poems from the margins.</h2>
-      <div class="poems">
-        @for (poem of poems; track poem.title) {
-          <article>
-            <h3>{{ poem.title }}</h3>
-            @for (line of poem.lines; track line) {
-              <p>{{ line }}</p>
-            }
+      <div class="beyond__influences">
+        @for (influence of content.beyond.influences; track influence.source; let index = $index) {
+          <article class="influence influence--{{ influence.tone }}">
+            <span class="influence__number" aria-hidden="true">0{{ index + 1 }}</span>
+            <p class="influence__source">{{ influence.source }}</p>
+            <div class="influence__copy">
+              <h3>{{ influence.title }}</h3>
+              <p>{{ influence.reflection }}</p>
+            </div>
           </article>
         }
       </div>
     </section>
 
     <section id="contact" class="contact">
-      <p class="eyebrow">Let’s talk</p>
-      <h2>Have an idea worth building?</h2>
-      <p>Tell me what you’re imagining, what is not working, or what could be possible.</p>
-      <a class="button" href="mailto:hello@shwetha.studio">Start a conversation <span>↗</span></a>
+      <p class="eyebrow">{{ content.contact.eyebrow }}</p>
+      <h2>{{ content.contact.title }}</h2>
+      <p>{{ content.contact.body }}</p>
+      <a class="button" [href]="'mailto:' + content.contact.email">Email Shwetha <span>↗</span></a>
     </section>
   </main>
 
-  <footer>Designed and built by Shwetha. <span>© Shwetha</span></footer>
+  <footer><span>Principal engineering, product judgment, ambitious systems.</span><span>© Shwetha</span></footer>
 </div>
