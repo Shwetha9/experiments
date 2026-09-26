@@ -3,8 +3,8 @@ import { LandingContent } from '../models/portfolio-content';
 export const landingContent: LandingContent = {
   hero: {
     eyebrow: 'Principal Engineer · Product thinker · AI systems builder',
-    title: 'Some ideas stopped being impossible while we were busy planning them.',
-    body: 'Product thinking, AI architecture, security guardrails, and engineering teams belong in the same conversation. That is how ambitious ideas become dependable systems.',
+    title: 'I build ambitious web systems—and help teams grow into them.',
+    body: 'Some ideas stopped being impossible while we were busy planning them. Product thinking, AI architecture, security guardrails, and engineering teams belong in the same conversation. That is how ambitious ideas become dependable systems.',
   },
   possibility: {
     eyebrow: 'What changed',

@@ -23,7 +23,8 @@ test('separates focused landing content from the writing archive', () => {
   const archiveContent = readFileSync(archiveContentUrl, 'utf8');
 
   assert.match(models, /export interface LandingContent/);
-  assert.match(landingContent, /Some ideas stopped being impossible/);
+  assert.match(landingContent, /title: 'I build ambitious web systems—and help teams grow into them\.'/);
+  assert.match(landingContent, /body: 'Some ideas stopped being impossible while we were busy planning them\./);
   assert.match(landingContent, /The brief changed\. Engineering discipline did not\./);
   assert.doesNotMatch(landingContent, /poem|poetry|Shwetha-isms/i);
   assert.match(archiveContent, /A comma can change the entire mood/);
