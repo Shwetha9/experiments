@@ -1,20 +1,20 @@
-import { Injectable } from '@angular/core';
-import { Observable, delay, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { CHAT_ENDPOINT, PROVIDER_FAILURE_REPLY } from '@shwetha/growing-human-contracts';
+import { Observable, catchError, of } from 'rxjs';
 import { ChatReply, ChatRequest } from '../models/growing-human';
 
-const PREVIEW_REPLY: ChatReply = {
-  kind: 'preview',
-  text: 'Thank you for asking. Growing Human is still being built, so I’m not able to answer yet. The guide is only switched on after every safety check has been reviewed.',
-  action: 'In the meantime, a trusted adult is a great person to explore this question with.',
-};
-
 /**
- * Phase 1 offline preview. It never calls a model and never pretends to answer.
- * Phase 2 swaps the body for a call to the NestJS BFF with the same signature.
+ * Sends the chat to the NestJS BFF. The BFF owns every safety decision; any error
+ * (including a 429 from rate limiting) becomes the signed-off provider-failure reply.
  */
 @Injectable({ providedIn: 'root' })
 export class GrowingHumanChatService {
-  reply(_request: ChatRequest): Observable<ChatReply> {
-    return of(PREVIEW_REPLY).pipe(delay(600));
+  private readonly http = inject(HttpClient);
+
+  reply(request: ChatRequest): Observable<ChatReply> {
+    return this.http
+      .post<ChatReply>(CHAT_ENDPOINT, request)
+      .pipe(catchError(() => of(PROVIDER_FAILURE_REPLY)));
   }
 }

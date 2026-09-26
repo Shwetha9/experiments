@@ -1,8 +1,14 @@
-export type AgeBand = '7-10' | '11-13' | '14-16';
+import type { AgeBand, ChatLimits, TopicLaneId } from '@shwetha/growing-human-contracts';
 
-export type TopicLaneId = 'feelings' | 'krishna-arjuna' | 'life-skills' | 'anything';
-
-export type ChatRole = 'child' | 'guide';
+export type {
+  AgeBand,
+  ChatMessage,
+  ChatReply,
+  ChatReplyKind,
+  ChatRequest,
+  ChatRole,
+  TopicLaneId,
+} from '@shwetha/growing-human-contracts';
 
 export interface AgeBandOption {
   readonly id: AgeBand;
@@ -15,26 +21,6 @@ export interface TopicLane {
   readonly title: string;
   readonly hint: string;
   readonly starters: readonly string[];
-}
-
-export interface ChatMessage {
-  readonly role: ChatRole;
-  readonly text: string;
-}
-
-/** Wire contract shared with the Phase 2 BFF. Limits are enforced client- and server-side. */
-export interface ChatRequest {
-  readonly ageBand: AgeBand;
-  readonly lane: TopicLaneId;
-  readonly messages: readonly ChatMessage[];
-}
-
-export type ChatReplyKind = 'answer' | 'preview' | 'crisis' | 'refusal' | 'failure';
-
-export interface ChatReply {
-  readonly kind: ChatReplyKind;
-  readonly text: string;
-  readonly action?: string;
 }
 
 export interface GrowingHumanContent {
@@ -55,8 +41,5 @@ export interface GrowingHumanContent {
     readonly privacy: string;
     readonly notCounsellor: string;
   };
-  readonly limits: {
-    readonly maxMessageLength: number;
-    readonly maxContextMessages: number;
-  };
+  readonly limits: ChatLimits;
 }

@@ -1,0 +1,42 @@
+<header class="about__bar">
+  <p class="about__brand">Growing Human</p>
+  <nav class="about__nav" aria-label="Growing Human">
+    <a routerLink="/growing-human">Open Growing Human</a>
+    <a routerLink="/">Back to Shwetha</a>
+  </nav>
+</header>
+
+<main class="about__main">
+  <article class="about__article" aria-labelledby="about-title">
+    <header>
+      <p class="about__kicker">{{ content.kicker }}</p>
+      <h1 id="about-title" class="about__title">{{ content.title }}</h1>
+      <p class="about__intro">{{ content.intro }}</p>
+    </header>
+
+    @for (section of content.sections; track section.heading) {
+      <section class="about__section">
+        <h2>{{ section.heading }}</h2>
+        <ul>
+          @for (point of section.points; track point) {
+            <li>{{ point }}</li>
+          }
+        </ul>
+      </section>
+    }
+
+    <aside class="about__helplines" aria-labelledby="about-helplines">
+      <h2 id="about-helplines">{{ content.helplinesHeading }}</h2>
+      <dl>
+        @for (helpline of content.helplines; track helpline.label) {
+          <dt>{{ helpline.label }}</dt>
+          <dd>{{ helpline.detail }}</dd>
+        }
+      </dl>
+    </aside>
+
+    <footer>
+      <p class="about__status">{{ content.status }}</p>
+    </footer>
+  </article>
+</main>

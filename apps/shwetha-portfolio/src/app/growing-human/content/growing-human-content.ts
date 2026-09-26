@@ -1,3 +1,4 @@
+import { CHAT_LIMITS } from '@shwetha/growing-human-contracts';
 import { GrowingHumanContent } from '../models/growing-human';
 
 export const growingHumanContent: GrowingHumanContent = {
@@ -55,8 +56,5 @@ export const growingHumanContent: GrowingHumanContent = {
     notCounsellor:
       'Growing Human is an AI, not a counsellor. If you feel unsafe, talk to a trusted adult now.',
   },
-  limits: {
-    maxMessageLength: 500,
-    maxContextMessages: 12,
-  },
+  limits: CHAT_LIMITS,
 };

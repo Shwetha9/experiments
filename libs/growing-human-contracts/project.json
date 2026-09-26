@@ -1,0 +1,9 @@
+{
+  "name": "growing-human-contracts",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/growing-human-contracts/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project growing-human-contracts --web",
+  "targets": {}
+}

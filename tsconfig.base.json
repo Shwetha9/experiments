@@ -12,7 +12,9 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
-    "paths": {},
+    "paths": {
+      "@shwetha/growing-human-contracts": ["./libs/growing-human-contracts/src/index.ts"]
+    },
     "rootDir": "."
   },
   "angularCompilerOptions": {

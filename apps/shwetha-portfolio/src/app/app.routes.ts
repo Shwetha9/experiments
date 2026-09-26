@@ -16,5 +16,10 @@ export const routes: Routes = [
     title: 'Growing Human',
     loadComponent: () => import('./growing-human/growing-human').then((m) => m.GrowingHumanPage),
   },
+  {
+    path: 'growing-human/about',
+    title: 'About this experiment · Growing Human',
+    loadComponent: () => import('./growing-human/about/about').then((m) => m.GrowingHumanAboutPage),
+  },
   { path: '**', redirectTo: '' },
 ];
