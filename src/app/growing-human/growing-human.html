@@ -1,0 +1,142 @@
+<header class="growing-human__bar">
+  <p class="growing-human__brand">
+    <span class="growing-human__leaf" aria-hidden="true"></span>{{ content.brand }}
+  </p>
+  <nav class="growing-human__nav" aria-label="Growing Human">
+    @if (ageBand()) {
+      <span class="growing-human__age">{{ ageLabel() }}</span>
+      <button type="button" class="growing-human__reset" (click)="startOver()">Start over</button>
+    }
+    <a routerLink="/">Back to Shwetha</a>
+  </nav>
+</header>
+
+<main class="growing-human__main">
+  @switch (step()) {
+    @case ('age') {
+      <section class="growing-human__step" aria-labelledby="age-title">
+        <p class="growing-human__kicker">{{ content.ageStep.kicker }}</p>
+        <h1 id="age-title" class="growing-human__title" tabindex="-1" #stepHeading>
+          {{ content.ageStep.title }}
+        </h1>
+        <p class="growing-human__copy">{{ content.ageStep.body }}</p>
+        <fieldset class="growing-human__ages">
+          <legend class="growing-human__visually-hidden">Choose your age group</legend>
+          <ul>
+            @for (option of content.ageStep.options; track option.id) {
+              <li>
+                <button type="button" class="growing-human__option" (click)="selectAge(option.id)">
+                  <strong>{{ option.label }}</strong>
+                  <span>{{ option.hint }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        </fieldset>
+        <p class="growing-human__notice">{{ content.notices.privacy }}</p>
+      </section>
+    }
+
+    @default {
+      <section class="growing-human__step" aria-labelledby="lane-title">
+        @if (step() === 'lane') {
+          <p class="growing-human__kicker">{{ content.laneStep.kicker }}</p>
+          <h1 id="lane-title" class="growing-human__title" tabindex="-1" #stepHeading>
+            {{ content.laneStep.title }}
+          </h1>
+          <p class="growing-human__copy">{{ content.laneStep.body }}</p>
+        } @else {
+          <h1 id="lane-title" class="growing-human__kicker" tabindex="-1" #stepHeading>
+            {{ lane()?.title }}
+          </h1>
+        }
+
+        <fieldset
+          class="growing-human__lanes"
+          [class.growing-human__lanes--compact]="step() === 'chat'"
+        >
+          <legend class="growing-human__visually-hidden">Choose a place to begin</legend>
+          <ul>
+            @for (topic of content.laneStep.lanes; track topic.id) {
+              <li>
+                <button
+                  type="button"
+                  class="growing-human__lane"
+                  [attr.aria-pressed]="laneId() === topic.id"
+                  (click)="selectLane(topic.id)"
+                >
+                  <strong>{{ topic.title }}</strong>
+                  @if (step() === 'lane') {
+                    <span>{{ topic.hint }}</span>
+                  }
+                </button>
+              </li>
+            }
+          </ul>
+        </fieldset>
+
+        @if (step() === 'lane' && lane()?.starters?.length) {
+          <ul class="growing-human__starters" aria-label="Starter questions">
+            @for (starter of lane()?.starters; track starter) {
+              <li>
+                <button type="button" class="growing-human__starter" (click)="useStarter(starter)">
+                  {{ starter }}
+                </button>
+              </li>
+            }
+          </ul>
+        }
+
+        @if (step() === 'chat') {
+          <ol class="growing-human__thread" role="log" aria-label="Conversation">
+            @for (entry of thread(); track $index) {
+              <li class="growing-human__message growing-human__message--{{ entry.message.role }}">
+                <span class="growing-human__visually-hidden">
+                  {{ entry.message.role === 'child' ? 'You said:' : 'Growing Human said:' }}
+                </span>
+                <p>{{ entry.message.text }}</p>
+                @if (entry.action) {
+                  <p class="growing-human__action"><strong>Try this:</strong> {{ entry.action }}</p>
+                }
+              </li>
+            }
+          </ol>
+        }
+
+        <p class="growing-human__thinking" role="status" aria-live="polite">
+          @if (isThinking()) {
+            Thinking…
+          }
+        </p>
+
+        <form class="growing-human__composer" (submit)="send($event)">
+          <label for="growing-human-message" class="growing-human__visually-hidden"
+            >Your message</label
+          >
+          <textarea
+            id="growing-human-message"
+            #composer
+            rows="2"
+            [attr.maxlength]="content.limits.maxMessageLength"
+            [value]="draft()"
+            [placeholder]="
+              step() === 'chat' ? 'Ask a follow-up…' : 'What would you like to talk about?'
+            "
+            (input)="updateDraft($event)"
+            (keydown)="handleComposerKeydown($event)"
+          ></textarea>
+          <button
+            type="submit"
+            class="growing-human__send"
+            [disabled]="!canSend()"
+            aria-label="Send message"
+          >
+            <span aria-hidden="true">↑</span>
+          </button>
+        </form>
+
+        <p class="growing-human__notice">{{ content.notices.notCounsellor }}</p>
+      </section>
+    }
+  }
+</main>

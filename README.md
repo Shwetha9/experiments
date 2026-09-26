@@ -36,6 +36,21 @@ ng build
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
+## Quotes API
+
+The `/quotes` route uses API Ninjas’ Quotes API. Add your browser-side key to
+`src/app/quotes/config.ts` locally before testing live requests:
+
+```ts
+export const quoteApiConfig: QuoteApiConfig = {
+  baseUrl: 'https://api.api-ninjas.com/v2',
+  apiKey: 'your-key-here',
+};
+```
+
+Never commit a real key. A static Angular deployment exposes browser-sent keys;
+use a same-origin proxy or serverless function before public production use.
+
 ## Running unit tests
 
 To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:

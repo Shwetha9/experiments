@@ -1,21 +1,23 @@
 import { TestBed } from '@angular/core/testing';
-import { App } from './app';
+import { provideRouter } from '@angular/router';
+import { LandingPage } from './landing';
 
-describe('App', () => {
+describe('LandingPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [LandingPage],
+      providers: [provideRouter([])],
     }).compileComponents();
   });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(App);
+    const fixture = TestBed.createComponent(LandingPage);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
 
   it('renders the portfolio sections and email invitation', () => {
-    const fixture = TestBed.createComponent(App);
+    const fixture = TestBed.createComponent(LandingPage);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain('I build ambitious web systems');
@@ -24,10 +26,12 @@ describe('App', () => {
   });
 
   it('renders three purposeful editorial illustrations', () => {
-    const fixture = TestBed.createComponent(App);
+    const fixture = TestBed.createComponent(LandingPage);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    const illustrations = compiled.querySelectorAll<HTMLImageElement>('[data-editorial-illustration]');
+    const illustrations = compiled.querySelectorAll<HTMLImageElement>(
+      '[data-editorial-illustration]',
+    );
 
     expect(illustrations).toHaveSize(3);
     expect(illustrations[0].alt).toContain('Shwetha');

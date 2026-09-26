@@ -1,0 +1,147 @@
+<div class="quotes-page">
+  <header class="quotes-header">
+    <a class="quotes-header__brand" routerLink="/">Shwetha<span aria-hidden="true"></span></a>
+    <nav aria-label="Quotes navigation">
+      <a routerLink="/">Portfolio</a>
+      <a href="#daily">Daily</a>
+      <a href="#anchors">Anchors</a>
+      <a href="#browse">Browse</a>
+    </nav>
+    <button
+      type="button"
+      class="quotes-header__theme"
+      (click)="toggleTheme()"
+      [attr.aria-pressed]="isDark()"
+      [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+    >
+      <span aria-hidden="true">{{ isDark() ? '☀' : '☾' }}</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="quotes-hero">
+      <p class="eyebrow">A small room for useful sentences</p>
+      <h1>Quotes worth carrying<br /><em>into the work.</em></h1>
+      <p>One daily signal, three personal anchors, and a live archive for the days when the right sentence changes the shape of a problem.</p>
+    </section>
+
+    <section id="daily" class="daily-quote" aria-labelledby="daily-title">
+      <div class="section-label">
+        <span>01</span>
+        <p class="eyebrow">From API Ninjas</p>
+      </div>
+      <div class="quote-panel">
+        <h2 id="daily-title">Quote of the day</h2>
+        @if (dailyState() === 'loading') {
+          <p class="quote-status" aria-live="polite">Finding today’s sentence…</p>
+        } @else if (dailyQuote(); as quote) {
+          <blockquote>“{{ quote.text }}”</blockquote>
+          <p class="quote-attribution">{{ quote.author }}{{ quote.work ? ' · ' + quote.work : '' }}</p>
+          <div class="quote-tags">
+            @for (category of quote.categories; track category) {
+              <span>{{ category }}</span>
+            }
+          </div>
+        } @else {
+          <p class="quote-status" aria-live="polite">{{ errorMessage(dailyState()) }}</p>
+        }
+      </div>
+    </section>
+
+    <section id="anchors" class="anchors" aria-labelledby="anchors-title">
+      <div class="section-heading">
+        <p class="eyebrow">Three ideas I return to</p>
+        <h2 id="anchors-title">The people and sentences that keep the work human.</h2>
+      </div>
+      <div class="anchors__list">
+        @for (anchor of anchors; track anchor.source; let index = $index) {
+          <article class="anchor-row anchor-row--{{ anchor.tone }}">
+            <span class="anchor-row__number" aria-hidden="true">0{{ index + 1 }}</span>
+            <div>
+              <p class="eyebrow">{{ anchor.source }}</p>
+              <blockquote>“{{ anchor.quote }}”</blockquote>
+              <h3>{{ anchor.title }}</h3>
+              <button type="button" class="text-link" (click)="openAnchor(anchor)">Read full passage <span aria-hidden="true">↗</span></button>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section id="browse" class="browse" aria-labelledby="browse-title">
+      <div class="section-heading">
+        <p class="eyebrow">A live archive</p>
+        <h2 id="browse-title">Browse by category.</h2>
+        <p>Pull a fresh thought from the category that matches the shape of the day.</p>
+      </div>
+      <div class="category-controls" aria-label="Quote categories">
+        @for (category of categories; track category) {
+          <button type="button" [attr.aria-pressed]="selectedCategory() === category" (click)="selectCategory(category)">{{ category }}</button>
+        }
+      </div>
+      <div class="browse__result" aria-live="polite">
+        @if (categoryState() === 'loading') {
+          <p class="quote-status">Finding something for {{ selectedCategory() }}…</p>
+        } @else if (categoryQuote(); as quote) {
+          <blockquote>“{{ quote.text }}”</blockquote>
+          <p class="quote-attribution">{{ quote.author }}{{ quote.work ? ' · ' + quote.work : '' }}</p>
+        } @else {
+          <p class="quote-status">{{ errorMessage(categoryState()) }}</p>
+        }
+      </div>
+      <div class="browse__actions">
+        <button type="button" class="button" (click)="refreshQuote()">Refresh quote <span aria-hidden="true">↻</span></button>
+        <button type="button" class="text-link" (click)="browseCategory()">Browse deterministic results <span aria-hidden="true">↗</span></button>
+      </div>
+      @if (browseState() === 'success') {
+        @if (browseQuote(); as quote) {
+          <article class="browse__deterministic">
+            <p class="eyebrow">From the deterministic archive</p>
+            <blockquote>“{{ quote.text }}”</blockquote>
+            <p class="quote-attribution">{{ quote.author }}</p>
+          </article>
+        }
+      } @else if (browseState() !== 'idle' && browseState() !== 'loading') {
+        <p class="quote-status">{{ errorMessage(browseState()) }}</p>
+      }
+    </section>
+
+    <section class="authors" aria-labelledby="authors-title">
+      <div class="section-heading">
+        <p class="eyebrow">A catalogue of voices</p>
+        <h2 id="authors-title">Authors worth wandering through.</h2>
+        <p>The provider’s author catalogue is optional. The rest of this page does not depend on it.</p>
+      </div>
+      @if (!authorsRequested()) {
+        <button type="button" class="button" (click)="showAuthors()">Explore authors <span aria-hidden="true">↗</span></button>
+      } @else if (authorState() === 'loading') {
+        <p class="quote-status" aria-live="polite">Opening the catalogue…</p>
+      } @else if (authors().length > 0) {
+        <div class="author-list">
+          @for (author of authors(); track author) {
+            <span>{{ author }}</span>
+          }
+        </div>
+      } @else {
+        <p class="quote-status" aria-live="polite">{{ errorMessage(authorState()) }}</p>
+      }
+    </section>
+  </main>
+
+  <dialog #anchorDialog class="quote-dialog" aria-labelledby="anchor-dialog-title" (cancel)="closeAnchor()" (click)="handleDialogClick($event)">
+    @if (selectedAnchor(); as anchor) {
+      <article class="quote-dialog__inner">
+        <button type="button" class="quote-dialog__close" aria-label="Close passage" (click)="closeAnchor()">×</button>
+        <p class="eyebrow">{{ anchor.source }}</p>
+        <h2 id="anchor-dialog-title">{{ anchor.title }}</h2>
+        <blockquote>“{{ anchor.fullQuote }}”</blockquote>
+        <p>{{ anchor.reflection }}</p>
+      </article>
+    }
+  </dialog>
+
+  <footer>
+    <span>Keep the useful sentence.</span>
+    <a routerLink="/">Back to the portfolio ↗</a>
+  </footer>
+</div>
