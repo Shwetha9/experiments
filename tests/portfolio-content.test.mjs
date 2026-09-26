@@ -2,17 +2,17 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 
-const template = readFileSync(new URL('../src/app/landing/landing.html', import.meta.url), 'utf8');
-const component = readFileSync(new URL('../src/app/landing/landing.ts', import.meta.url), 'utf8');
-const documentTemplate = readFileSync(new URL('../src/index.html', import.meta.url), 'utf8');
-const styles = readFileSync(new URL('../src/app/landing/landing.scss', import.meta.url), 'utf8');
-const globalStyles = readFileSync(new URL('../src/styles.scss', import.meta.url), 'utf8');
+const template = readFileSync(new URL('../apps/shwetha-portfolio/src/app/landing/landing.html', import.meta.url), 'utf8');
+const component = readFileSync(new URL('../apps/shwetha-portfolio/src/app/landing/landing.ts', import.meta.url), 'utf8');
+const documentTemplate = readFileSync(new URL('../apps/shwetha-portfolio/src/index.html', import.meta.url), 'utf8');
+const styles = readFileSync(new URL('../apps/shwetha-portfolio/src/app/landing/landing.scss', import.meta.url), 'utf8');
+const globalStyles = readFileSync(new URL('../apps/shwetha-portfolio/src/styles.scss', import.meta.url), 'utf8');
 const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
-const modelsUrl = new URL('../src/app/models/portfolio-content.ts', import.meta.url);
-const landingContentUrl = new URL('../src/app/content/landing-content.ts', import.meta.url);
-const archiveContentUrl = new URL('../src/app/content/archive-content.ts', import.meta.url);
-const themeServiceUrl = new URL('../src/app/services/theme.service.ts', import.meta.url);
+const modelsUrl = new URL('../apps/shwetha-portfolio/src/app/models/portfolio-content.ts', import.meta.url);
+const landingContentUrl = new URL('../apps/shwetha-portfolio/src/app/content/landing-content.ts', import.meta.url);
+const archiveContentUrl = new URL('../apps/shwetha-portfolio/src/app/content/archive-content.ts', import.meta.url);
+const themeServiceUrl = new URL('../apps/shwetha-portfolio/src/app/services/theme.service.ts', import.meta.url);
 
 test('separates focused landing content from the writing archive', () => {
   assert.equal(existsSync(modelsUrl), true);
@@ -137,17 +137,17 @@ test('keeps editorial visuals below their source resolution', () => {
 });
 
 test('routes to a privacy-first Growing Human preview that never fakes an AI answer', () => {
-  const routes = readFileSync(new URL('../src/app/app.routes.ts', import.meta.url), 'utf8');
+  const routes = readFileSync(new URL('../apps/shwetha-portfolio/src/app/app.routes.ts', import.meta.url), 'utf8');
   const page = readFileSync(
-    new URL('../src/app/growing-human/growing-human.ts', import.meta.url),
+    new URL('../apps/shwetha-portfolio/src/app/growing-human/growing-human.ts', import.meta.url),
     'utf8',
   );
   const service = readFileSync(
-    new URL('../src/app/growing-human/services/growing-human-chat.service.ts', import.meta.url),
+    new URL('../apps/shwetha-portfolio/src/app/growing-human/services/growing-human-chat.service.ts', import.meta.url),
     'utf8',
   );
   const content = readFileSync(
-    new URL('../src/app/growing-human/content/growing-human-content.ts', import.meta.url),
+    new URL('../apps/shwetha-portfolio/src/app/growing-human/content/growing-human-content.ts', import.meta.url),
     'utf8',
   );
 
@@ -161,7 +161,7 @@ test('routes to a privacy-first Growing Human preview that never fakes an AI ans
 });
 
 test('uses the coral broken-circle brand mark as the favicon', () => {
-  const faviconUrl = new URL('../public/favicon.svg', import.meta.url);
+  const faviconUrl = new URL('../apps/shwetha-portfolio/public/favicon.svg', import.meta.url);
 
   assert.match(documentTemplate, /type="image\/svg\+xml" href="favicon\.svg"/);
   assert.equal(existsSync(faviconUrl), true);

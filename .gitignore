@@ -42,3 +42,9 @@ testem.log
 Thumbs.db
 /.worktrees/
 /.superpowers/
+
+
+
+.nx/cache
+.nx/workspace-data
+.nx/migrate-runs
