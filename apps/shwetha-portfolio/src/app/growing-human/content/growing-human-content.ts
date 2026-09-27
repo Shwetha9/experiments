@@ -4,7 +4,10 @@ import { GrowingHumanContent } from '../models/growing-human';
 export const growingHumanContent: GrowingHumanContent = {
   brand: 'Growing Human',
   ageStep: {
-    kicker: 'Help me speak your language',
+    introTitle: 'A quiet place for big questions.',
+    introBody:
+      'Bring your curiosity about feelings, friendships, choices, or whatever is on your mind. We can take it one small thought at a time.',
+    kicker: 'First, help me speak your language',
     title: 'Which age group feels right?',
     body: 'No birthday, name or account. This only changes how answers are explained.',
     options: [

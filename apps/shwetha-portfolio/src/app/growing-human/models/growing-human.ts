@@ -26,6 +26,8 @@ export interface TopicLane {
 export interface GrowingHumanContent {
   readonly brand: string;
   readonly ageStep: {
+    readonly introTitle: string;
+    readonly introBody: string;
     readonly kicker: string;
     readonly title: string;
     readonly body: string;

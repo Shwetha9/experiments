@@ -15,25 +15,45 @@
 <main class="growing-human__main">
   @switch (step()) {
     @case ('age') {
-      <section class="growing-human__step" aria-labelledby="age-title">
-        <p class="growing-human__kicker">{{ content.ageStep.kicker }}</p>
-        <h1 id="age-title" class="growing-human__title" tabindex="-1" #stepHeading>
-          {{ content.ageStep.title }}
-        </h1>
-        <p class="growing-human__copy">{{ content.ageStep.body }}</p>
-        <fieldset class="growing-human__ages">
-          <legend class="growing-human__visually-hidden">Choose your age group</legend>
-          <ul>
-            @for (option of content.ageStep.options; track option.id) {
-              <li>
-                <button type="button" class="growing-human__option" (click)="selectAge(option.id)">
-                  <strong>{{ option.label }}</strong>
-                  <span>{{ option.hint }}</span>
-                </button>
-              </li>
-            }
-          </ul>
-        </fieldset>
+      <section class="growing-human__step growing-human__step--age" aria-labelledby="age-title">
+        <div class="growing-human__welcome">
+          <div class="growing-human__welcome-copy">
+            <p class="growing-human__kicker">Growing Human</p>
+            <h1 id="age-title" class="growing-human__title" tabindex="-1" #stepHeading>
+              {{ content.ageStep.introTitle }}
+            </h1>
+            <p class="growing-human__copy">{{ content.ageStep.introBody }}</p>
+          </div>
+          <img
+            class="growing-human__welcome-art"
+            src="/images/growing-human-welcome.svg"
+            alt=""
+            aria-hidden="true"
+          />
+        </div>
+
+        <div class="growing-human__age-picker">
+          <p class="growing-human__kicker">{{ content.ageStep.kicker }}</p>
+          <h2 class="growing-human__age-title">{{ content.ageStep.title }}</h2>
+          <p class="growing-human__copy">{{ content.ageStep.body }}</p>
+          <fieldset class="growing-human__ages">
+            <legend class="growing-human__visually-hidden">Choose your age group</legend>
+            <ul>
+              @for (option of content.ageStep.options; track option.id) {
+                <li>
+                  <button
+                    type="button"
+                    class="growing-human__option"
+                    (click)="selectAge(option.id)"
+                  >
+                    <strong>{{ option.label }}</strong>
+                    <span>{{ option.hint }}</span>
+                  </button>
+                </li>
+              }
+            </ul>
+          </fieldset>
+        </div>
         <p class="growing-human__notice">{{ content.notices.privacy }}</p>
       </section>
     }

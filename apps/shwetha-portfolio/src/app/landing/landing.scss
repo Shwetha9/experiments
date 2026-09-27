@@ -328,6 +328,7 @@ h2 em {
   color: var(--card-text);
   gap: clamp(45px, 7vw, 110px);
   grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+  padding-bottom: clamp(64px, 5vw, 88px);
 }
 .motif--leadership-left {
   left: 18%;
@@ -364,6 +365,7 @@ h2 em {
 .beyond {
   background: var(--beyond-bg);
   color: var(--beyond-text);
+  padding-top: clamp(64px, 5vw, 88px);
 }
 .motif--beyond-left {
   left: 23%;

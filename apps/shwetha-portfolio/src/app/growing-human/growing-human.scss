@@ -80,13 +80,33 @@ textarea {
 
 .growing-human__main {
   margin: 0 auto;
-  max-width: 760px;
-  padding: clamp(48px, 8vw, 96px) 6% 64px;
+  max-width: 860px;
+  padding: clamp(48px, 7vw, 96px) 6% 64px;
 }
 
 .growing-human__step {
   display: grid;
   gap: 18px;
+}
+
+.growing-human__welcome {
+  min-height: 188px;
+  padding: 4px 190px 12px 0;
+  position: relative;
+}
+
+.growing-human__welcome-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.growing-human__welcome-art {
+  opacity: 0.42;
+  pointer-events: none;
+  position: absolute;
+  right: -42px;
+  top: -30px;
+  width: 260px;
 }
 
 .growing-human__kicker {
@@ -101,9 +121,22 @@ textarea {
 
 .growing-human__title {
   font:
-    600 clamp(40px, 6vw, 64px)/1.02 Georgia,
+    600 clamp(40px, 6vw, 64px) / 1.02 Georgia,
     serif;
   letter-spacing: -0.035em;
+  margin: 0;
+}
+
+.growing-human__age-picker {
+  border-top: 1px solid rgb(189 193 243 / 18%);
+  padding-top: 26px;
+}
+
+.growing-human__age-title {
+  font:
+    600 clamp(30px, 4vw, 42px) / 1.05 Georgia,
+    serif;
+  letter-spacing: -0.03em;
   margin: 0;
 }
 
@@ -136,6 +169,12 @@ ol {
   display: grid;
   gap: 12px;
   margin-top: 12px;
+}
+
+@media (min-width: 760px) {
+  .growing-human__ages ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .growing-human__option,
@@ -334,5 +373,12 @@ ol {
   }
   .growing-human__message {
     max-width: 92%;
+  }
+  .growing-human__welcome {
+    min-height: 0;
+    padding: 0;
+  }
+  .growing-human__welcome-art {
+    display: none;
   }
 }

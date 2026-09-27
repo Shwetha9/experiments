@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" fill="none">
+  <defs>
+    <linearGradient id="petal" x1="86" y1="71" x2="396" y2="263" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EFACC3"/>
+      <stop offset="1" stop-color="#BDC1F3"/>
+    </linearGradient>
+    <linearGradient id="hill" x1="84" y1="146" x2="393" y2="292" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EFACC3" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#BDC1F3" stop-opacity=".07"/>
+    </linearGradient>
+  </defs>
+  <circle cx="241" cy="159" r="112" stroke="#BDC1F3" stroke-opacity=".34"/>
+  <circle cx="241" cy="159" r="81" stroke="#EFACC3" stroke-opacity=".26" stroke-dasharray="3 9"/>
+  <path d="M87 274c45-75 98-103 154-76 54 27 92 8 152-53v129H87v0Z" fill="url(#hill)"/>
+  <path d="M128 269c7-64 26-111 55-141" stroke="#EFACC3" stroke-width="2" stroke-linecap="round"/>
+  <path d="M160 187c-31-13-41-36-33-61 30 5 45 24 40 54" fill="url(#petal)" fill-opacity=".9"/>
+  <path d="M177 158c-7-30 7-50 33-61 15 25 7 47-22 61" fill="url(#petal)" fill-opacity=".72"/>
+  <path d="M169 222c-26-3-41 10-48 34 27 7 45-4 53-27" fill="url(#petal)" fill-opacity=".65"/>
+  <path d="M352 255c-1-52-19-91-52-119" stroke="#BDC1F3" stroke-width="2" stroke-linecap="round"/>
+  <path d="M322 177c3-25-10-41-32-50-11 22-3 39 22 49" fill="url(#petal)" fill-opacity=".72"/>
+  <path d="M337 213c24-9 38 1 46 22-22 10-39 3-50-16" fill="url(#petal)" fill-opacity=".9"/>
+  <path d="m244 93 4 10 10 4-10 4-4 10-4-10-10-4 10-4 4-10ZM301 68l2 6 6 2-6 2-2 6-2-6-6-2 6-2 2-6Z" fill="#FAF8FC"/>
+</svg>
