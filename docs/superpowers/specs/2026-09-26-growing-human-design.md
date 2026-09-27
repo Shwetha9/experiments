@@ -1,6 +1,6 @@
 # Growing Human — Design Spec
 
-**Status:** Phase 1 approved for build. Safety contract (§5) is a **DRAFT** — it must be reviewed line by line and signed off before any model is connected in Phase 2.
+**Status:** Phase 1 approved for build. Safety contract (§5) **signed off by Shwetha on 2026-09-27**. Launch is still gated by §5.6.
 
 **Source material:** brainstorm artefacts in `.superpowers/brainstorm/14623-1790412256/content/` (layout v2, palette, experience flow, architecture).
 
@@ -35,9 +35,9 @@ A safe, age-aware place inside Shwetha’s portfolio where young people can ask 
 - **Storage:** no transcript persistence, no raw message logging, API key held server-side only.
 - **Monorepo (Phase 2):** `apps/portfolio`, `apps/api`, `libs/growing-human-contracts`.
 
-## 5. Safety and content contract — DRAFT, NOT YET SIGNED OFF
+## 5. Safety and content contract — SIGNED OFF 2026-09-27
 
-> Phase 1 does not call any model, so nothing below is enforced yet. Each item needs explicit approval before Phase 2.
+> Shwetha approved §5.1–5.4 as written and answered every open question in §5.5. Phase 2 must enforce all of it. Nothing here is enforced until the BFF ships.
 
 ### 5.1 Input risk categories (Jev input decision)
 
@@ -60,7 +60,16 @@ A safe, age-aware place inside Shwetha’s portfolio where young people can ask 
 
 ### 5.3 Deterministic responses (fixed wording, reviewed by Shwetha)
 
-- **Crisis:** acknowledges the feeling, says clearly to talk to a trusted adult right now, and shows emergency and helpline guidance. **Helpline numbers are region-specific and must be supplied and verified by Shwetha — none are invented here.**
+- **Crisis (Australia):** acknowledges the feeling, says clearly to talk to a trusted adult right now, and shows the emergency and helpline guidance below. Shwetha supplied and verified these numbers; use the wording exactly:
+
+  > Need to talk to someone but don't want to speak out loud?
+  >
+  > - **Text Lifeline:** Send a text message to 0477 13 11 14 to chat with someone instantly.
+  > - **Use Kids Helpline Webchat:** Go to kidshelpline.com.au and click on "WebChat". You can type back and forth with a friendly counselor about anything making you feel sad, scared, or worried.
+  > - **Call for Free:** You can dial 1800 55 1800 on any phone. It is completely free and open 24 hours a day.
+  >
+  > 🚨 If you or a friend are in immediate danger, always call Triple Zero (000) straight away.
+
 - **Refusal:** “That’s not something I can help with here. If it’s on your mind, a trusted adult is a good person to talk to. Is there something else you’d like to explore?”
 - **Provider failure:** “I couldn’t think that one through just now. Please try again in a moment.”
 
@@ -68,12 +77,20 @@ A safe, age-aware place inside Shwetha’s portfolio where young people can ask 
 
 Release if safe and age-suitable; otherwise one controlled rewrite; if still unsafe, replace with a deterministic fallback. Output that reveals the system prompt or asks for personal data is always replaced.
 
-### 5.5 Open questions for sign-off
+### 5.5 Sign-off decisions
 
-1. Target region(s) for helplines and emergency numbers.
-2. Rate limits per session and per IP.
-3. Whether an adult-facing “About this experiment” page is required before launch.
-4. Evaluation set: who writes the red-team prompts and what pass rate is required.
+1. **Region:** Australia only. Helplines are listed in §5.3.
+2. **Rate limits:** 10 requests a minute and 60 an hour per IP (`@nestjs/throttler`). Over the limit, the app returns the provider-failure wording.
+3. **Adult page:** an adult-facing “About this experiment” page is **required before launch**.
+4. **Evaluation:** Shwetha writes the red-team prompts. The required pass rate is **100%** for `crisis` and `disallowed`, and **≥95%** overall.
+
+### 5.6 Launch gates (model stays off until all pass)
+
+- [x] Opening line of the crisis response — approved 2026-09-27 (`CRISIS_OPENING` in `libs/growing-human-contracts`):
+  > It sounds like you’re carrying something really heavy right now, and it took courage to say it. You deserve help from a real person. Please tell a trusted adult right now — a parent, carer, teacher or school counsellor.
+- [x] “About this experiment” page — shipped at `/growing-human/about`, linked “For adults” from the chat header; copy approved 2026-09-27.
+- [x] Red-team set expanded to 45 cases (≥10 per category) and approved 2026-09-27.
+- [ ] Red-team set passing at the §5.5 rates (`evaluateRedTeam`; currently fails by design — no model connected).
 
 ## 6. Phasing
 

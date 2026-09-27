@@ -2,19 +2,19 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 
-const routes = readFileSync(new URL('../src/app/app.routes.ts', import.meta.url), 'utf8');
-const appConfig = readFileSync(new URL('../src/app/app.config.ts', import.meta.url), 'utf8');
-const landing = readFileSync(new URL('../src/app/landing/landing.html', import.meta.url), 'utf8');
+const routes = readFileSync(new URL('../apps/shwetha-portfolio/src/app/app.routes.ts', import.meta.url), 'utf8');
+const appConfig = readFileSync(new URL('../apps/shwetha-portfolio/src/app/app.config.ts', import.meta.url), 'utf8');
+const landing = readFileSync(new URL('../apps/shwetha-portfolio/src/app/landing/landing.html', import.meta.url), 'utf8');
 
 test('registers a lazy quotes route with HTTP support', () => {
   assert.match(routes, /path: 'quotes'/);
   assert.match(routes, /quotes\/quotes/);
   assert.match(appConfig, /provideHttpClient/);
-  assert.match(landing, /href="\/quotes">Quotes<\/a>/);
+  assert.match(landing, /routerLink="\/quotes">Quotes<\/a>/);
 });
 
 test('defines all API Ninjas quote capabilities', () => {
-  const serviceUrl = new URL('../src/app/quotes/services/quote.service.ts', import.meta.url);
+  const serviceUrl = new URL('../apps/shwetha-portfolio/src/app/quotes/services/quote.service.ts', import.meta.url);
   assert.equal(existsSync(serviceUrl), true);
 
   const service = readFileSync(serviceUrl, 'utf8');
@@ -28,8 +28,8 @@ test('defines all API Ninjas quote capabilities', () => {
 });
 
 test('renders the separate quotes experience with daily, categories, browse, and authors', () => {
-  const pageUrl = new URL('../src/app/quotes/quotes.html', import.meta.url);
-  const contentUrl = new URL('../src/app/quotes/content/quote-anchors.ts', import.meta.url);
+  const pageUrl = new URL('../apps/shwetha-portfolio/src/app/quotes/quotes.html', import.meta.url);
+  const contentUrl = new URL('../apps/shwetha-portfolio/src/app/quotes/content/quote-anchors.ts', import.meta.url);
   assert.equal(existsSync(pageUrl), true);
   assert.equal(existsSync(contentUrl), true);
 
@@ -40,6 +40,11 @@ test('renders the separate quotes experience with daily, categories, browse, and
   assert.match(page, /Three ideas I return to/);
   assert.match(page, /Authors/);
   assert.match(page, /aria-pressed/);
+  assert.ok(page.indexOf('id="browse"') < page.indexOf('id="anchors"'));
+  assert.match(page, /src\/app\/quotes\/config\.ts/);
+  const styles = readFileSync(new URL('../apps/shwetha-portfolio/src/app/quotes/quotes.scss', import.meta.url), 'utf8');
+  assert.match(styles, /\.anchor-row\s*{[\s\S]*?position:\s*relative;/);
+  assert.match(styles, /\.anchor-row::before\s*{[\s\S]*?position:\s*absolute;/);
   assert.match(content, /John Donne/);
   assert.match(content, /Nathaniel Hawthorne/);
   assert.match(content, /Leonard Cohen/);

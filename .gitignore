@@ -42,3 +42,14 @@ testem.log
 Thumbs.db
 /.worktrees/
 /.superpowers/
+
+
+
+.nx/cache
+.nx/workspace-data
+.nx/migrate-runs
+# Local secrets (e.g. OPENROUTER_API_KEY) — never commit
+.env
+.env.*
+!.env.example
+.vercel
