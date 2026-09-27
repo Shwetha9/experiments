@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { InputSafetyCategory } from './safety-decision';
 
 /**
  * The local, fail-safe first pass for incoming messages. It is deliberately
  * conservative: a positive match never reaches a model. A provider-backed Jev
  * decision will be added as a second pass before the guide is enabled.
  */
-export type InputSafetyCategory = 'ordinary' | 'sensitive' | 'crisis' | 'disallowed';
+export type { InputSafetyCategory } from './safety-decision';
 
 const crisisPatterns: readonly RegExp[] = [
   /\b(kill myself|end (my|their) life|want to die|do(n'?t| not) want to be alive|better off without me|kms)\b/i,

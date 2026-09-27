@@ -22,6 +22,7 @@ const globalStyles = readFileSync(
   new URL('../apps/shwetha-portfolio/src/styles.scss', import.meta.url),
   'utf8',
 );
+const paletteStyles = `${globalStyles}\n${styles}`;
 const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
 const modelsUrl = new URL(
@@ -69,6 +70,7 @@ test('separates focused landing content from the writing archive', () => {
 test('renders the focused possibility practice person narrative', () => {
   assert.match(component, /landingContent/);
   assert.match(template, /href="#possibility">Possibility/);
+  assert.match(template, /routerLink="\/growing-human">Explore ambitions/);
   assert.match(template, /href="#practice">Practice/);
   assert.match(template, /href="#leadership">Leadership/);
   assert.match(template, /href="#beyond">Beyond/);
@@ -124,36 +126,56 @@ test('uses an editorial beyond section rather than three boxed columns', () => {
   assert.doesNotMatch(styles, /\.about__grid/);
 });
 
-test('uses a warm restrained dark palette', () => {
-  assert.match(styles, /--canvas:\s*#171816;/);
-  assert.match(styles, /--surface:\s*#20211e;/);
-  assert.match(styles, /--text:\s*#f3efe5;/);
-  assert.match(styles, /--mint:\s*#b8d3c5;/);
-  assert.match(styles, /--butter:\s*#ddc79b;/);
-  assert.match(styles, /--coral:\s*#dc8067;/);
-  assert.doesNotMatch(styles, /#cddbf0|#efc4c8/);
+test('uses the original theme-aware pastel palette with direct section boundaries', () => {
+  assert.match(paletteStyles, /--surface:\s*#fffdfa;/);
+  assert.match(paletteStyles, /--surface-soft:\s*#e8efea;/);
+  assert.match(paletteStyles, /--mint:\s*#d5e9df;/);
+  assert.match(paletteStyles, /--butter:\s*#f4e4ba;/);
+  assert.match(paletteStyles, /html\[data-theme='dark'\] app-landing \.site\s*{[\s\S]*?--surface:\s*#20211e;/);
+  assert.match(paletteStyles, /--hero-bg:\s*linear-gradient\(to bottom, var\(--surface\), var\(--surface-soft\)\)/);
+  assert.match(paletteStyles, /--possibility-bg:\s*linear-gradient\(to bottom, var\(--surface-soft\), var\(--canvas\)\)/);
+  assert.match(paletteStyles, /--leadership-bg:\s*linear-gradient\(to bottom, var\(--mint\), var\(--surface\)\)/);
+  assert.match(paletteStyles, /--beyond-bg:\s*linear-gradient\(to bottom, var\(--surface\), var\(--surface-soft\)\)/);
+  assert.match(paletteStyles, /--work-bg:\s*linear-gradient\(to bottom, var\(--surface-soft\), #e1ece5\)/);
+  assert.match(paletteStyles, /--contact-bg:\s*linear-gradient\(to bottom, #e1ece5, var\(--surface-soft\)\)/);
+  assert.doesNotMatch(styles, /\.beyond::after/);
+  assert.match(styles, /\.practice-card\s*{[\s\S]*?border-left/);
+  assert.doesNotMatch(styles, /border-radius:\s*18px/);
 });
 
 test('keeps theme switching accessible through html data-theme', () => {
   assert.match(template, /\[attr\.aria-pressed\]="isDark\(\)"/);
   assert.match(readFileSync(themeServiceUrl, 'utf8'), /documentElement\.dataset\['theme'\]/);
-  assert.match(styles, /:host-context\(html\[data-theme='dark'\]\)/);
+  assert.match(globalStyles, /html\[data-theme='dark'\] app-landing \.site/);
 });
 
 test('uses locally bundled Open Sans with editorial serif headings', () => {
   assert.equal(typeof packageJson.dependencies['@fontsource/open-sans'], 'string');
   assert.match(globalStyles, /@fontsource\/open-sans\/400\.css/);
   assert.match(globalStyles, /font-family:\s*'Open Sans', sans-serif;/);
-  assert.match(styles, /\.brand\s*{[\s\S]*?Georgia,\s*serif;/);
+  assert.match(globalStyles, /app-landing \.brand\s*{[\s\S]*?Georgia,\s*serif;/);
   assert.match(styles, /h1,\s*h2\s*{[\s\S]*?Georgia,\s*serif;/);
   assert.doesNotMatch(globalStyles, /Arial|Helvetica/);
 });
 
 test('keeps the full-width sticky header and broken-circle identity', () => {
-  assert.match(styles, /header\s*{[\s\S]*?position:\s*sticky;/);
-  assert.match(styles, /header,\s*main,\s*footer\s*{[\s\S]*?width:\s*100%;/);
+  assert.match(globalStyles, /app-landing header\s*{[\s\S]*?position:\s*sticky;/);
+  assert.match(globalStyles, /app-landing :is\(header, main, footer\)\s*{[\s\S]*?width:\s*100%;/);
   assert.match(template, /<span class="brand__mark" aria-hidden="true"><\/span>/);
-  assert.match(styles, /\.brand__mark\s*{[\s\S]*?border:\s*1px dashed/);
+  assert.match(globalStyles, /app-landing \.brand__mark\s*{[\s\S]*?border:\s*1px dashed/);
+});
+
+test('keeps page content centered within a 1280px reading width', () => {
+  assert.match(styles, /padding:\s*clamp\(82px, 10vw, 150px\) max\(5%, calc\(\(100% - 1280px\) \/ 2\)\)/);
+  assert.match(globalStyles, /padding:\s*16px max\(5%, calc\(\(100% - 1280px\) \/ 2\)\)/);
+  assert.match(globalStyles, /app-landing header\s*{[\s\S]*?1280px/);
+});
+
+test('keeps text readable over the pastel sections in either theme', () => {
+  assert.match(styles, /\.practice\s*{[\s\S]*?color:\s*var\(--text\);/);
+  assert.match(styles, /\.work\s*{[\s\S]*?color:\s*var\(--text\);/);
+  assert.match(styles, /\.contact\s*{[\s\S]*?color:\s*var\(--text\);/);
+  assert.match(styles, /\.leadership \.section-copy > p:not\(\.eyebrow\),[\s\S]*?\.leadership \.eyebrow\s*{[\s\S]*?color:\s*var\(--card-muted\);[\s\S]*?opacity:\s*1;/);
 });
 
 test('keeps editorial visuals below their source resolution', () => {
@@ -161,6 +183,21 @@ test('keeps editorial visuals below their source resolution', () => {
   assert.match(styles, /\.possibility h2\s*{[\s\S]*?font-size:\s*clamp\(38px, 3\.2vw, 58px\)/);
   assert.match(styles, /\.hero__visual\s*{[\s\S]*?max-width:\s*700px;/);
   assert.match(styles, /\.leadership \.editorial-visual\s*{[\s\S]*?max-width:\s*560px;/);
+  assert.match(template, /src="\/images\/leadership-illustration\.svg"/);
+});
+
+test('uses the supplied hero illustration with an accessible loading state', () => {
+  assert.match(template, /src="\/images\/hero-illustration\.png"/);
+  assert.match(template, /\[attr\.aria-busy\]="!heroImageReady\(\)"/);
+  assert.match(template, /\(load\)="markHeroImageReady\(\)"/);
+  assert.match(component, /heroImageReady = signal\(false\)/);
+  assert.match(component, /markHeroImageReady\(\)/);
+  assert.match(styles, /\.hero__visual--loading/);
+});
+
+test('uses the supplied illustration for the What changed section', () => {
+  assert.match(template, /src="\/images\/possibility-illustration\.png"/);
+  assert.match(template, /alt="A woman arranging bright geometric building blocks beside a plant\."/);
 });
 
 test('routes to a privacy-first Growing Human preview that never fakes an AI answer', () => {

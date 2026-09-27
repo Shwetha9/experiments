@@ -24,24 +24,43 @@
 
   <main id="top">
     <section class="hero">
+      <span class="motif motif--sprig motif--hero-top" aria-hidden="true"></span>
+      <span class="motif motif--sprig motif--hero-bottom" aria-hidden="true"></span>
       <div class="hero__copy">
         <p class="eyebrow">{{ content.hero.eyebrow }}</p>
         <h1>{{ content.hero.title }}</h1>
         <p class="lede">{{ content.hero.body }}</p>
-        <a class="button" href="#possibility">Start with what changed <span>↘</span></a>
+        <div class="hero__actions">
+          <a class="button" href="#possibility">Start with what changed <span>↘</span></a>
+          <a class="button" routerLink="/growing-human">Explore ambitions <span>↗</span></a>
+        </div>
       </div>
-      <figure class="editorial-visual hero__visual">
+      <figure
+        class="editorial-visual hero__visual"
+        [class.hero__visual--loading]="!heroImageReady()"
+        [attr.aria-busy]="!heroImageReady()"
+      >
+        @if (!heroImageReady()) {
+          <span class="hero__visual-status" role="status">Loading illustration</span>
+        }
         <img
-          src="/images/quiet-curiosity.png"
-          width="1050"
-          height="504"
-          alt="Shwetha considering a landscape beside books and a window."
+          src="/images/hero-illustration.png"
+          width="1680"
+          height="940"
+          alt="A woman resting with a cup of tea beside a calm landscape, books, and botanical plants."
           fetchpriority="high"
+          [class.hero__image--ready]="heroImageReady()"
+          (load)="markHeroImageReady()"
+          (error)="markHeroImageReady()"
         />
       </figure>
     </section>
 
     <section id="possibility" class="possibility">
+      <span class="motif motif--sprig motif--possibility-left" aria-hidden="true"></span>
+      <span class="motif motif--sprig motif--possibility-right" aria-hidden="true"></span>
+      <span class="motif motif--dots motif--possibility-dots" aria-hidden="true"></span>
+      <span class="motif motif--rings motif--possibility-rings" aria-hidden="true"></span>
       <div class="section-copy">
         <p class="eyebrow">{{ content.possibility.eyebrow }}</p>
         <h2>{{ content.possibility.title }}</h2>
@@ -51,16 +70,18 @@
       </div>
       <figure class="editorial-visual">
         <img
-          src="/images/human-ai-adoption.png"
-          width="1050"
-          height="528"
-          alt="An engineer fitting a bright piece into a larger system."
+          src="/images/possibility-illustration.png"
+          width="1680"
+          height="940"
+          alt="A woman arranging bright geometric building blocks beside a plant."
           loading="lazy"
         />
       </figure>
     </section>
 
     <section id="practice" class="practice">
+      <span class="motif motif--sprig motif--practice-left" aria-hidden="true"></span>
+      <span class="motif motif--sprig motif--practice-right" aria-hidden="true"></span>
       <div class="section-heading">
         <p class="eyebrow">{{ content.practice.eyebrow }}</p>
         <h2>{{ content.practice.title }}</h2>
@@ -77,12 +98,16 @@
     </section>
 
     <section id="leadership" class="leadership">
+      <span class="motif motif--sprig motif--leadership-left" aria-hidden="true"></span>
+      <span class="motif motif--sprig motif--leadership-right" aria-hidden="true"></span>
+      <span class="motif motif--sprig motif--leadership-top" aria-hidden="true"></span>
+      <span class="motif motif--sprig motif--leadership-bottom" aria-hidden="true"></span>
       <figure class="editorial-visual">
         <img
-          src="/images/building-systems.png"
-          width="876"
-          height="456"
-          alt="An engineer moving upward through stages of a system."
+          src="/images/leadership-illustration.svg"
+          width="800"
+          height="540"
+          alt="A calm systems compass framed by branching leaves."
           loading="lazy"
         />
       </figure>
@@ -96,6 +121,8 @@
     </section>
 
     <section id="beyond" class="beyond">
+      <span class="motif motif--sprig motif--beyond-left" aria-hidden="true"></span>
+      <span class="motif motif--sprig motif--beyond-right" aria-hidden="true"></span>
       <div class="beyond__intro">
         <p class="eyebrow">{{ content.beyond.eyebrow }}</p>
         <h2>{{ content.beyond.title }}</h2>
@@ -145,6 +172,10 @@
     </dialog>
 
     <section id="work" class="work" aria-labelledby="work-title">
+      <span class="motif motif--sprig motif--work-left" aria-hidden="true"></span>
+      <span class="motif motif--sprig motif--work-right" aria-hidden="true"></span>
+      <span class="motif motif--dots motif--work-dots" aria-hidden="true"></span>
+      <span class="motif motif--rings motif--work-rings" aria-hidden="true"></span>
       <p class="eyebrow">Selected work · A byproduct of ambition</p>
       <article class="work__item">
         <hgroup>
@@ -162,6 +193,8 @@
     </section>
 
     <section id="contact" class="contact">
+      <span class="motif motif--sprig motif--contact-left" aria-hidden="true"></span>
+      <span class="motif motif--sprig motif--contact-right" aria-hidden="true"></span>
       <p class="eyebrow">{{ content.contact.eyebrow }}</p>
       <h2>{{ content.contact.title }}</h2>
       <p>{{ content.contact.body }}</p>

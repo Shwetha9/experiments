@@ -16,9 +16,14 @@ export class LandingPage {
   protected readonly content = landingContent;
   protected readonly isDark = this.theme.isDark;
   protected readonly selectedInfluence = signal<Influence | null>(null);
+  protected readonly heroImageReady = signal(false);
 
   protected toggleTheme(): void {
     this.theme.toggle();
+  }
+
+  protected markHeroImageReady(): void {
+    this.heroImageReady.set(true);
   }
 
   protected openQuote(influence: Influence): void {

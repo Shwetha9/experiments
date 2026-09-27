@@ -9,7 +9,7 @@ export class GrowingHumanController {
 
   @Post('chat')
   @HttpCode(HttpStatus.OK)
-  chat(@Body(ChatRequestPipe) request: ChatRequest): ChatReply {
+  async chat(@Body(ChatRequestPipe) request: ChatRequest): Promise<ChatReply> {
     return this.growingHuman.reply(request);
   }
 }

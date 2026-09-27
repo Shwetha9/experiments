@@ -27,6 +27,90 @@ html[data-theme='dark'] body {
   color: #edf3ee;
 }
 
+app-landing .site {
+  --canvas: #f1f4ef;
+  --surface: #fffdfa;
+  --surface-soft: #e8efea;
+  --text: #13231f;
+  --muted: #5d6c66;
+  --line: #c8d4ce;
+  --mint: #d5e9df;
+  --butter: #f4e4ba;
+  --coral: #df6f52;
+  --rose: #ead4cf;
+  --card-text: #17201c;
+  --card-muted: #52605a;
+  --copy-muted: #52605a;
+  --hero-bg: linear-gradient(to bottom, var(--surface), var(--surface-soft));
+  --possibility-bg: linear-gradient(to bottom, var(--surface-soft), var(--canvas));
+  --practice-bg: linear-gradient(to bottom, var(--canvas), var(--mint));
+  --leadership-bg: linear-gradient(to bottom, var(--mint), var(--surface));
+  --beyond-bg: linear-gradient(to bottom, var(--surface), var(--surface-soft));
+  --work-bg: linear-gradient(to bottom, var(--surface-soft), #e1ece5);
+  --contact-bg: linear-gradient(to bottom, #e1ece5, var(--surface-soft));
+  --beyond-text: var(--text);
+  --beyond-muted: var(--muted);
+  --beyond-line: var(--line);
+  --beyond-number: var(--line);
+  --tone-sage: #386655;
+  --tone-butter: #9d6c3f;
+  --tone-coral: #a96357;
+  --practice-peach: #9d6c3f;
+  --practice-blush: #a96357;
+  background: var(--canvas);
+  color: var(--text);
+  min-height: 100vh;
+  overflow: hidden;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+html[data-theme='dark'] app-landing .site {
+  --canvas: #171816;
+  --surface: #20211e;
+  --surface-soft: #292c28;
+  --text: #f3efe5;
+  --muted: #bbb8ae;
+  --line: #41443e;
+  --mint: #b8d3c5;
+  --butter: #ddc79b;
+  --coral: #dc8067;
+  --rose: #d5b5ad;
+  --card-text: #20231f;
+  --card-muted: #505650;
+  --copy-muted: #b7c4b5;
+  --hero-bg: linear-gradient(to bottom, #171816, #20211e);
+  --possibility-bg: linear-gradient(to bottom, #20211e, #30342e);
+  --practice-bg: linear-gradient(to bottom, #30342e, #20211e);
+  --leadership-bg: linear-gradient(to bottom, #b8d3c5, #9fbaa9 62%, #849e90);
+  --beyond-bg: linear-gradient(to bottom, #849e90, #5c7064 42%, #292c28);
+  --work-bg: linear-gradient(to bottom, #292c28, #20211e);
+  --contact-bg: linear-gradient(to bottom, #20211e, #171816);
+  --beyond-text: #f3efe5;
+  --beyond-muted: #d3dbd2;
+  --beyond-line: rgb(243 239 229 / 22%);
+  --beyond-number: rgb(243 239 229 / 42%);
+  --tone-sage: #94b280;
+  --tone-butter: #d8b77b;
+  --tone-coral: #e18a70;
+  --practice-peach: #e68b7d;
+  --practice-blush: #c94e61;
+}
+
+app-landing :is(header, main, footer) { margin: 0; width: 100%; }
+app-landing header { align-items: center; backdrop-filter: blur(18px); background: color-mix(in srgb, var(--surface) 94%, transparent); border-bottom: 1px solid var(--line); color: var(--text); display: flex; justify-content: space-between; padding: 16px max(5%, calc((100% - 1280px) / 2)); position: sticky; top: 0; z-index: 100; }
+app-landing a { color: inherit; text-decoration: none; }
+app-landing .brand { align-items: baseline; display: inline-flex; font: 700 28px/1 Georgia, serif; letter-spacing: -.035em; }
+app-landing .brand__mark { border: 1px dashed #c4a674; border-radius: 50%; height: 8px; margin-left: 3px; transform: translateY(-1px); width: 8px; }
+app-landing :is(.header-actions, nav) { align-items: center; display: flex; }
+app-landing .header-actions { gap: 18px; }
+app-landing nav { border-right: 1px solid rgb(234 226 202 / 18%); font: 11px 'Open Sans', sans-serif; gap: 25px; letter-spacing: .1em; padding-right: 20px; text-transform: uppercase; }
+app-landing nav a { color: var(--muted); padding: 10px 1px; position: relative; }
+app-landing nav a::after { background: var(--coral); bottom: 4px; content: ''; height: 1px; left: 0; position: absolute; transform: scaleX(0); transform-origin: left; transition: transform 180ms ease; width: 100%; }
+app-landing nav a:hover, app-landing nav a:focus-visible { color: var(--text); }
+app-landing nav a:hover::after, app-landing nav a:focus-visible::after { transform: scaleX(1); }
+app-landing .theme-toggle { align-items: center; background: transparent; border: 0; border-radius: 50%; color: var(--text); cursor: pointer; display: inline-flex; font: 18px/1 'Open Sans', sans-serif; height: 34px; justify-content: center; width: 34px; }
+app-landing .theme-toggle:hover { background: var(--surface-soft); }
+
 a:focus-visible,
 button:focus-visible {
   outline: 3px solid #e35b33;

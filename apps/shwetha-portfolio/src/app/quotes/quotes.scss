@@ -18,15 +18,15 @@
 }
 
 :host-context(html[data-theme='dark']) .quotes-page {
-  --canvas: #111714;
-  --surface: #18211d;
-  --surface-soft: #1d2a25;
+  --canvas: #171816;
+  --surface: #20211e;
+  --surface-soft: #292c28;
   --text: #f3efe5;
-  --muted: #b9c5bd;
-  --line: #3a4b43;
-  --mint: #23443b;
-  --butter: #4c4127;
-  --coral: #e18a70;
+  --muted: #bbb8ae;
+  --line: #41443e;
+  --mint: #b8d3c5;
+  --butter: #ddc79b;
+  --coral: #dc8067;
 }
 
 .quotes-page a {
@@ -330,7 +330,10 @@ blockquote {
 }
 
 .authors {
+  --line: #bba97c;
+  --muted: #505650;
   background: var(--butter);
+  color: #20231f;
 }
 
 .author-list {

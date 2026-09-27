@@ -2,6 +2,12 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.0.
 
+## Growing Human guide API
+
+The Nest API owns the guide model and its safety checks. It is deliberately disabled by default; with no configuration, `/api/growing-human/chat` returns the reviewed preview reply. Copy `.env.example` to `.env` on the server and set the three `OPENROUTER_*` values only for an approved staging evaluation. The key must never be placed in the Angular app or committed.
+
+Before setting `GROWING_HUMAN_ENABLE_GUIDE=true`, run and document the approved red-team evaluation, obtain the required human review, and complete the launch gates in [the Growing Human design spec](docs/superpowers/specs/2026-09-26-growing-human-design.md). The flag is an operational release control, not approval to bypass those gates.
+
 ## Development server
 
 To start a local development server, run:
