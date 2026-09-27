@@ -14,6 +14,8 @@ module.exports = {
       target: 'node',
       compiler: 'tsc',
       main: './src/main.ts',
+      // Serverless handler consumed by /api/index.js on Vercel.
+      additionalEntryPoints: [{ entryName: 'vercel', entryPath: './src/vercel.ts' }],
       tsConfig: './tsconfig.app.json',
       assets: ['./src/assets'],
       optimization: false,

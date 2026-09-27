@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm ci",
+  "buildCommand": "npx nx run-many -t build -p shwetha-portfolio api",
+  "outputDirectory": "dist/shwetha-portfolio/browser",
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 30,
+      "includeFiles": "dist/apps/api/**"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ]
+}
