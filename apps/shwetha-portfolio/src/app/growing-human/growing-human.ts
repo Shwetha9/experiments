@@ -64,6 +64,13 @@ export class GrowingHumanPage {
   }
 
   protected selectLane(laneId: TopicLaneId): void {
+    if (laneId !== this.laneId()) {
+      // A new topic starts a fresh conversation: drop the stale thread (and any
+      // in-flight reply) so the new lane's starter questions are shown.
+      this.cancelPending();
+      this.thread.set([]);
+      this.draft.set('');
+    }
     this.laneId.set(laneId);
     this.focusAfterRender(() => this.composer()?.nativeElement);
   }
@@ -104,14 +111,18 @@ export class GrowingHumanPage {
   }
 
   protected startOver(): void {
-    this.pending?.unsubscribe();
-    this.pending = null;
+    this.cancelPending();
     this.ageBand.set(null);
     this.laneId.set('anything');
     this.thread.set([]);
     this.draft.set('');
-    this.isThinking.set(false);
     this.focusAfterRender(() => this.stepHeading()?.nativeElement);
+  }
+
+  private cancelPending(): void {
+    this.pending?.unsubscribe();
+    this.pending = null;
+    this.isThinking.set(false);
   }
 
   private receive(reply: ChatReply): void {
