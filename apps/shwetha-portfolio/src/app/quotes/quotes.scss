@@ -172,6 +172,11 @@ h2 {
   color: var(--mint-muted);
 }
 
+.daily-quote .section-label > span {
+  color: var(--mint-muted);
+  font-weight: 600;
+}
+
 .section-label {
   align-items: start;
   display: flex;

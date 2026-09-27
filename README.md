@@ -44,8 +44,8 @@ This will compile your project and store the build artifacts in the `dist/` dire
 
 ## Quotes API
 
-The `/quotes` route uses API Ninjas’ Quotes API. Add your browser-side key to
-`src/app/quotes/config.ts` locally before testing live requests:
+The `/quotes` route works locally with a small bundled archive. To enable live
+API Ninjas quotes, add your browser-side key to `src/app/quotes/config.ts`:
 
 ```ts
 export const quoteApiConfig: QuoteApiConfig = {
