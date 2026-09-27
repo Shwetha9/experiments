@@ -6,6 +6,7 @@
       <a href="#daily">Daily</a>
       <a href="#anchors">Anchors</a>
       <a href="#browse">Browse</a>
+      <a href="#authors">Authors</a>
     </nav>
     <button
       type="button"
@@ -30,7 +31,7 @@
         <span>01</span>
         <p class="eyebrow">From API Ninjas</p>
       </div>
-      <div class="quote-panel">
+      <div class="quote-panel" [attr.aria-busy]="dailyState() === 'loading'">
         <h2 id="daily-title">Quote of the day</h2>
         @if (dailyState() === 'loading') {
           <p class="quote-status" aria-live="polite">Finding today’s sentence…</p>
@@ -59,7 +60,7 @@
           <button type="button" [attr.aria-pressed]="selectedCategory() === category" (click)="selectCategory(category)">{{ category }}</button>
         }
       </div>
-      <div class="browse__result" aria-live="polite">
+      <div class="browse__result" aria-live="polite" [attr.aria-busy]="categoryState() === 'loading'">
         @if (categoryState() === 'loading') {
           <p class="quote-status">Finding something for {{ selectedCategory() }}…</p>
         } @else if (categoryQuote(); as quote) {
@@ -73,14 +74,18 @@
         <button type="button" class="button" (click)="refreshQuote()">Refresh quote <span aria-hidden="true">↻</span></button>
         <button type="button" class="text-link" (click)="browseCategory()">Browse deterministic results <span aria-hidden="true">↗</span></button>
       </div>
-      @if (browseState() === 'success') {
-        @if (browseQuote(); as quote) {
-          <article class="browse__deterministic">
-            <p class="eyebrow">From the deterministic archive</p>
-            <blockquote>“{{ quote.text }}”</blockquote>
-            <p class="quote-attribution">{{ quote.author }}</p>
-          </article>
-        }
+      @if (browseState() === 'success' && browseQuotes().length > 0) {
+        <div class="browse__deterministic">
+          <p class="eyebrow">From the archive</p>
+          <div class="browse__results">
+            @for (quote of browseQuotes(); track quote.id) {
+              <article>
+                <blockquote>“{{ quote.text }}”</blockquote>
+                <p class="quote-attribution">{{ quote.author }}{{ quote.work ? ' · ' + quote.work : '' }}</p>
+              </article>
+            }
+          </div>
+        </div>
       } @else if (browseState() !== 'idle' && browseState() !== 'loading') {
         <p class="quote-status">{{ errorMessage(browseState()) }}</p>
       }
@@ -106,7 +111,7 @@
       </div>
     </section>
 
-    <section class="authors" aria-labelledby="authors-title">
+    <section id="authors" class="authors" aria-labelledby="authors-title">
       <div class="section-heading">
         <p class="eyebrow">A catalogue of voices</p>
         <h2 id="authors-title">Authors worth wandering through.</h2>

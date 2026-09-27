@@ -18,6 +18,8 @@ test('defines all API Ninjas quote capabilities', () => {
   assert.equal(existsSync(serviceUrl), true);
 
   const service = readFileSync(serviceUrl, 'utf8');
+  assert.match(service, /localQuoteOfTheDay/);
+  assert.match(service, /if \(!quoteApiConfig\.apiKey\)/);
   assert.match(service, /quoteoftheday/);
   assert.match(service, /randomquotes/);
   assert.match(service, /'quotes'/);
@@ -39,7 +41,10 @@ test('renders the separate quotes experience with daily, categories, browse, and
   assert.match(page, /Browse by category/);
   assert.match(page, /Three ideas I return to/);
   assert.match(page, /Authors/);
+  assert.match(page, /href="#authors">Authors<\/a>/);
+  assert.match(page, /id="authors"/);
   assert.match(page, /aria-pressed/);
+  assert.match(page, /browseQuotes\(\)/);
   assert.ok(page.indexOf('id="browse"') < page.indexOf('id="anchors"'));
   assert.match(page, /src\/app\/quotes\/config\.ts/);
   const styles = readFileSync(new URL('../apps/shwetha-portfolio/src/app/quotes/quotes.scss', import.meta.url), 'utf8');

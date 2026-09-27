@@ -24,7 +24,7 @@ export class QuotesPage {
   protected readonly selectedCategory = signal<QuoteCategory>('wisdom');
   protected readonly dailyQuote = signal<Quote | null>(null);
   protected readonly categoryQuote = signal<Quote | null>(null);
-  protected readonly browseQuote = signal<Quote | null>(null);
+  protected readonly browseQuotes = signal<readonly Quote[]>([]);
   protected readonly authors = signal<readonly string[]>([]);
   protected readonly dailyState = signal<QuoteViewState>('loading');
   protected readonly categoryState = signal<QuoteViewState>('idle');
@@ -52,12 +52,13 @@ export class QuotesPage {
 
   protected browseCategory(): void {
     this.browseState.set('loading');
+    this.browseQuotes.set([]);
     this.quoteService
-      .browseQuotes({ category: this.selectedCategory() })
+      .browseQuotes({ category: this.selectedCategory(), limit: 6 })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (quotes) => {
-          this.browseQuote.set(quotes[0] ?? null);
+          this.browseQuotes.set(quotes);
           this.browseState.set(quotes.length > 0 ? 'success' : 'idle');
         },
         error: (error: unknown) => this.browseState.set(this.errorKind(error)),

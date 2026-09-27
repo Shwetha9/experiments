@@ -8,7 +8,9 @@ import { GrowingHumanThrottlerFilter } from './growing-human/safety/throttler-ex
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    // Nx normally starts from the workspace root, but allowing the API-local
+    // file avoids silently missing configuration when the server is run there.
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env', 'apps/api/.env'] }),
     ThrottlerModule.forRoot({
       throttlers: CHAT_RATE_LIMITS.map((throttler) => ({ ...throttler })),
       errorMessage: 'I couldn’t think that one through just now. Please try again in a moment.',
