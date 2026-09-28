@@ -1,0 +1,136 @@
+@use 'palettes';
+
+:host {
+  @include palettes.growing-human;
+  background: var(--ink);
+  color: var(--text);
+  color-scheme: dark;
+  display: block;
+  min-height: 100vh;
+}
+
+.about__bar {
+  align-items: center;
+  border-bottom: 1px solid var(--ink-line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  padding: 16px 5%;
+}
+
+.about__brand {
+  font:
+    600 20px/1 Georgia,
+    serif;
+  margin: 0;
+}
+
+.about__nav {
+  display: flex;
+  font-size: 13px;
+  gap: 20px;
+}
+.about__nav a {
+  color: var(--muted);
+}
+.about__nav a:hover {
+  color: var(--text);
+}
+
+.about__main {
+  margin: 0 auto;
+  max-width: 720px;
+  padding: clamp(48px, 8vw, 88px) 6% 64px;
+}
+
+.about__article {
+  display: grid;
+  gap: 32px;
+}
+
+.about__kicker {
+  color: var(--rose);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+.about__title {
+  font:
+    600 clamp(36px, 5vw, 56px) / 1.05 Georgia,
+    serif;
+  letter-spacing: -0.03em;
+  margin: 0 0 16px;
+}
+
+.about__intro {
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.about__section h2,
+.about__helplines h2 {
+  font:
+    600 22px/1.2 Georgia,
+    serif;
+  margin: 0 0 12px;
+}
+
+.about__section ul {
+  display: grid;
+  gap: 8px;
+  line-height: 1.6;
+  margin: 0;
+  padding-left: 20px;
+}
+.about__section li::marker {
+  color: var(--lavender);
+}
+
+.about__helplines {
+  background: var(--ink-raised);
+  border: 1px solid var(--rose);
+  border-radius: 14px;
+  padding: 20px 22px;
+}
+.about__helplines dl {
+  display: grid;
+  gap: 4px 16px;
+  grid-template-columns: max-content 1fr;
+  margin: 0;
+}
+.about__helplines dt {
+  color: var(--lavender);
+  font-weight: 700;
+}
+.about__helplines dd {
+  margin: 0;
+}
+
+.about__status {
+  border: 1px dashed #4b4a60;
+  border-radius: 10px;
+  color: #aaa8b4;
+  font-size: 14px;
+  margin: 0;
+  padding: 12px 14px;
+}
+
+a:focus-visible {
+  outline: 3px solid var(--rose);
+  outline-offset: 3px;
+}
+
+@media (max-width: 620px) {
+  .about__helplines dl {
+    grid-template-columns: 1fr;
+  }
+  .about__helplines dd {
+    margin-bottom: 8px;
+  }
+}

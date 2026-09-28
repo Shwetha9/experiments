@@ -1,15 +1,16 @@
 {
-  "name": "shwetha-portfolio",
+  "name": "studio-workspace",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "nx serve shwetha-portfolio",
-    "build": "nx build shwetha-portfolio",
+    "start": "nx run-many -t serve -p studio growing-human api --parallel=3 --output-style=stream",
+    "build": "nx run-many -t build -p studio growing-human api && node tools/assemble-web.cjs",
     "build:api": "nx build api",
     "test:api:artifact": "nx build api --skip-nx-cache && node --no-experimental-require-module --test tests/api-vercel-smoke.test.cjs",
-    "watch": "nx build shwetha-portfolio --watch --configuration development",
-    "test": "nx test shwetha-portfolio",
-    "test:content": "node --test tests/*.test.mjs"
+    "watch": "nx build studio --watch --configuration development",
+    "test": "nx run-many -t test -p studio growing-human --watch=false --browsers=ChromeHeadless",
+    "start:studio": "nx serve studio",
+    "start:growing-human": "nx serve growing-human"
   },
   "prettier": {
     "printWidth": 100,
@@ -63,6 +64,7 @@
     "@types/jasmine": "~5.1.0",
     "@types/jest": "~30.0.0",
     "@types/node": "^22.0.0",
+    "autoprefixer": "10.6.1",
     "jasmine-core": "~5.9.0",
     "jest": "~30.3.0",
     "jest-environment-node": "~30.3.0",
@@ -73,7 +75,9 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "nx": "23.2.1",
+    "postcss": "8.5.28",
     "prettier": "~3.6.2",
+    "tailwindcss": "3.4.19",
     "ts-jest": "^29.4.7",
     "ts-node": "10.9.1",
     "typescript": "~5.9.2",

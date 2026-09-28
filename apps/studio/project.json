@@ -1,0 +1,119 @@
+{
+  "name": "studio",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/studio/src",
+  "prefix": "app",
+  "generators": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  },
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "defaultConfiguration": "production",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "browser": "apps/studio/src/main.ts",
+        "polyfills": [
+          "zone.js"
+        ],
+        "tsConfig": "apps/studio/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/studio/public"
+          }
+        ],
+        "styles": [
+          "apps/studio/src/styles.scss"
+        ],
+        "outputPath": "dist/studio",
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/design-tokens/src"
+          ]
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kB",
+              "maximumError": "1MB"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "10kB",
+              "maximumError": "10kB"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve": {
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "configurations": {
+        "production": {
+          "buildTarget": "studio:build:production"
+        },
+        "development": {
+          "buildTarget": "studio:build:development"
+        }
+      },
+      "dependsOn": [],
+      "options": {
+        "proxyConfig": "apps/studio/proxy.conf.json",
+        "port": 4200
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular/build:extract-i18n"
+    },
+    "test": {
+      "executor": "@angular/build:karma",
+      "options": {
+        "polyfills": [
+          "zone.js",
+          "zone.js/testing"
+        ],
+        "tsConfig": "apps/studio/tsconfig.spec.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/studio/public"
+          }
+        ],
+        "styles": [
+          "apps/studio/src/styles.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/design-tokens/src"
+          ]
+        },
+        "include": [
+          "apps/studio/src/**/*.spec.ts",
+          "libs/{theme,quote-data,editorial-content}/src/**/*.spec.ts"
+        ]
+      }
+    }
+  },
+  "tags": [
+    "type:app",
+    "scope:studio"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "types": [
+      "jasmine"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "../../libs/theme/src/**/*.ts",
+    "../../libs/quote-data/src/**/*.ts",
+    "../../libs/editorial-content/src/**/*.ts"
+  ]
+}

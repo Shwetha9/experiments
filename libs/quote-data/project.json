@@ -1,0 +1,10 @@
+{
+  "name": "quote-data",
+  "projectType": "library",
+  "sourceRoot": "libs/quote-data/src",
+  "tags": [
+    "type:lib",
+    "scope:shared"
+  ],
+  "targets": {}
+}

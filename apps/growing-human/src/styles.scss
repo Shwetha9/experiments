@@ -1,0 +1,9 @@
+@use 'base';
+@use 'palettes';
+
+html { color-scheme: dark; }
+body {
+  @include palettes.growing-human;
+  background: var(--ink);
+  color: var(--text);
+}

@@ -13,7 +13,18 @@
     "target": "ES2022",
     "module": "preserve",
     "paths": {
-      "@shwetha/growing-human-contracts": ["./libs/growing-human-contracts/src/index.ts"]
+      "@shwetha/growing-human-contracts": [
+        "./libs/growing-human-contracts/src/index.ts"
+      ],
+      "@studio/theme": [
+        "./libs/theme/src/index.ts"
+      ],
+      "@studio/quote-data": [
+        "./libs/quote-data/src/index.ts"
+      ],
+      "@studio/editorial-content": [
+        "./libs/editorial-content/src/index.ts"
+      ]
     },
     "rootDir": "."
   },
@@ -24,5 +35,8 @@
     "typeCheckHostBindings": true,
     "strictTemplates": true
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

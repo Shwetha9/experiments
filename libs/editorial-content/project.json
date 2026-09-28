@@ -1,0 +1,10 @@
+{
+  "name": "editorial-content",
+  "projectType": "library",
+  "sourceRoot": "libs/editorial-content/src",
+  "tags": [
+    "type:lib",
+    "scope:shared"
+  ],
+  "targets": {}
+}

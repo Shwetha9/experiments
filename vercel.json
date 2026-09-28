@@ -2,8 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "npm ci",
-  "buildCommand": "npx nx run-many -t build -p shwetha-portfolio api",
-  "outputDirectory": "dist/shwetha-portfolio/browser",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/site",
   "functions": {
     "api/index.js": {
       "maxDuration": 30,
@@ -11,7 +11,21 @@
     }
   },
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/api/:path*",
+      "destination": "/api"
+    },
+    {
+      "source": "/growing-human",
+      "destination": "/growing-human/index.html"
+    },
+    {
+      "source": "/growing-human/:path*",
+      "destination": "/growing-human/index.html"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ]
 }

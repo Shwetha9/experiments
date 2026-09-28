@@ -1,0 +1,120 @@
+{
+  "name": "growing-human",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/growing-human/src",
+  "prefix": "app",
+  "generators": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  },
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "defaultConfiguration": "production",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "browser": "apps/growing-human/src/main.ts",
+        "polyfills": [
+          "zone.js"
+        ],
+        "tsConfig": "apps/growing-human/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/growing-human/public"
+          }
+        ],
+        "styles": [
+          "apps/growing-human/src/styles.scss"
+        ],
+        "outputPath": "dist/growing-human",
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/design-tokens/src"
+          ]
+        },
+        "baseHref": "/growing-human/"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kB",
+              "maximumError": "1MB"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "10kB",
+              "maximumError": "10kB"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve": {
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "configurations": {
+        "production": {
+          "buildTarget": "growing-human:build:production"
+        },
+        "development": {
+          "buildTarget": "growing-human:build:development"
+        }
+      },
+      "dependsOn": [],
+      "options": {
+        "proxyConfig": "apps/growing-human/proxy.conf.json",
+        "port": 4201,
+        "servePath": "/growing-human"
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular/build:extract-i18n"
+    },
+    "test": {
+      "executor": "@angular/build:karma",
+      "options": {
+        "polyfills": [
+          "zone.js",
+          "zone.js/testing"
+        ],
+        "tsConfig": "apps/growing-human/tsconfig.spec.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/growing-human/public"
+          }
+        ],
+        "styles": [
+          "apps/growing-human/src/styles.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/design-tokens/src"
+          ]
+        },
+        "include": [
+          "apps/growing-human/src/**/*.spec.ts"
+        ]
+      }
+    }
+  },
+  "tags": [
+    "type:app",
+    "scope:growing-human"
+  ]
+}

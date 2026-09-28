@@ -1,0 +1,38 @@
+// Single source of truth for each product's primary colours.
+
+// Studio core palette, shared by the landing and quotes pages.
+@mixin studio {
+  --canvas: #f1f4ef;
+  --surface: #fffdfa;
+  --surface-soft: #e8efea;
+  --text: #13231f;
+  --muted: #5d6c66;
+  --line: #c8d4ce;
+  --mint: #d5e9df;
+  --butter: #f4e4ba;
+  --coral: #df6f52;
+}
+
+@mixin studio-dark {
+  --canvas: #171816;
+  --surface: #20211e;
+  --surface-soft: #292c28;
+  --text: #f3efe5;
+  --muted: #bbb8ae;
+  --line: #41443e;
+  --mint: #b8d3c5;
+  --butter: #ddc79b;
+  --coral: #dc8067;
+}
+
+// Growing Human is dark-only.
+@mixin growing-human {
+  --ink: #11121b;
+  --ink-raised: #1c1d2b;
+  --ink-line: #3a3b50;
+  --rose: #efacc3;
+  --lavender: #bdc1f3;
+  --text: #faf8fc;
+  --muted: #b8b9c7;
+  --on-accent: #241825;
+}
