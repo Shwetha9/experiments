@@ -21,6 +21,11 @@ const validDraft = JSON.stringify({
   action: 'Write that amount on a note today.',
 });
 
+const sensitiveDraft = JSON.stringify({
+  answer: 'It can help to share that feeling with a trusted adult who knows you.',
+  question: 'What small step could make the next conversation feel easier?',
+});
+
 const providerStub = (overrides: Partial<OpenRouterClient> = {}): OpenRouterClient =>
   ({
     guideEnabled: true,
@@ -64,6 +69,21 @@ describe('GrowingHumanService', () => {
       createService(provider).reply(request('How do I save for a bike?')),
     ).resolves.toEqual(PROVIDER_FAILURE_REPLY);
     expect(provider.completeGuide).not.toHaveBeenCalled();
+  });
+
+  it('routes a valid low-confidence ordinary decision through the stricter sensitive path', async () => {
+    const provider = providerStub({
+      classifyInput: jest.fn().mockResolvedValue({ category: 'ordinary', confident: false }),
+      completeGuide: jest.fn().mockResolvedValue(sensitiveDraft),
+    });
+
+    await expect(
+      createService(provider).reply(request('How do I take criticism without feeling bad?')),
+    ).resolves.toMatchObject({ kind: 'answer' });
+    expect(provider.completeGuide).toHaveBeenCalledWith(
+      expect.stringContaining('trusted adult'),
+      expect.any(String),
+    );
   });
 
   it('uses the deterministic response when the input classifier finds crisis or disallowed risk', async () => {

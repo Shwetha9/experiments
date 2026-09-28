@@ -40,11 +40,15 @@ export class GrowingHumanService {
     // decision never proceeds to the guide model.
     const classifierText = redactPersonalData(latestMessage.text).text;
     const classified = await this.provider.classifyInput(classifierText);
-    if (!classified || !classified.confident) return PROVIDER_FAILURE_REPLY;
+    if (!classified) return PROVIDER_FAILURE_REPLY;
     if (classified.category === 'crisis') return CRISIS_REPLY;
     if (classified.category === 'disallowed') return REFUSAL_REPLY;
 
-    const risk = stricterNormalRisk(localDecision, classified.category);
+    // A valid but uncertain ordinary/sensitive decision is not a provider
+    // outage. Per the safety contract, use the stricter sensitive path, which
+    // adds trusted-adult guidance and retains the output safety gate.
+    const classifierRisk = classified.confident ? classified.category : 'sensitive';
+    const risk = stricterNormalRisk(localDecision, classifierRisk);
     const prompt = this.prompts.compose(request, risk);
     const first = await this.generateAndCheck(prompt, request, risk);
     if (first.reply) return first.reply;

@@ -240,6 +240,18 @@ test('routes to a privacy-first Growing Human preview that never fakes an AI ans
   assert.doesNotMatch(page, /localStorage|sessionStorage|document\.cookie/);
 });
 
+test('offers age-appropriate starter questions in every Growing Human lane', () => {
+  const contentUrl = new URL('../apps/shwetha-portfolio/src/app/growing-human/content/growing-human-content.ts', import.meta.url);
+  const content = readFileSync(contentUrl, 'utf8');
+
+  for (const lane of ['feelings', 'krishna-arjuna', 'life-skills', 'anything']) {
+    assert.match(content, new RegExp(`id: '${lane}'[\\s\\S]*?starters: \\[`));
+  }
+  assert.match(content, /What can I do when I feel left out\?/);
+  assert.match(content, /How do I apologise when I have made a mistake\?/);
+  assert.match(content, /How can I be a good friend\?/);
+});
+
 test('uses the coral broken-circle brand mark as the favicon', () => {
   const faviconUrl = new URL('../apps/shwetha-portfolio/public/favicon.svg', import.meta.url);
 

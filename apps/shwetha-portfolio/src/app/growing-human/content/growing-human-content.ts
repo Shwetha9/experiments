@@ -25,7 +25,13 @@ export const growingHumanContent: GrowingHumanContent = {
         id: 'feelings',
         title: 'Understand my feelings',
         hint: 'Name what is happening inside.',
-        starters: ['Why do I feel angry so quickly?', 'How do I know if I’m sad or just tired?'],
+        starters: [
+          'Why do I feel angry so quickly?',
+          'How do I know if I’m sad or just tired?',
+          'What can I do when I feel left out?',
+          'How can I calm down before I say something mean?',
+          'Why do my feelings change so fast?',
+        ],
       },
       {
         id: 'krishna-arjuna',
@@ -34,6 +40,9 @@ export const growingHumanContent: GrowingHumanContent = {
         starters: [
           'Why was Arjuna afraid before the battle?',
           'What does it mean to do your duty?',
+          'What can Krishna and Arjuna teach me about making a hard choice?',
+          'How can I be brave when I feel nervous?',
+          'What does it mean to do the right thing when it is hard?',
         ],
       },
       {
@@ -43,13 +52,21 @@ export const growingHumanContent: GrowingHumanContent = {
         starters: [
           'How do I take criticism without feeling bad?',
           'How can I save money for something I want?',
+          'How do I apologise when I have made a mistake?',
+          'What can I do when homework feels too big?',
+          'How can I disagree without starting a fight?',
         ],
       },
       {
         id: 'anything',
         title: 'Ask anything',
         hint: 'Start with your own question.',
-        starters: [],
+        starters: [
+          'Why do people have different opinions?',
+          'How can I be a good friend?',
+          'What makes a question a good question?',
+          'How do I try something new when I feel nervous?',
+        ],
       },
     ],
   },
