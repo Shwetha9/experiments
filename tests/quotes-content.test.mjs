@@ -54,7 +54,8 @@ test('renders the separate quotes experience with daily, categories, browse, and
   assert.match(styles, /\.anchor-row\s*{[\s\S]*?position:\s*relative;/);
   assert.match(styles, /\.anchor-row::before\s*{[\s\S]*?position:\s*absolute;/);
   assert.match(styles, /\.browse__loading\s*{[\s\S]*?display:\s*flex;/);
-  assert.match(styles, /\.browse__results blockquote::before/);
+  assert.match(styles, /\.browse__results blockquote\s*{[\s\S]*?border-left:/);
+  assert.match(styles, /\.browse__results \.quote-mark/);
   assert.match(content, /John Donne/);
   assert.match(content, /Nathaniel Hawthorne/);
   assert.match(content, /Leonard Cohen/);
