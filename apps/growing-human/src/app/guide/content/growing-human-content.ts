@@ -4,9 +4,9 @@ import { GrowingHumanContent } from '../models/growing-human';
 export const growingHumanContent: GrowingHumanContent = {
   brand: 'Growing Human',
   ageStep: {
-    introTitle: 'A quiet place for big questions.',
+    introTitle: 'A place for big questions and little discoveries.',
     introBody:
-      'Bring your curiosity about feelings, friendships, choices, or whatever is on your mind. We can take it one small thought at a time.',
+      'Explore feelings, friendships and choices. Discover something surprising about space, then quiz yourself and make it your own.',
     kicker: 'First, help me speak your language',
     title: 'Which age group feels right?',
     body: 'No birthday, name or account. This only changes how answers are explained.',

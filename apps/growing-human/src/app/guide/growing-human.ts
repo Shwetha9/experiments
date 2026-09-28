@@ -12,10 +12,11 @@ import {
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { growingHumanContent } from './content/growing-human-content';
+import { spaceDiscoveries } from './content/space-discoveries';
 import { AgeBand, ChatMessage, ChatReply, TopicLaneId } from './models/growing-human';
 import { GrowingHumanChatService } from './services/growing-human-chat.service';
 
-type Step = 'age' | 'lane' | 'chat';
+type Step = 'age' | 'lane' | 'chat' | 'discover';
 
 interface ThreadEntry {
   readonly message: ChatMessage;
@@ -36,7 +37,13 @@ export class GrowingHumanPage {
   private pending: Subscription | null = null;
 
   protected readonly content = growingHumanContent;
+  protected readonly discoveries = spaceDiscoveries;
   protected readonly ageBand = signal<AgeBand | null>(null);
+  protected readonly activity = signal<'guide' | 'discover'>('guide');
+  protected readonly discoveryIndex = signal(0);
+  protected readonly chosenAnswer = signal<number | null>(null);
+  protected readonly discoveryDraft = signal('');
+  protected readonly discoveryNote = signal('');
   protected readonly laneId = signal<TopicLaneId>('anything');
   protected readonly thread = signal<readonly ThreadEntry[]>([]);
   protected readonly draft = signal('');
@@ -44,8 +51,10 @@ export class GrowingHumanPage {
 
   protected readonly step = computed<Step>(() => {
     if (!this.ageBand()) return 'age';
+    if (this.activity() === 'discover') return 'discover';
     return this.thread().length === 0 ? 'lane' : 'chat';
   });
+  protected readonly discovery = computed(() => this.discoveries[this.discoveryIndex()]);
   protected readonly ageLabel = computed(
     () => this.content.ageStep.options.find((option) => option.id === this.ageBand())?.label ?? '',
   );
@@ -61,6 +70,39 @@ export class GrowingHumanPage {
   protected selectAge(ageBand: AgeBand): void {
     this.ageBand.set(ageBand);
     this.focusAfterRender(() => this.stepHeading()?.nativeElement);
+  }
+
+  protected chooseActivity(activity: 'guide' | 'discover'): void {
+    this.activity.set(activity);
+    this.focusAfterRender(() => this.stepHeading()?.nativeElement);
+  }
+
+  protected chooseAnswer(index: number): void {
+    if (this.chosenAnswer() !== null) return;
+    this.chosenAnswer.set(index);
+  }
+
+  protected nextDiscovery(): void {
+    this.discoveryIndex.update((index) => (index + 1) % this.discoveries.length);
+    this.chosenAnswer.set(null);
+    this.focusAfterRender(() => this.stepHeading()?.nativeElement);
+  }
+
+  protected updateDiscoveryDraft(event: Event): void {
+    if (!(event.target instanceof HTMLTextAreaElement)) return;
+    this.discoveryDraft.set(event.target.value);
+  }
+
+  protected saveDiscovery(event: SubmitEvent): void {
+    event.preventDefault();
+    const note = this.discoveryDraft().trim().slice(0, 160);
+    if (!note) return;
+    this.discoveryNote.set(note);
+    this.discoveryDraft.set('');
+  }
+
+  protected clearDiscoveryNote(): void {
+    this.discoveryNote.set('');
   }
 
   protected selectLane(laneId: TopicLaneId): void {
@@ -113,6 +155,11 @@ export class GrowingHumanPage {
   protected startOver(): void {
     this.cancelPending();
     this.ageBand.set(null);
+    this.activity.set('guide');
+    this.discoveryIndex.set(0);
+    this.chosenAnswer.set(null);
+    this.discoveryDraft.set('');
+    this.discoveryNote.set('');
     this.laneId.set('anything');
     this.thread.set([]);
     this.draft.set('');

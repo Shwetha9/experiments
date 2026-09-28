@@ -101,4 +101,35 @@ describe('GrowingHumanPage', () => {
     expect(local).not.toHaveBeenCalled();
     expect(session).not.toHaveBeenCalled();
   });
+
+  it('lets a child explore, quiz themselves, and clear a discovery note', () => {
+    const local = spyOn(localStorage, 'setItem');
+    const { fixture, el } = render();
+    chooseAge(fixture, el);
+    Array.from(el.querySelectorAll<HTMLButtonElement>('.growing-human__activities button'))[1].click();
+    fixture.detectChanges();
+
+    expect(el.textContent).toContain('The Moon has a familiar face.');
+    expect(el.querySelector<HTMLAnchorElement>('.growing-human__fact a')?.href).toContain('science.nasa.gov');
+    el.querySelectorAll<HTMLButtonElement>('.growing-human__answers button')[1].click();
+    fixture.detectChanges();
+    expect(el.querySelector('.growing-human__quiz-feedback')?.textContent).toContain('You got it!');
+
+    const note = el.querySelector<HTMLTextAreaElement>('#discovery-note')!;
+    note.value = 'The Moon spins as it orbits Earth.';
+    note.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    el.querySelector<HTMLFormElement>('.growing-human__journal form')!.dispatchEvent(new Event('submit'));
+    fixture.detectChanges();
+    expect(el.querySelector('.growing-human__saved-note')?.textContent).toContain('The Moon spins');
+    expect(local).not.toHaveBeenCalled();
+
+    el.querySelector<HTMLButtonElement>('.growing-human__next')!.click();
+    fixture.detectChanges();
+    expect(el.textContent).toContain('Mars has a giant volcano.');
+    expect(el.querySelector('.growing-human__quiz-feedback')).toBeNull();
+    el.querySelector<HTMLButtonElement>('.growing-human__saved-note button')!.click();
+    fixture.detectChanges();
+    expect(el.querySelector('.growing-human__saved-note')).toBeNull();
+  });
 });
