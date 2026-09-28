@@ -6,6 +6,7 @@
     "start": "nx serve shwetha-portfolio",
     "build": "nx build shwetha-portfolio",
     "build:api": "nx build api",
+    "test:api:artifact": "nx build api --skip-nx-cache && node --test tests/api-vercel-smoke.test.cjs",
     "watch": "nx build shwetha-portfolio --watch --configuration development",
     "test": "nx test shwetha-portfolio",
     "test:content": "node --test tests/*.test.mjs"

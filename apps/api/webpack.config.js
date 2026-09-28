@@ -22,9 +22,6 @@ module.exports = {
       tsConfig: './tsconfig.app.json',
       assets: ['./src/assets'],
       optimization: false,
-      // Vercel invokes the compiled handler from `dist/`; bundle its runtime
-      // dependencies so cold starts cannot rely on untraced root node_modules.
-      externalDependencies: 'none',
       outputHashing: 'none',
       generatePackageJson: true,
       sourceMap: true,
