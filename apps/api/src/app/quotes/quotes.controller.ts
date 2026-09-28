@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpException,
+  HttpStatus,
   Param,
   Query,
 } from '@nestjs/common';
@@ -26,8 +27,11 @@ export class QuotesController {
   ): Promise<unknown> {
     if (!isQuoteEndpoint(endpoint)) throw new BadRequestException('Unsupported quotes endpoint.');
 
+    // Unknown keys are dropped, not rejected: Vercel's `/api/:path*` rewrite
+    // appends `path=...` to the query string in production.
     const parameters = Object.entries(query).reduce<Record<string, string>>((result, [key, value]) => {
-      if (!ALLOWED_QUERY_PARAMETERS.has(key) || typeof value !== 'string') {
+      if (!ALLOWED_QUERY_PARAMETERS.has(key)) return result;
+      if (typeof value !== 'string') {
         throw new BadRequestException('Invalid quotes query parameter.');
       }
       result[key] = value;
@@ -38,7 +42,10 @@ export class QuotesController {
       return await this.quotes.get(endpoint, parameters);
     } catch (error) {
       if (error instanceof QuotesProviderError) {
-        throw new HttpException('The quote service is unavailable.', error.status);
+        // Upstream 4xx (e.g. a bad API key) is our server's fault, not the
+        // browser's, so surface it as 502 rather than echoing the status.
+        const status = error.status === HttpStatus.TOO_MANY_REQUESTS ? error.status : HttpStatus.BAD_GATEWAY;
+        throw new HttpException('The quote service is unavailable.', status);
       }
       throw error;
     }

@@ -42,8 +42,11 @@ test('built Vercel handler starts and serves both API routes', { timeout: 10000 
     assert.equal(chat.status, 400);
     assert.equal((await chat.json()).message, 'Invalid chat request');
 
-    // A warm invocation reaches the Quotes provider boundary.
-    const quotes = await originalFetch(`${baseUrl}/api/quotes/randomquotes?categories=wisdom`);
+    // A warm invocation reaches the Quotes provider boundary. Vercel's
+    // `/api/:path*` rewrite appends `path=` to the query, so mimic that here.
+    const quotes = await originalFetch(
+      `${baseUrl}/api/quotes/randomquotes?categories=wisdom&path=quotes%2Frandomquotes`,
+    );
     assert.equal(quotes.status, 200);
     assert.deepEqual(await quotes.json(), fixture);
     assert.equal(providerCalls, 1);
