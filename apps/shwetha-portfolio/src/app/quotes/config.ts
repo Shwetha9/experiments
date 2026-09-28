@@ -1,9 +1,7 @@
 export interface QuoteApiConfig {
-  readonly baseUrl: string;
-  readonly apiKey: string;
+  readonly proxyUrl: string;
 }
 
 export const quoteApiConfig: QuoteApiConfig = {
-  baseUrl: 'https://api.api-ninjas.com/v2',
-  apiKey: '',
+  proxyUrl: '/api/quotes',
 };

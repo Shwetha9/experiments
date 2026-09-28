@@ -1,8 +1,7 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, catchError, map, of, throwError } from 'rxjs';
+import { Observable, catchError, map, throwError } from 'rxjs';
 import { quoteApiConfig } from '../config';
-import { localAuthors, localQuotes } from '../content/local-quotes';
 import { Quote, QuoteApiError, QuoteBrowseQuery, QuoteCategory } from '../models/quote';
 import { mapQuoteList, mapSingleQuote } from '../utils/quote-api';
 
@@ -11,23 +10,14 @@ export class QuoteService {
   private readonly http = inject(HttpClient);
 
   getQuoteOfTheDay(): Observable<Quote> {
-    if (!quoteApiConfig.apiKey) return of(this.localQuoteOfTheDay());
     return this.request<Quote>('quoteoftheday', mapSingleQuote);
   }
 
   getRandomQuote(category: QuoteCategory): Observable<Quote> {
-    if (!quoteApiConfig.apiKey) {
-      return of(this.localQuotesFor(category)[0] ?? localQuotes[0]);
-    }
     return this.request<Quote>('randomquotes', mapSingleQuote, { categories: category, safe: 'true' });
   }
 
   browseQuotes(query: QuoteBrowseQuery): Observable<readonly Quote[]> {
-    if (!quoteApiConfig.apiKey) {
-      const offset = query.offset ?? 0;
-      const limit = query.limit ?? localQuotes.length;
-      return of(this.localQuotesFor(query.category).slice(offset, offset + limit));
-    }
     const params: Record<string, string> = { safe: 'true' };
     if (query.category) params['categories'] = query.category;
     if (query.limit !== undefined) params['limit'] = `${query.limit}`;
@@ -37,19 +27,7 @@ export class QuoteService {
   }
 
   getAuthors(): Observable<readonly string[]> {
-    if (!quoteApiConfig.apiKey) return of(localAuthors);
     return this.request<readonly string[]>('quoteauthors', this.mapAuthors);
-  }
-
-  private localQuoteOfTheDay(): Quote {
-    const day = Math.floor(Date.now() / 86_400_000);
-    return localQuotes[day % localQuotes.length];
-  }
-
-  private localQuotesFor(category?: QuoteCategory): readonly Quote[] {
-    if (!category) return localQuotes;
-    const matches = localQuotes.filter((quote) => quote.categories.includes(category));
-    return matches.length > 0 ? matches : localQuotes;
   }
 
   private request<T>(
@@ -57,20 +35,13 @@ export class QuoteService {
     mapper: (payload: unknown) => T,
     query: Record<string, string> = {},
   ): Observable<T> {
-    if (!quoteApiConfig.apiKey) {
-      return throwError(() => new QuoteApiError('configuration', 'Add an API Ninjas key to connect quotes.'));
-    }
-
     let params = new HttpParams();
     Object.entries(query).forEach(([key, value]) => {
       params = params.set(key, value);
     });
 
     return this.http
-      .get<unknown>(`${quoteApiConfig.baseUrl}/${endpoint}`, {
-        headers: new HttpHeaders({ 'X-Api-Key': quoteApiConfig.apiKey }),
-        params,
-      })
+      .get<unknown>(`${quoteApiConfig.proxyUrl}/${endpoint}`, { params })
       .pipe(
         map(mapper),
         catchError((error: unknown) => throwError(() => this.toQuoteError(error))),

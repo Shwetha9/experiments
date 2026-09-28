@@ -44,18 +44,10 @@ This will compile your project and store the build artifacts in the `dist/` dire
 
 ## Quotes API
 
-The `/quotes` route works locally with a small bundled archive. To enable live
-API Ninjas quotes, add your browser-side key to `src/app/quotes/config.ts`:
-
-```ts
-export const quoteApiConfig: QuoteApiConfig = {
-  baseUrl: 'https://api.api-ninjas.com/v2',
-  apiKey: 'your-key-here',
-};
-```
-
-Never commit a real key. A static Angular deployment exposes browser-sent keys;
-use a same-origin proxy or serverless function before public production use.
+The Angular app calls the same-origin `/api/quotes/*` proxy. Add
+`API_NINJAS_API_KEY` to Vercel (and to `.env` for local API use); the Nest API
+passes it to API Ninjas and the browser never receives it. Re-deploy after
+changing the Vercel environment variable.
 
 ## Running unit tests
 

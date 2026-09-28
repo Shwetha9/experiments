@@ -18,13 +18,12 @@ test('defines all API Ninjas quote capabilities', () => {
   assert.equal(existsSync(serviceUrl), true);
 
   const service = readFileSync(serviceUrl, 'utf8');
-  assert.match(service, /localQuoteOfTheDay/);
-  assert.match(service, /if \(!quoteApiConfig\.apiKey\)/);
+  assert.match(service, /quoteApiConfig\.proxyUrl/);
   assert.match(service, /quoteoftheday/);
   assert.match(service, /randomquotes/);
   assert.match(service, /'quotes'/);
   assert.match(service, /quoteauthors/);
-  assert.match(service, /X-Api-Key/);
+  assert.doesNotMatch(service, /X-Api-Key/);
   assert.match(service, /Observable/);
   assert.doesNotMatch(service, /\bany\b/);
 });
