@@ -4,6 +4,9 @@ const { join } = require('path');
 module.exports = {
   output: {
     path: join(__dirname, '../../dist/apps/api'),
+    // The Vercel bridge imports the secondary entry point with CommonJS.
+    // Make its exported default handler available to `require()`.
+    library: { type: 'commonjs2' },
     clean: true,
     ...(process.env.NODE_ENV !== 'production' && {
       devtoolModuleFilenameTemplate: '[absolute-resource-path]',
@@ -19,6 +22,9 @@ module.exports = {
       tsConfig: './tsconfig.app.json',
       assets: ['./src/assets'],
       optimization: false,
+      // Vercel invokes the compiled handler from `dist/`; bundle its runtime
+      // dependencies so cold starts cannot rely on untraced root node_modules.
+      externalDependencies: 'none',
       outputHashing: 'none',
       generatePackageJson: true,
       sourceMap: true,
