@@ -6,7 +6,7 @@
     "start": "nx serve shwetha-portfolio",
     "build": "nx build shwetha-portfolio",
     "build:api": "nx build api",
-    "test:api:artifact": "nx build api --skip-nx-cache && node --test tests/api-vercel-smoke.test.cjs",
+    "test:api:artifact": "nx build api --skip-nx-cache && node --no-experimental-require-module --test tests/api-vercel-smoke.test.cjs",
     "watch": "nx build shwetha-portfolio --watch --configuration development",
     "test": "nx test shwetha-portfolio",
     "test:content": "node --test tests/*.test.mjs"
@@ -33,7 +33,7 @@
     "@angular/router": "^20.3.0",
     "@fontsource/open-sans": "^5.3.0",
     "@nestjs/common": "^11.0.0",
-    "@nestjs/config": "^12.0.1",
+    "@nestjs/config": "4.0.3",
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "@nestjs/throttler": "^6.7.1",
