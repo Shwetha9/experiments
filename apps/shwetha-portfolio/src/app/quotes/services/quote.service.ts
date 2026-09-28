@@ -14,14 +14,12 @@ export class QuoteService {
   }
 
   getRandomQuote(category: QuoteCategory): Observable<Quote> {
-    return this.request<Quote>('randomquotes', mapSingleQuote, { categories: category, safe: 'true' });
+    return this.request<Quote>('randomquotes', mapSingleQuote, { categories: category });
   }
 
   browseQuotes(query: QuoteBrowseQuery): Observable<readonly Quote[]> {
-    const params: Record<string, string> = { safe: 'true' };
+    const params: Record<string, string> = {};
     if (query.category) params['categories'] = query.category;
-    if (query.limit !== undefined) params['limit'] = `${query.limit}`;
-    if (query.offset !== undefined) params['offset'] = `${query.offset}`;
 
     return this.request<readonly Quote[]>('quotes', mapQuoteList, params);
   }

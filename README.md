@@ -47,7 +47,9 @@ This will compile your project and store the build artifacts in the `dist/` dire
 The Angular app calls the same-origin `/api/quotes/*` proxy. Add
 `API_NINJAS_API_KEY` to Vercel (and to `.env` for local API use); the Nest API
 passes it to API Ninjas and the browser never receives it. Re-deploy after
-changing the Vercel environment variable.
+changing the Vercel environment variable. The live daily and category requests
+use API Ninjas' free-tier-compatible parameters; its author catalogue and
+pagination are premium API features.
 
 ## Running unit tests
 

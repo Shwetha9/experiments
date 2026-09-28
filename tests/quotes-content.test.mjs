@@ -24,6 +24,7 @@ test('defines all API Ninjas quote capabilities', () => {
   assert.match(service, /'quotes'/);
   assert.match(service, /quoteauthors/);
   assert.doesNotMatch(service, /X-Api-Key/);
+  assert.doesNotMatch(service, /safe:\s*'true'/);
   assert.match(service, /Observable/);
   assert.doesNotMatch(service, /\bany\b/);
 });
