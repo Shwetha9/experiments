@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { CHAT_ENDPOINT, PROVIDER_FAILURE_REPLY } from '@shwetha/growing-human-contracts';
 import { GrowingHumanPage } from './growing-human';
 import { growingHumanContent } from './content/growing-human-content';
+import { NASA_EPIC_ENDPOINT } from './services/earth-image.service';
 
 describe('GrowingHumanPage', () => {
   let http: HttpTestingController;
@@ -30,12 +31,18 @@ describe('GrowingHumanPage', () => {
     fixture.detectChanges();
   }
 
-  function sendMessage(fixture: ReturnType<typeof render>['fixture'], el: HTMLElement, text: string) {
+  function sendMessage(
+    fixture: ReturnType<typeof render>['fixture'],
+    el: HTMLElement,
+    text: string,
+  ) {
     const textarea = el.querySelector<HTMLTextAreaElement>('textarea')!;
     textarea.value = text;
     textarea.dispatchEvent(new Event('input'));
     fixture.detectChanges();
-    el.querySelector<HTMLFormElement>('.growing-human__composer')!.dispatchEvent(new Event('submit'));
+    el.querySelector<HTMLFormElement>('.growing-human__composer')!.dispatchEvent(
+      new Event('submit'),
+    );
     fixture.detectChanges();
   }
 
@@ -55,7 +62,7 @@ describe('GrowingHumanPage', () => {
 
   it('offers starter questions in every lane', () => {
     for (const lane of growingHumanContent.laneStep.lanes) {
-      expect(lane.starters?.length).withContext(lane.id).toBeGreaterThan(0);
+      expect(lane.starters?.length).withContext(lane.id).toBe(3);
     }
     const { fixture, el } = render();
     chooseAge(fixture, el);
@@ -70,12 +77,19 @@ describe('GrowingHumanPage', () => {
     sendMessage(fixture, el, 'How can I be a good friend?');
 
     const req = http.expectOne(CHAT_ENDPOINT);
-    expect(req.request.body.messages.at(-1)).toEqual({ role: 'child', text: 'How can I be a good friend?' });
+    expect(req.request.body.messages.at(-1)).toEqual({
+      role: 'child',
+      text: 'How can I be a good friend?',
+    });
     req.flush({ text: 'Listen closely.', action: 'Ask one question today.' });
     fixture.detectChanges();
 
-    expect(el.querySelector('.growing-human__message--guide')?.textContent).toContain('Listen closely.');
-    expect(el.querySelector('.growing-human__action')?.textContent).toContain('Ask one question today.');
+    expect(el.querySelector('.growing-human__message--guide')?.textContent).toContain(
+      'Listen closely.',
+    );
+    expect(el.querySelector('.growing-human__action')?.textContent).toContain(
+      'Ask one question today.',
+    );
   });
 
   it('shows the signed-off failure reply instead of faking an answer', () => {
@@ -106,11 +120,34 @@ describe('GrowingHumanPage', () => {
     const local = spyOn(localStorage, 'setItem');
     const { fixture, el } = render();
     chooseAge(fixture, el);
-    Array.from(el.querySelectorAll<HTMLButtonElement>('.growing-human__activities button'))[1].click();
+    Array.from(
+      el.querySelectorAll<HTMLButtonElement>('.growing-human__activities button'),
+    )[1].click();
+    fixture.detectChanges();
+    http
+      .expectOne(NASA_EPIC_ENDPOINT)
+      .flush([{ image: 'epic_1b_20260928000000', date: '2026-09-28 00:00:00' }]);
     fixture.detectChanges();
 
     expect(el.textContent).toContain('The Moon has a familiar face.');
-    expect(el.querySelector<HTMLAnchorElement>('.growing-human__fact a')?.href).toContain('science.nasa.gov');
+    expect(el.textContent).toContain('Latest available image: 2026-09-28');
+    expect(el.querySelector<HTMLAnchorElement>('.earth a')?.href).toBe(
+      'https://epic.gsfc.nasa.gov/?date=2026-09-28',
+    );
+    expect(el.querySelector<HTMLAnchorElement>('.growing-human__fact a')?.href).toContain(
+      'science.nasa.gov',
+    );
+    expect(
+      el.querySelector<HTMLButtonElement>('.growing-human__fact .growing-human__shuffle')
+        ?.ariaLabel,
+    ).toBe('Shuffle discovery');
+    expect(el.querySelector('.growing-human__quiz .growing-human__shuffle')).toBeNull();
+    expect(el.querySelector('.growing-human__discovery-pair')?.children[0].classList).toContain(
+      'growing-human__fact',
+    );
+    expect(el.querySelector('.growing-human__discovery-pair')?.children[1].classList).toContain(
+      'growing-human__quiz',
+    );
     el.querySelectorAll<HTMLButtonElement>('.growing-human__answers button')[1].click();
     fixture.detectChanges();
     expect(el.querySelector('.growing-human__quiz-feedback')?.textContent).toContain('You got it!');
@@ -119,17 +156,64 @@ describe('GrowingHumanPage', () => {
     note.value = 'The Moon spins as it orbits Earth.';
     note.dispatchEvent(new Event('input'));
     fixture.detectChanges();
-    el.querySelector<HTMLFormElement>('.growing-human__journal form')!.dispatchEvent(new Event('submit'));
+    el.querySelector<HTMLFormElement>('.growing-human__journal form')!.dispatchEvent(
+      new Event('submit'),
+    );
     fixture.detectChanges();
     expect(el.querySelector('.growing-human__saved-note')?.textContent).toContain('The Moon spins');
     expect(local).not.toHaveBeenCalled();
 
-    el.querySelector<HTMLButtonElement>('.growing-human__next')!.click();
+    spyOn(Math, 'random').and.returnValue(0);
+    el.querySelector<HTMLButtonElement>('.growing-human__shuffle')!.click();
     fixture.detectChanges();
     expect(el.textContent).toContain('Mars has a giant volcano.');
     expect(el.querySelector('.growing-human__quiz-feedback')).toBeNull();
     el.querySelector<HTMLButtonElement>('.growing-human__saved-note button')!.click();
     fixture.detectChanges();
     expect(el.querySelector('.growing-human__saved-note')).toBeNull();
+  });
+
+  it('shuffles to a different discovery and clears the previous answer', () => {
+    const { fixture, el } = render();
+    chooseAge(fixture, el);
+    Array.from(
+      el.querySelectorAll<HTMLButtonElement>('.growing-human__activities button'),
+    )[1].click();
+    fixture.detectChanges();
+    http.expectOne(NASA_EPIC_ENDPOINT).flush([]);
+    fixture.detectChanges();
+
+    const random = spyOn(Math, 'random').and.returnValue(0.99);
+    const shuffle = el.querySelector<HTMLButtonElement>('.growing-human__shuffle')!;
+    shuffle.click();
+    fixture.detectChanges();
+    expect(el.textContent).toContain('Discovery 4 of 4');
+    expect(el.textContent).not.toContain('The Moon has a familiar face.');
+
+    el.querySelector<HTMLButtonElement>('.growing-human__answers button')!.click();
+    fixture.detectChanges();
+    expect(el.querySelector('.growing-human__quiz-feedback')).not.toBeNull();
+
+    random.and.returnValue(0);
+    shuffle.click();
+    fixture.detectChanges();
+    expect(el.textContent).toContain('Discovery 1 of 4');
+    expect(el.querySelector('.growing-human__quiz-feedback')).toBeNull();
+  });
+
+  it('keeps discoveries usable when the NASA image request fails', () => {
+    const { fixture, el } = render();
+    chooseAge(fixture, el);
+    Array.from(
+      el.querySelectorAll<HTMLButtonElement>('.growing-human__activities button'),
+    )[1].click();
+    fixture.detectChanges();
+    http
+      .expectOne(NASA_EPIC_ENDPOINT)
+      .flush('unavailable', { status: 503, statusText: 'Unavailable' });
+    fixture.detectChanges();
+
+    expect(el.textContent).toContain("NASA's image isn't available just now");
+    expect(el.textContent).toContain('The Moon has a familiar face.');
   });
 });

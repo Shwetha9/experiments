@@ -78,6 +78,7 @@ textarea {
   max-width: 860px;
   padding: clamp(48px, 7vw, 96px) 6% 64px;
 }
+.growing-human__main--discovery { max-width: 1160px; padding-top: 52px; }
 
 .growing-human__activities {
   display: flex;
@@ -363,17 +364,18 @@ ol {
   padding: 12px 14px;
 }
 
-.growing-human__discovery { gap: 24px; }
+.growing-human__discovery { gap: 20px; }
 .growing-human__discovery-heading { display: grid; gap: 14px; }
-.growing-human__discovery-heading .growing-human__title { font-size: clamp(36px, 5vw, 54px); }
+.growing-human__discovery-heading .growing-human__title { font-size: clamp(34px, 4vw, 48px); }
+.growing-human__discovery-pair { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .growing-human__fact {
   background: linear-gradient(125deg, #302537, #1b2438 70%);
   border: 1px solid #655371;
   border-radius: 22px;
   display: grid;
-  grid-template-columns: 150px 1fr;
-  min-height: 230px;
+  grid-template-columns: 100px minmax(0, 1fr);
   overflow: hidden;
+  position: relative;
 }
 .growing-human__fact[data-place='mars'] { background: linear-gradient(125deg, #442d32, #21283a 70%); }
 .growing-human__fact[data-place='saturn'] { background: linear-gradient(125deg, #423a31, #21283a 70%); }
@@ -382,25 +384,40 @@ ol {
   align-items: center;
   color: #e8c5e2;
   display: flex;
-  font: 110px/1 Georgia, serif;
+  font: 80px/1 Georgia, serif;
   justify-content: center;
   text-shadow: 0 0 42px rgb(239 172 195 / 40%);
 }
-.growing-human__fact-copy { align-self: center; padding: 28px 32px 28px 0; }
+.growing-human__fact-copy { align-self: center; padding: 24px 20px 24px 0; }
+.growing-human__fact-top { align-items: center; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; }
 .growing-human__fact-eyebrow {
   color: var(--rose);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: .1em;
+  margin: 0;
   text-transform: uppercase;
 }
+.growing-human__shuffle {
+  background: transparent;
+  border: 1px solid var(--rose);
+  border-radius: 999px;
+  color: var(--text);
+  cursor: pointer;
+  flex: none;
+  display: grid;
+  height: 40px;
+  place-items: center;
+  width: 40px;
+}
+.growing-human__shuffle svg { height: 20px; width: 20px; }
 .growing-human__fact h2,
 .growing-human__quiz h2,
 .growing-human__journal h2 {
-  font: 600 clamp(25px, 3vw, 34px)/1.15 Georgia, serif;
+  font: 600 clamp(22px, 2.4vw, 28px)/1.2 Georgia, serif;
   margin: 8px 0 12px;
 }
-.growing-human__fact-copy > p:not(.growing-human__fact-eyebrow) { line-height: 1.6; }
+.growing-human__fact-copy > p:not(.growing-human__fact-eyebrow) { font-size: 15px; line-height: 1.6; }
 .growing-human__fact a { color: #e9d1ff; font-size: 14px; text-underline-offset: 3px; }
 .growing-human__quiz,
 .growing-human__journal {
@@ -416,6 +433,7 @@ ol {
   border-radius: 11px;
   color: var(--text);
   cursor: pointer;
+  font-size: 15px;
   padding: 13px 16px;
   text-align: left;
 }
@@ -425,7 +443,6 @@ ol {
 .growing-human__answers .growing-human__answer--try-again { background: #49353a; border-color: var(--rose); }
 .growing-human__quiz-feedback { color: var(--text); line-height: 1.5; margin: 16px 0 0; }
 .growing-human__quiz-feedback strong { color: #aee4ba; }
-.growing-human__next,
 .growing-human__journal form button {
   background: linear-gradient(135deg, var(--rose), var(--lavender));
   border: 0;
@@ -436,7 +453,7 @@ ol {
   margin-top: 18px;
   padding: 11px 16px;
 }
-.growing-human__journal > p:not(.growing-human__kicker) { color: var(--muted); line-height: 1.5; }
+.growing-human__journal > p:not(.growing-human__kicker) { color: var(--muted); font-size: 15px; line-height: 1.5; }
 .growing-human__journal form { display: grid; justify-items: start; }
 .growing-human__journal textarea {
   background: #222334;
@@ -481,10 +498,13 @@ ol {
 }
 
 @media (max-width: 620px) {
-  .growing-human__activities { margin: -24px 0 30px; }
+  .growing-human__main--discovery { padding-top: 32px; }
+  .growing-human__activities { margin: -24px 0 26px; }
+  .growing-human__activities button { font-size: 14px; padding: 8px 10px; }
+  .growing-human__discovery-heading .growing-human__title { font-size: 32px; }
   .growing-human__fact { grid-template-columns: 1fr; }
-  .growing-human__fact-art { font-size: 70px; justify-content: start; padding: 20px 24px 0; }
-  .growing-human__fact-copy { padding: 0 24px 24px; }
+  .growing-human__fact-art { bottom: 8px; font-size: 60px; opacity: .2; position: absolute; right: 18px; }
+  .growing-human__fact-copy { padding: 20px; position: relative; }
   .growing-human__quiz, .growing-human__journal { padding: 20px; }
   .growing-human__bar {
     flex-wrap: wrap;
@@ -504,4 +524,7 @@ ol {
   .growing-human__welcome-art {
     display: none;
   }
+}
+@media (max-width: 920px) {
+  .growing-human__discovery-pair { grid-template-columns: 1fr; }
 }

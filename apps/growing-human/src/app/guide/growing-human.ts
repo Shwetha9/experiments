@@ -15,6 +15,7 @@ import { growingHumanContent } from './content/growing-human-content';
 import { spaceDiscoveries } from './content/space-discoveries';
 import { AgeBand, ChatMessage, ChatReply, TopicLaneId } from './models/growing-human';
 import { GrowingHumanChatService } from './services/growing-human-chat.service';
+import { EarthImagePanel } from './earth-image/earth-image';
 
 type Step = 'age' | 'lane' | 'chat' | 'discover';
 
@@ -25,7 +26,7 @@ interface ThreadEntry {
 
 @Component({
   selector: 'app-growing-human',
-  imports: [RouterLink],
+  imports: [RouterLink, EarthImagePanel],
   templateUrl: './growing-human.html',
   styleUrl: './growing-human.scss',
 })
@@ -33,6 +34,7 @@ export class GrowingHumanPage {
   private readonly chat = inject(GrowingHumanChatService);
   private readonly injector = inject(Injector);
   private readonly stepHeading = viewChild<ElementRef<HTMLElement>>('stepHeading');
+  private readonly factTitle = viewChild<ElementRef<HTMLElement>>('factTitle');
   private readonly composer = viewChild<ElementRef<HTMLTextAreaElement>>('composer');
   private pending: Subscription | null = null;
 
@@ -82,10 +84,14 @@ export class GrowingHumanPage {
     this.chosenAnswer.set(index);
   }
 
-  protected nextDiscovery(): void {
-    this.discoveryIndex.update((index) => (index + 1) % this.discoveries.length);
+  protected shuffleDiscovery(): void {
+    const current = this.discoveryIndex();
+    const otherCount = this.discoveries.length - 1;
+    if (otherCount < 1) return;
+    const pick = Math.floor(Math.random() * otherCount);
+    this.discoveryIndex.set(pick >= current ? pick + 1 : pick);
     this.chosenAnswer.set(null);
-    this.focusAfterRender(() => this.stepHeading()?.nativeElement);
+    this.focusAfterRender(() => this.factTitle()?.nativeElement);
   }
 
   protected updateDiscoveryDraft(event: Event): void {

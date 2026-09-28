@@ -2,14 +2,17 @@
   <header>
     <a class="brand" href="#top">Shwetha<span class="brand__mark" aria-hidden="true"></span></a>
     <div class="header-actions">
-      <nav aria-label="Primary navigation">
-        <a routerLink="/quotes">Quotes</a>
-        <a href="#possibility">Possibility</a>
-        <a href="#practice">Practice</a>
-        <a href="#leadership">Leadership</a>
-        <a href="#beyond">Beyond</a>
-        <a href="#contact">Contact</a>
+      <nav id="primary-nav" class="header-nav" [class.header-nav--open]="menuOpen()" aria-label="Primary navigation" (keydown.escape)="closeMenu()">
+        <a href="#possibility" (click)="closeMenu()">Possibility</a>
+        <a href="#practice" (click)="closeMenu()">Practice</a>
+        <a href="#leadership" (click)="closeMenu()">Leadership</a>
+        <a href="#beyond" (click)="closeMenu()">Beyond</a>
+        <a href="#contact" (click)="closeMenu()">Contact</a>
+        <a class="header-nav__feature" href="/growing-human/" (click)="closeMenu()">Growing Human <i class="pi pi-arrow-up-right" aria-hidden="true"></i></a>
       </nav>
+      <button type="button" class="menu-toggle" [attr.aria-expanded]="menuOpen()" aria-controls="primary-nav" [attr.aria-label]="menuOpen() ? 'Close menu' : 'Open menu'" (click)="toggleMenu()">
+        <i class="pi" [class.pi-bars]="!menuOpen()" [class.pi-times]="menuOpen()" aria-hidden="true"></i>
+      </button>
       <button
         type="button"
         class="theme-toggle"
@@ -130,7 +133,10 @@
       <div class="beyond__intro">
         <p class="eyebrow">{{ content.beyond.eyebrow }}</p>
         <h2>{{ content.beyond.title }}</h2>
-        <p>{{ content.beyond.body }}</p>
+        <div class="beyond__copy">
+          <p>{{ content.beyond.body }}</p>
+          <a routerLink="/quotes" class="beyond__quotes-link">Explore quotes <i class="pi pi-arrow-up-right" aria-hidden="true"></i></a>
+        </div>
       </div>
       <div class="beyond__influences">
         @for (influence of content.beyond.influences; track influence.source; let index = $index) {

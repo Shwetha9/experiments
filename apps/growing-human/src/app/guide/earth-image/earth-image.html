@@ -1,0 +1,21 @@
+<section class="earth" aria-labelledby="earth-title">
+  <div class="earth__copy">
+    <p class="earth__kicker">A window to Earth · NASA EPIC</p>
+    <h2 id="earth-title">See our home from space</h2>
+    <p>NASA's EPIC camera photographs the sunlit side of Earth. What shapes, clouds or colours can you spot?</p>
+    @if (image(); as photo) {
+      <p class="earth__date">Latest available image: {{ photo.date }}</p>
+      <a [href]="photo.sourceUrl" target="_blank" rel="noopener noreferrer">Explore this image at NASA <span aria-hidden="true">↗</span></a>
+    } @else if (loading()) {
+      <p role="status">Finding NASA's latest Earth image…</p>
+    } @else {
+      <p role="status">NASA's image isn't available just now. You can still explore the space discoveries below.</p>
+      <button type="button" (click)="load()">Try again</button>
+    }
+  </div>
+  @if (image(); as photo) {
+    <img [src]="photo.imageUrl" [alt]="'Earth seen from space on ' + photo.date + ', photographed by NASA EPIC'" loading="lazy" (error)="imageFailed()" />
+  } @else {
+    <div class="earth__placeholder" aria-hidden="true">◎</div>
+  }
+</section>

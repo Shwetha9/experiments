@@ -69,8 +69,28 @@ describe('LandingPage', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.querySelectorAll('a[href="/growing-human/"]')).toHaveSize(2);
-    expect(compiled.querySelector('a[href="/quotes"]')?.textContent).toContain('Quotes');
+    expect(compiled.querySelectorAll('a[href="/growing-human/"]')).toHaveSize(3);
+    expect(compiled.querySelector('header a[href="/growing-human/"]')?.textContent).toContain('Growing Human');
+    expect(compiled.querySelector('header a[href="/quotes"]')).toBeNull();
+    expect(compiled.querySelector('#beyond a[href="/quotes"]')?.textContent).toContain('quotes');
+  });
+
+  it('opens the mobile menu and closes it after choosing a section', () => {
+    const fixture = TestBed.createComponent(LandingPage);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const toggle = compiled.querySelector<HTMLButtonElement>('.menu-toggle')!;
+    const nav = compiled.querySelector<HTMLElement>('#primary-nav')!;
+
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    toggle.click();
+    fixture.detectChanges();
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    expect(nav.classList.contains('header-nav--open')).toBeTrue();
+
+    nav.querySelector<HTMLAnchorElement>('a[href="#practice"]')!.click();
+    fixture.detectChanges();
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
   });
 
   it('keeps archive material off the landing page', () => {

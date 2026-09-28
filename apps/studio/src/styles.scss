@@ -153,6 +153,18 @@ app-landing nav a:hover::after,
 app-landing nav a:focus-visible::after {
   transform: scaleX(1);
 }
+app-landing nav .header-nav__feature {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text);
+  font-weight: 700;
+  padding: 9px 13px;
+  white-space: nowrap;
+}
+app-landing nav .header-nav__feature::after { display: none; }
+app-landing nav .header-nav__feature:hover { border-color: var(--tone-sage); }
+app-landing .menu-toggle { display: none; }
 app-landing .theme-toggle {
   align-items: center;
   background: transparent;
@@ -170,6 +182,44 @@ app-landing .theme-toggle {
 }
 app-landing .theme-toggle:hover {
   background: var(--surface-soft);
+}
+
+@media (max-width: 960px) {
+  app-landing header { padding: 14px 6%; }
+  app-landing .header-actions { gap: 8px; }
+  app-landing nav.header-nav {
+    align-items: stretch;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    border-right: 0;
+    box-shadow: 0 18px 30px rgb(0 0 0 / 12%);
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    left: 0;
+    max-height: calc(100dvh - 66px);
+    overflow-y: auto;
+    padding: 12px 6% 24px;
+    position: absolute;
+    right: 0;
+    top: 100%;
+  }
+  app-landing nav.header-nav--open { display: flex; }
+  app-landing nav a { font-size: 13px; padding: 13px 6px; }
+  app-landing nav .header-nav__feature { margin-top: 6px; padding: 13px 16px; text-align: center; }
+  app-landing .menu-toggle {
+    align-items: center;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--text);
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 16px;
+    height: 38px;
+    justify-content: center;
+    width: 38px;
+  }
 }
 
 a:focus-visible,

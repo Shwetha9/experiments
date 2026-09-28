@@ -12,13 +12,21 @@
   </nav>
 </header>
 
-<main class="growing-human__main">
+<main class="growing-human__main" [class.growing-human__main--discovery]="step() === 'discover'">
   @if (ageBand()) {
     <nav class="growing-human__activities" aria-label="Choose an activity">
-      <button type="button" [attr.aria-current]="activity() === 'discover' ? null : 'page'" (click)="chooseActivity('guide')">
+      <button
+        type="button"
+        [attr.aria-current]="activity() === 'discover' ? null : 'page'"
+        (click)="chooseActivity('guide')"
+      >
         <span aria-hidden="true">✳</span> Ask a big question
       </button>
-      <button type="button" [attr.aria-current]="activity() === 'discover' ? 'page' : null" (click)="chooseActivity('discover')">
+      <button
+        type="button"
+        [attr.aria-current]="activity() === 'discover' ? 'page' : null"
+        (click)="chooseActivity('discover')"
+      >
         <span aria-hidden="true">✦</span> Discover & quiz
       </button>
     </nav>
@@ -69,49 +77,89 @@
     }
 
     @case ('discover') {
-      <section class="growing-human__step growing-human__discovery" aria-labelledby="discovery-title">
+      <section
+        class="growing-human__step growing-human__discovery"
+        aria-labelledby="discovery-title"
+      >
         <div class="growing-human__discovery-heading">
           <p class="growing-human__kicker">Space explorer · NASA facts</p>
           <h1 id="discovery-title" class="growing-human__title" tabindex="-1" #stepHeading>
             One new thing can start a thousand questions.
           </h1>
-          <p class="growing-human__copy">Explore a little, try a question, and put a discovery into your own words.</p>
+          <p class="growing-human__copy">
+            Explore a little, try a question, and put a discovery into your own words.
+          </p>
         </div>
 
-        <article class="growing-human__fact" [attr.data-place]="discovery().id">
-          <div class="growing-human__fact-art" aria-hidden="true">{{ discovery().symbol }}</div>
-          <div class="growing-human__fact-copy">
-            <p class="growing-human__fact-eyebrow">Discovery {{ discoveryIndex() + 1 }} of {{ discoveries.length }} · {{ discovery().place }}</p>
-            <h2>{{ discovery().title }}</h2>
-            <p>{{ discovery().fact }}</p>
-            <a [href]="discovery().source" target="_blank" rel="noopener noreferrer">Explore this fact at NASA <span aria-hidden="true">↗</span></a>
-          </div>
-        </article>
+        <div class="growing-human__discovery-pair">
+          <article class="growing-human__fact" [attr.data-place]="discovery().id">
+            <div class="growing-human__fact-art" aria-hidden="true">{{ discovery().symbol }}</div>
+            <div class="growing-human__fact-copy">
+              <div class="growing-human__fact-top">
+                <p class="growing-human__fact-eyebrow">
+                  Discovery {{ discoveryIndex() + 1 }} of {{ discoveries.length }} ·
+                  {{ discovery().place }}
+                </p>
+                <button
+                  type="button"
+                  class="growing-human__shuffle"
+                  aria-label="Shuffle discovery"
+                  title="Shuffle discovery"
+                  (click)="shuffleDiscovery()"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M4 7h2c5 0 7 10 12 10h2m-3-3 3 3-3 3M4 17h2c2 0 3-2 4-4m4-4c1-1 2-2 4-2h2m-3-3 3 3-3 3"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <h2 tabindex="-1" #factTitle>{{ discovery().title }}</h2>
+              <p>{{ discovery().fact }}</p>
+              <a [href]="discovery().source" target="_blank" rel="noopener noreferrer"
+                >Explore this fact at NASA <span aria-hidden="true">↗</span></a
+              >
+            </div>
+          </article>
 
-        <section class="growing-human__quiz" aria-labelledby="quiz-title">
-          <p class="growing-human__kicker">Tiny self quiz</p>
-          <h2 id="quiz-title">{{ discovery().question }}</h2>
-          <div class="growing-human__answers">
-            @for (choice of discovery().choices; track $index) {
-              <button
-                type="button"
-                [disabled]="chosenAnswer() !== null"
-                [class.growing-human__answer--correct]="chosenAnswer() !== null && $index === discovery().answer"
-                [class.growing-human__answer--try-again]="chosenAnswer() === $index && $index !== discovery().answer"
-                (click)="chooseAnswer($index)"
-              >{{ choice }}</button>
+          <section class="growing-human__quiz" aria-labelledby="quiz-title">
+            <p class="growing-human__kicker">Tiny self quiz</p>
+            <h2 id="quiz-title">{{ discovery().question }}</h2>
+            <div class="growing-human__answers">
+              @for (choice of discovery().choices; track $index) {
+                <button
+                  type="button"
+                  [disabled]="chosenAnswer() !== null"
+                  [class.growing-human__answer--correct]="
+                    chosenAnswer() !== null && $index === discovery().answer
+                  "
+                  [class.growing-human__answer--try-again]="
+                    chosenAnswer() === $index && $index !== discovery().answer
+                  "
+                  (click)="chooseAnswer($index)"
+                >
+                  {{ choice }}
+                </button>
+              }
+            </div>
+            @if (chosenAnswer() !== null) {
+              <p class="growing-human__quiz-feedback" role="status">
+                <strong>{{
+                  chosenAnswer() === discovery().answer ? 'You got it!' : 'Good try!'
+                }}</strong>
+                {{ discovery().explanation }}
+              </p>
             }
-          </div>
-          @if (chosenAnswer() !== null) {
-            <p class="growing-human__quiz-feedback" role="status">
-              <strong>{{ chosenAnswer() === discovery().answer ? 'You got it!' : 'Good try!' }}</strong>
-              {{ discovery().explanation }}
-            </p>
-          }
-          <button type="button" class="growing-human__next" (click)="nextDiscovery()">
-            {{ chosenAnswer() === null ? 'Show me another' : 'Next discovery' }} <span aria-hidden="true">→</span>
-          </button>
-        </section>
+          </section>
+        </div>
 
         <section class="growing-human__journal" aria-labelledby="journal-title">
           <p class="growing-human__kicker">Make it yours</p>
@@ -125,11 +173,23 @@
           }
           <form (submit)="saveDiscovery($event)">
             <label for="discovery-note" class="growing-human__visually-hidden">My discovery</label>
-            <textarea id="discovery-note" rows="2" maxlength="160" [value]="discoveryDraft()" placeholder="I discovered that…" (input)="updateDiscoveryDraft($event)"></textarea>
+            <textarea
+              id="discovery-note"
+              rows="2"
+              maxlength="160"
+              [value]="discoveryDraft()"
+              placeholder="I discovered that…"
+              (input)="updateDiscoveryDraft($event)"
+            ></textarea>
             <button type="submit" [disabled]="!discoveryDraft().trim()">Keep on this page</button>
           </form>
-          <p class="growing-human__journal-privacy">Your note stays on this page until you leave or start over. Please don't include private details.</p>
+          <p class="growing-human__journal-privacy">
+            Your note stays on this page until you leave or start over. Please don't include private
+            details.
+          </p>
         </section>
+
+        <app-earth-image />
       </section>
     }
 

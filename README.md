@@ -8,6 +8,8 @@ The Nest API owns the guide model and its safety checks. It is deliberately disa
 
 Before setting `GROWING_HUMAN_ENABLE_GUIDE=true`, run and document the approved red-team evaluation, obtain the required human review, and complete the launch gates in [the Growing Human design spec](docs/superpowers/specs/2026-09-26-growing-human-design.md). The flag is an operational release control, not approval to bypass those gates.
 
+The Discover activity uses NASA's [EPIC natural-colour API](https://epic.gsfc.nasa.gov/about/api) for the latest available Earth image. The browser requests public NASA metadata directly; EPIC supports cross-origin requests and needs no API key. The app validates the image name and date before constructing the image URL. If NASA is unavailable, the activity shows a fallback and the reviewed space facts and quizzes continue to work.
+
 ## Development server
 
 To start a local development server, run:

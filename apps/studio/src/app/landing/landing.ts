@@ -17,6 +17,15 @@ export class LandingPage {
   protected readonly isDark = this.theme.isDark;
   protected readonly selectedInfluence = signal<Influence | null>(null);
   protected readonly heroImageReady = signal(false);
+  protected readonly menuOpen = signal(false);
+
+  protected toggleMenu(): void {
+    this.menuOpen.update((open) => !open);
+  }
+
+  protected closeMenu(): void {
+    this.menuOpen.set(false);
+  }
 
   protected toggleTheme(): void {
     this.theme.toggle();
