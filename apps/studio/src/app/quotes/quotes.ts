@@ -1,5 +1,6 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Component, DestroyRef, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ThemeService } from '@studio/theme';
 import { quoteAnchors } from '@studio/editorial-content';
@@ -9,7 +10,7 @@ import { QuoteService } from '@studio/quote-data';
 
 @Component({
   selector: 'app-quotes',
-  imports: [RouterLink],
+  imports: [RouterLink, NgTemplateOutlet],
   templateUrl: './quotes.html',
   styleUrl: './quotes.scss',
 })

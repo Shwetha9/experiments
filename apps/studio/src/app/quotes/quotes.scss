@@ -330,43 +330,97 @@ blockquote {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
 }
 
-.browse__results blockquote {
-  border-left: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
-  font-size: clamp(22px, 2.4vw, 34px);
-  margin: 0 0 22px;
-  padding-left: clamp(18px, 2vw, 28px);
-}
-
-.browse__result blockquote::before {
-  color: var(--coral);
-  content: '“';
-  font:
-    700 64px/0.5 Georgia,
-    serif;
-  left: 0;
-  position: absolute;
-  top: 0;
-}
-
-.browse__results .quote-mark {
-  color: var(--muted);
-  font-weight: 400;
-}
-
-.browse__result blockquote,
-.browse__deterministic > blockquote {
-  font-size: clamp(28px, 4vw, 58px);
-}
-
-.browse__result blockquote {
-  border-left: 3px solid var(--coral);
-  padding-left: clamp(24px, 4vw, 46px);
+// Shared quote design: one oversized coral mark hanging above the text, a
+// measured reading width, and an attribution with a clear author/work hierarchy.
+.quote-figure {
+  margin: 0;
+  max-width: 980px;
+  padding-top: clamp(28px, 4vw, 48px);
   position: relative;
 }
 
-.browse__result blockquote::before {
-  left: clamp(8px, 1.4vw, 18px);
-  top: 11px;
+.quote-figure__mark {
+  color: var(--coral);
+  font:
+    400 clamp(96px, 11vw, 160px) / 1 Georgia,
+    serif;
+  left: -0.06em;
+  opacity: 0.85;
+  pointer-events: none;
+  position: absolute;
+  top: -0.12em;
+  user-select: none;
+}
+
+.quote-figure blockquote {
+  font-size: clamp(30px, 3.8vw, 52px);
+  letter-spacing: -0.02em;
+  line-height: 1.18;
+  margin: 0;
+  max-width: 30ch;
+  position: relative;
+}
+
+.quote-figure .quote-attribution {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: clamp(22px, 2.6vw, 32px);
+}
+
+.quote-figure .quote-attribution::before {
+  align-self: center;
+  background: var(--coral);
+  content: '';
+  height: 1px;
+  width: 36px;
+}
+
+.quote-attribution__author {
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.daily-quote .quote-attribution__author {
+  color: var(--mint-text);
+}
+
+.quote-attribution cite {
+  color: inherit;
+  font:
+    italic 400 16px/1.4 Georgia,
+    serif;
+}
+
+.quote-figure--compact {
+  padding-top: 26px;
+}
+
+.quote-figure--compact .quote-figure__mark {
+  font-size: 72px;
+  opacity: 0.6;
+}
+
+.quote-figure--compact blockquote {
+  font-size: clamp(21px, 2.2vw, 28px);
+  line-height: 1.32;
+}
+
+.quote-figure--compact .quote-attribution {
+  margin-top: 18px;
+}
+
+.quote-figure--compact .quote-attribution::before {
+  width: 20px;
+}
+
+.browse__results article {
+  border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  padding-top: 8px;
 }
 
 .browse__actions {

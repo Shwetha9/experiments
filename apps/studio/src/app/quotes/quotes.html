@@ -23,7 +23,10 @@
     <section class="quotes-hero">
       <p class="eyebrow">A small room for useful sentences</p>
       <h1>Quotes worth carrying<br /><em>into the work.</em></h1>
-      <p>One daily signal, three personal anchors, and a live archive for the days when the right sentence changes the shape of a problem.</p>
+      <p>
+        One daily signal, three personal anchors, and a live archive for the days when the right
+        sentence changes the shape of a problem.
+      </p>
     </section>
 
     <section id="daily" class="daily-quote" aria-labelledby="daily-title">
@@ -36,15 +39,19 @@
         @if (dailyState() === 'loading') {
           <p class="quote-status" aria-live="polite">Finding today’s sentence…</p>
         } @else if (dailyQuote(); as quote) {
-          <blockquote>“{{ quote.text }}”</blockquote>
-          <p class="quote-attribution">{{ quote.author }}{{ quote.work ? ' · ' + quote.work : '' }}</p>
+          <ng-container
+            *ngTemplateOutlet="quoteFigure; context: { $implicit: quote }"
+          ></ng-container>
           <div class="quote-tags">
             @for (category of quote.categories; track category) {
               <span>{{ category }}</span>
             }
           </div>
         } @else {
-          <p class="quote-status" aria-live="polite">{{ errorMessage(dailyState()) }} Edit <code>src/app/quotes/config.ts</code> to connect it.</p>
+          <p class="quote-status" aria-live="polite">
+            {{ errorMessage(dailyState()) }} Edit <code>src/app/quotes/config.ts</code> to connect
+            it.
+          </p>
         }
       </div>
     </section>
@@ -57,22 +64,42 @@
       </div>
       <div class="category-controls" aria-label="Quote categories">
         @for (category of categories; track category) {
-          <button type="button" [attr.aria-pressed]="selectedCategory() === category" (click)="selectCategory(category)">{{ category }}</button>
+          <button
+            type="button"
+            [attr.aria-pressed]="selectedCategory() === category"
+            (click)="selectCategory(category)"
+          >
+            {{ category }}
+          </button>
         }
       </div>
-      <div class="browse__result" aria-live="polite" [attr.aria-busy]="categoryState() === 'loading'">
+      <div
+        class="browse__result"
+        aria-live="polite"
+        [attr.aria-busy]="categoryState() === 'loading'"
+      >
         @if (categoryState() === 'loading') {
-          <p class="quote-loading"><span aria-hidden="true"></span>Finding something for {{ selectedCategory() }}…</p>
+          <p class="quote-loading">
+            <span aria-hidden="true"></span>Finding something for {{ selectedCategory() }}…
+          </p>
         } @else if (categoryQuote(); as quote) {
-          <blockquote>“{{ quote.text }}”</blockquote>
-          <p class="quote-attribution">{{ quote.author }}{{ quote.work ? ' · ' + quote.work : '' }}</p>
+          <ng-container
+            *ngTemplateOutlet="quoteFigure; context: { $implicit: quote }"
+          ></ng-container>
         } @else {
           <p class="quote-status">{{ errorMessage(categoryState()) }}</p>
         }
       </div>
       <div class="browse__actions">
-        <button type="button" class="button" (click)="refreshQuote()">Refresh quote <span aria-hidden="true">↻</span></button>
-        <button type="button" class="text-link" (click)="browseCategory()" [disabled]="browseState() === 'loading'">
+        <button type="button" class="button" (click)="refreshQuote()">
+          Refresh quote <span aria-hidden="true">↻</span>
+        </button>
+        <button
+          type="button"
+          class="text-link"
+          (click)="browseCategory()"
+          [disabled]="browseState() === 'loading'"
+        >
           {{ browseState() === 'loading' ? 'Loading the archive' : 'Browse deterministic results' }}
           <span aria-hidden="true">↓</span>
         </button>
@@ -91,8 +118,9 @@
           <div class="browse__results">
             @for (quote of browseQuotes(); track quote.id) {
               <article>
-                <blockquote><span class="quote-mark" aria-hidden="true">“</span>{{ quote.text }}<span class="quote-mark" aria-hidden="true">”</span></blockquote>
-                <p class="quote-attribution">{{ quote.author }}{{ quote.work ? ' · ' + quote.work : '' }}</p>
+                <ng-container
+                  *ngTemplateOutlet="quoteFigure; context: { $implicit: quote, compact: true }"
+                ></ng-container>
               </article>
             }
           </div>
@@ -115,7 +143,9 @@
               <p class="eyebrow">{{ anchor.source }}</p>
               <blockquote>“{{ anchor.quote }}”</blockquote>
               <h3>{{ anchor.title }}</h3>
-              <button type="button" class="text-link" (click)="openAnchor(anchor)">Read full passage <span aria-hidden="true">↗</span></button>
+              <button type="button" class="text-link" (click)="openAnchor(anchor)">
+                Read full passage <span aria-hidden="true">↗</span>
+              </button>
             </div>
           </article>
         }
@@ -126,10 +156,14 @@
       <div class="section-heading">
         <p class="eyebrow">A catalogue of voices</p>
         <h2 id="authors-title">Authors worth wandering through.</h2>
-        <p>The provider’s author catalogue is optional. The rest of this page does not depend on it.</p>
+        <p>
+          The provider’s author catalogue is optional. The rest of this page does not depend on it.
+        </p>
       </div>
       @if (!authorsRequested()) {
-        <button type="button" class="button" (click)="showAuthors()">Explore authors <span aria-hidden="true">↗</span></button>
+        <button type="button" class="button" (click)="showAuthors()">
+          Explore authors <span aria-hidden="true">↗</span>
+        </button>
       } @else if (authorState() === 'loading') {
         <p class="quote-status" aria-live="polite">Opening the catalogue…</p>
       } @else if (authors().length > 0) {
@@ -144,10 +178,23 @@
     </section>
   </main>
 
-  <dialog #anchorDialog class="quote-dialog" aria-labelledby="anchor-dialog-title" (cancel)="closeAnchor()" (click)="handleDialogClick($event)">
+  <dialog
+    #anchorDialog
+    class="quote-dialog"
+    aria-labelledby="anchor-dialog-title"
+    (cancel)="closeAnchor()"
+    (click)="handleDialogClick($event)"
+  >
     @if (selectedAnchor(); as anchor) {
       <article class="quote-dialog__inner">
-        <button type="button" class="quote-dialog__close" aria-label="Close passage" (click)="closeAnchor()">×</button>
+        <button
+          type="button"
+          class="quote-dialog__close"
+          aria-label="Close passage"
+          (click)="closeAnchor()"
+        >
+          ×
+        </button>
         <p class="eyebrow">{{ anchor.source }}</p>
         <h2 id="anchor-dialog-title">{{ anchor.title }}</h2>
         <blockquote>“{{ anchor.fullQuote }}”</blockquote>
@@ -155,6 +202,20 @@
       </article>
     }
   </dialog>
+
+  <!-- One quote design for daily, category and archive results. -->
+  <ng-template #quoteFigure let-quote let-compact="compact">
+    <figure class="quote-figure" [class.quote-figure--compact]="compact">
+      <span class="quote-figure__mark" aria-hidden="true">“</span>
+      <blockquote>{{ quote.text }}</blockquote>
+      <figcaption class="quote-attribution">
+        <span class="quote-attribution__author">{{ quote.author }}</span>
+        @if (quote.work) {
+          <cite>{{ quote.work }}</cite>
+        }
+      </figcaption>
+    </figure>
+  </ng-template>
 
   <footer>
     <span>Keep the useful sentence.</span>
