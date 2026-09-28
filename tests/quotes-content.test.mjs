@@ -45,11 +45,16 @@ test('renders the separate quotes experience with daily, categories, browse, and
   assert.match(page, /id="authors"/);
   assert.match(page, /aria-pressed/);
   assert.match(page, /browseQuotes\(\)/);
+  assert.match(page, /browseState\(\) === 'loading'/);
+  assert.match(page, /Browse deterministic results/);
+  assert.match(page, /aria-hidden="true">↓<\/span>/);
   assert.ok(page.indexOf('id="browse"') < page.indexOf('id="anchors"'));
   assert.match(page, /src\/app\/quotes\/config\.ts/);
   const styles = readFileSync(new URL('../apps/shwetha-portfolio/src/app/quotes/quotes.scss', import.meta.url), 'utf8');
   assert.match(styles, /\.anchor-row\s*{[\s\S]*?position:\s*relative;/);
   assert.match(styles, /\.anchor-row::before\s*{[\s\S]*?position:\s*absolute;/);
+  assert.match(styles, /\.browse__loading\s*{[\s\S]*?display:\s*flex;/);
+  assert.match(styles, /\.browse__results blockquote::before/);
   assert.match(content, /John Donne/);
   assert.match(content, /Nathaniel Hawthorne/);
   assert.match(content, /Leonard Cohen/);

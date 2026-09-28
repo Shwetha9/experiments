@@ -333,22 +333,51 @@ blockquote {
 .browse__results {
   display: grid;
   gap: 26px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
 }
 
-.browse__results article + article {
-  border-left: 1px solid var(--line);
-  padding-left: 26px;
+.browse__results article {
+  background: color-mix(in srgb, var(--surface) 62%, transparent);
+  border: 1px solid var(--line);
+  padding: clamp(24px, 3vw, 38px);
+  position: relative;
 }
 
 .browse__results blockquote {
   font-size: clamp(22px, 2.4vw, 34px);
   margin: 0 0 22px;
+  padding-top: 22px;
+  position: relative;
+}
+
+.browse__results blockquote::before,
+.browse__result blockquote::before {
+  color: var(--coral);
+  content: '“';
+  font: 700 64px/0.5 Georgia, serif;
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+
+.browse__results blockquote::before {
+  top: 8px;
 }
 
 .browse__result blockquote,
 .browse__deterministic > blockquote {
   font-size: clamp(28px, 4vw, 58px);
+}
+
+.browse__result blockquote {
+  border-left: 3px solid var(--coral);
+  padding-left: clamp(24px, 4vw, 46px);
+  position: relative;
+}
+
+.browse__result blockquote::before {
+  left: clamp(8px, 1.4vw, 18px);
+  top: 11px;
 }
 
 .browse__actions {
@@ -357,6 +386,59 @@ blockquote {
   flex-wrap: wrap;
   gap: 26px;
   margin-top: 40px;
+}
+
+.browse__actions .text-link:disabled {
+  cursor: progress;
+  opacity: 0.58;
+}
+
+.browse__loading {
+  align-items: center;
+  background: color-mix(in srgb, var(--surface) 52%, transparent);
+  border: 1px solid var(--line);
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+  padding: 24px;
+}
+
+.browse__loading .eyebrow {
+  margin: 0 0 5px;
+}
+
+.browse__loading p:last-child {
+  color: var(--muted);
+  margin: 0;
+}
+
+.quote-spinner,
+.quote-loading > span {
+  animation: quote-spin 800ms linear infinite;
+  border: 2px solid color-mix(in srgb, var(--coral) 28%, transparent);
+  border-right-color: var(--coral);
+  border-radius: 50%;
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 24px;
+  width: 24px;
+}
+
+.quote-loading {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.quote-loading > span {
+  height: 16px;
+  width: 16px;
+}
+
+@keyframes quote-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .button {

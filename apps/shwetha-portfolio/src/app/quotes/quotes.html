@@ -62,7 +62,7 @@
       </div>
       <div class="browse__result" aria-live="polite" [attr.aria-busy]="categoryState() === 'loading'">
         @if (categoryState() === 'loading') {
-          <p class="quote-status">Finding something for {{ selectedCategory() }}…</p>
+          <p class="quote-loading"><span aria-hidden="true"></span>Finding something for {{ selectedCategory() }}…</p>
         } @else if (categoryQuote(); as quote) {
           <blockquote>“{{ quote.text }}”</blockquote>
           <p class="quote-attribution">{{ quote.author }}{{ quote.work ? ' · ' + quote.work : '' }}</p>
@@ -72,9 +72,20 @@
       </div>
       <div class="browse__actions">
         <button type="button" class="button" (click)="refreshQuote()">Refresh quote <span aria-hidden="true">↻</span></button>
-        <button type="button" class="text-link" (click)="browseCategory()">Browse deterministic results <span aria-hidden="true">↗</span></button>
+        <button type="button" class="text-link" (click)="browseCategory()" [disabled]="browseState() === 'loading'">
+          {{ browseState() === 'loading' ? 'Loading the archive' : 'Browse deterministic results' }}
+          <span aria-hidden="true">↓</span>
+        </button>
       </div>
-      @if (browseState() === 'success' && browseQuotes().length > 0) {
+      @if (browseState() === 'loading') {
+        <div class="browse__loading" aria-live="polite" aria-busy="true">
+          <span class="quote-spinner" aria-hidden="true"></span>
+          <div>
+            <p class="eyebrow">Opening the archive</p>
+            <p>Finding a thought for {{ selectedCategory() }}…</p>
+          </div>
+        </div>
+      } @else if (browseState() === 'success' && browseQuotes().length > 0) {
         <div class="browse__deterministic">
           <p class="eyebrow">From the archive</p>
           <div class="browse__results">
