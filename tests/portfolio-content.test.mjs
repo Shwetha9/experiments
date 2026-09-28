@@ -161,6 +161,7 @@ test('uses locally bundled Open Sans with editorial serif headings', () => {
 test('keeps the full-width sticky header and broken-circle identity', () => {
   assert.match(globalStyles, /app-landing header\s*{[\s\S]*?position:\s*sticky;/);
   assert.match(globalStyles, /app-landing :is\(header, main, footer\)\s*{[\s\S]*?width:\s*100%;/);
+  assert.doesNotMatch(globalStyles, /app-landing \.site\s*{[\s\S]*?overflow:\s*hidden/);
   assert.match(template, /<span class="brand__mark" aria-hidden="true"><\/span>/);
   assert.match(globalStyles, /app-landing \.brand__mark\s*{[\s\S]*?border:\s*1px dashed/);
 });
