@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { quoteApiConfig } from './config';
@@ -24,10 +24,6 @@ export class QuoteService {
     return this.request<readonly Quote[]>('quotes', mapQuoteList, params);
   }
 
-  getAuthors(): Observable<readonly string[]> {
-    return this.request<readonly string[]>('quoteauthors', this.mapAuthors);
-  }
-
   private request<T>(
     endpoint: string,
     mapper: (payload: unknown) => T,
@@ -46,19 +42,8 @@ export class QuoteService {
       );
   }
 
-  private readonly mapAuthors = (payload: unknown): readonly string[] => {
-    if (!Array.isArray(payload) || payload.some((author) => typeof author !== 'string')) {
-      throw new QuoteApiError('invalid', 'The author service returned an unexpected response.');
-    }
-
-    return payload;
-  };
-
   private toQuoteError(error: unknown): QuoteApiError {
     if (error instanceof QuoteApiError) return error;
-    if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 403)) {
-      return new QuoteApiError('premium', 'Author browsing is not available for this API plan.');
-    }
     return new QuoteApiError('provider', 'The quote service is taking a pause.');
   }
 }

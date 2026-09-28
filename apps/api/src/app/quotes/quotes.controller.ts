@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { QuotesProviderError, QuotesService } from './quotes.service';
 
-const QUOTE_ENDPOINTS = ['quoteoftheday', 'randomquotes', 'quotes', 'quoteauthors'] as const;
+const QUOTE_ENDPOINTS = ['quoteoftheday', 'randomquotes', 'quotes'] as const;
 const ALLOWED_QUERY_PARAMETERS = new Set(['categories', 'limit', 'offset', 'safe']);
 
 /**

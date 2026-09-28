@@ -25,7 +25,7 @@ export interface QuoteBrowseQuery {
   readonly offset?: number;
 }
 
-export type QuoteErrorKind = 'configuration' | 'premium' | 'provider' | 'invalid';
+export type QuoteErrorKind = 'configuration' | 'provider' | 'invalid';
 
 export class QuoteApiError extends Error {
   constructor(

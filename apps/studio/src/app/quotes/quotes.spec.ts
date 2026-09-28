@@ -8,6 +8,7 @@ describe('QuotesPage', () => {
   let http: HttpTestingController;
 
   beforeEach(async () => {
+    localStorage.removeItem('studio.quotes.saved');
     await TestBed.configureTestingModule({
       imports: [QuotesPage],
       providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
@@ -15,7 +16,10 @@ describe('QuotesPage', () => {
     http = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => http.verify());
+  afterEach(() => {
+    http.verify();
+    localStorage.removeItem('studio.quotes.saved');
+  });
 
   function render() {
     const fixture = TestBed.createComponent(QuotesPage);
@@ -42,12 +46,49 @@ describe('QuotesPage', () => {
     expect(el.querySelector('#daily blockquote')?.textContent).toContain('No man is an island');
   });
 
-  it('keeps sections in order: daily, browse, anchors, authors', () => {
+  it('header links stay on /quotes and target each section in page order', () => {
+    const { el } = render();
+    http.expectOne('/api/quotes/quoteoftheday').flush([]);
+    const hrefs = Array.from(
+      el.querySelectorAll<HTMLAnchorElement>('nav[aria-label="Quotes navigation"] a'),
+    ).map((a) => a.getAttribute('href'));
+
+    expect(hrefs).toEqual([
+      '/',
+      '/quotes#daily',
+      '/quotes#browse',
+      '/quotes#anchors',
+      '/quotes#saved',
+    ]);
+  });
+
+  it('keeps sections in order: daily, browse, anchors, saved', () => {
     const { el } = render();
     http.expectOne('/api/quotes/quoteoftheday').flush([]);
     const ids = Array.from(el.querySelectorAll('section[id]')).map((s) => s.id);
 
-    expect(ids).toEqual(['daily', 'browse', 'anchors', 'authors']);
+    expect(ids).toEqual(['daily', 'browse', 'anchors', 'saved']);
+  });
+
+  it('saves a quote to the shelf, persists it, and removes it again', () => {
+    const { fixture, el } = render();
+    http
+      .expectOne('/api/quotes/quoteoftheday')
+      .flush([{ quote: 'Stay curious.', author: 'Ada', categories: ['wisdom'] }]);
+    fixture.detectChanges();
+    expect(el.querySelectorAll('#saved article').length).toBe(0);
+
+    const save = el.querySelector<HTMLButtonElement>('#daily .quote-actions button')!;
+    save.click();
+    fixture.detectChanges();
+
+    expect(save.getAttribute('aria-pressed')).toBe('true');
+    expect(el.querySelector('#saved article')?.textContent).toContain('Stay curious.');
+    expect(localStorage.getItem('studio.quotes.saved')).toContain('Stay curious.');
+
+    save.click();
+    fixture.detectChanges();
+    expect(el.querySelectorAll('#saved article').length).toBe(0);
   });
 
   it('marks the selected category and requests a random quote for it', () => {

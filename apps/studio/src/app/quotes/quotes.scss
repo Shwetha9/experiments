@@ -12,7 +12,7 @@
   --hero-bg: linear-gradient(150deg, var(--surface), var(--surface-soft));
   --mint-bg: linear-gradient(165deg, var(--mint), var(--surface-soft));
   --browse-bg: linear-gradient(165deg, var(--surface-soft), var(--canvas));
-  --authors-bg: linear-gradient(165deg, var(--butter), #e4efdf);
+  --saved-bg: linear-gradient(165deg, var(--butter), #e4efdf);
   background: var(--canvas);
   color: var(--text);
   min-height: 100vh;
@@ -26,7 +26,7 @@
   --hero-bg: linear-gradient(150deg, #20211e, #292c28);
   --mint-bg: linear-gradient(165deg, #b8d3c5, #849e90);
   --browse-bg: linear-gradient(165deg, #292c28, #20211e);
-  --authors-bg: linear-gradient(165deg, #ddc79b, #b8d3c5);
+  --saved-bg: linear-gradient(165deg, #ddc79b, #b8d3c5);
 }
 
 .quotes-page a {
@@ -142,7 +142,7 @@ h2 {
 .daily-quote,
 .anchors,
 .browse,
-.authors {
+.saved {
   position: relative;
 }
 
@@ -212,8 +212,7 @@ blockquote {
   margin-top: 24px;
 }
 
-.quote-tags span,
-.author-list span {
+.quote-tags span {
   border: 1px solid var(--line);
   border-radius: 999px;
   font-size: 12px;
@@ -496,18 +495,35 @@ blockquote {
   color: var(--surface);
 }
 
-.authors {
+.saved {
   --line: #bba97c;
   --muted: #505650;
-  background: var(--authors-bg);
+  --text: #20231f;
+  background: var(--saved-bg);
   color: #20231f;
 }
 
-.author-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+.saved__list {
   margin-top: 42px;
+}
+
+.quote-actions {
+  display: flex;
+  gap: 22px;
+  margin-top: 20px;
+}
+
+.quote-actions .text-link {
+  gap: 8px;
+}
+
+.visually-hidden {
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }
 
 .quote-status {

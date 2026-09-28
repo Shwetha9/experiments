@@ -26,5 +26,3 @@ export const localQuotes: readonly Quote[] = [
     source: 'personal',
   },
 ];
-
-export const localAuthors = [...new Set(localQuotes.map((quote) => quote.author))];

@@ -3,10 +3,11 @@
     <a class="quotes-header__brand" routerLink="/">Shwetha<span aria-hidden="true"></span></a>
     <nav aria-label="Quotes navigation">
       <a routerLink="/">Portfolio</a>
-      <a href="#daily">Daily</a>
-      <a href="#anchors">Anchors</a>
-      <a href="#browse">Browse</a>
-      <a href="#authors">Authors</a>
+      <!-- Plain href="#x" resolves against <base href="/"> and lands on the portfolio. -->
+      <a routerLink="/quotes" fragment="daily">Daily</a>
+      <a routerLink="/quotes" fragment="browse">Browse</a>
+      <a routerLink="/quotes" fragment="anchors">Anchors</a>
+      <a routerLink="/quotes" fragment="saved">Saved</a>
     </nav>
     <button
       type="button"
@@ -152,29 +153,28 @@
       </div>
     </section>
 
-    <section id="authors" class="authors" aria-labelledby="authors-title">
+    <section id="saved" class="saved" aria-labelledby="saved-title">
       <div class="section-heading">
-        <p class="eyebrow">A catalogue of voices</p>
-        <h2 id="authors-title">Authors worth wandering through.</h2>
-        <p>
-          The provider’s author catalogue is optional. The rest of this page does not depend on it.
-        </p>
+        <p class="eyebrow">Your shelf · {{ savedQuotes().length }} kept</p>
+        <h2 id="saved-title">Sentences you kept.</h2>
+        <p>Save any quote on this page to keep it here. It stays in this browser only.</p>
       </div>
-      @if (!authorsRequested()) {
-        <button type="button" class="button" (click)="showAuthors()">
-          Explore authors <i class="pi pi-arrow-up-right" aria-hidden="true"></i>
-        </button>
-      } @else if (authorState() === 'loading') {
-        <p class="quote-status" aria-live="polite">Opening the catalogue…</p>
-      } @else if (authors().length > 0) {
-        <div class="author-list">
-          @for (author of authors(); track author) {
-            <span>{{ author }}</span>
+      @if (savedQuotes().length > 0) {
+        <div class="browse__results saved__list">
+          @for (quote of savedQuotes(); track quote.id) {
+            <article>
+              <ng-container
+                *ngTemplateOutlet="quoteFigure; context: { $implicit: quote, compact: true }"
+              ></ng-container>
+            </article>
           }
         </div>
       } @else {
-        <p class="quote-status" aria-live="polite">{{ errorMessage(authorState()) }}</p>
+        <p class="quote-status">
+          Nothing kept yet. Use <strong>Save</strong> on a quote above to start your shelf.
+        </p>
       }
+      <p class="visually-hidden" aria-live="polite">{{ announcement() }}</p>
     </section>
   </main>
 
@@ -215,6 +215,37 @@
         }
       </figcaption>
     </figure>
+    <div class="quote-actions">
+      <button
+        type="button"
+        class="text-link"
+        [attr.aria-pressed]="isSaved(quote)"
+        [attr.aria-label]="'Save quote by ' + quote.author"
+        (click)="toggleSaved(quote)"
+      >
+        <i
+          class="pi"
+          [class.pi-bookmark]="!isSaved(quote)"
+          [class.pi-bookmark-fill]="isSaved(quote)"
+          aria-hidden="true"
+        ></i>
+        {{ isSaved(quote) ? 'Saved' : 'Save' }}
+      </button>
+      <button
+        type="button"
+        class="text-link"
+        [attr.aria-label]="'Copy quote by ' + quote.author"
+        (click)="copyQuote(quote)"
+      >
+        <i
+          class="pi"
+          [class.pi-copy]="copiedId() !== quote.id"
+          [class.pi-check]="copiedId() === quote.id"
+          aria-hidden="true"
+        ></i>
+        {{ copiedId() === quote.id ? 'Copied' : 'Copy' }}
+      </button>
+    </div>
   </ng-template>
 
   <footer>
