@@ -30,6 +30,7 @@
           }
         ],
         "styles": [
+          "node_modules/primeicons/primeicons.css",
           "apps/studio/src/styles.scss"
         ],
         "outputPath": "dist/studio",
@@ -98,6 +99,7 @@
           }
         ],
         "styles": [
+          "node_modules/primeicons/primeicons.css",
           "apps/studio/src/styles.scss"
         ],
         "stylePreprocessorOptions": {

@@ -17,7 +17,7 @@
         [attr.aria-pressed]="isDark()"
         [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
       >
-        <span aria-hidden="true">{{ isDark() ? '☀' : '☾' }}</span>
+        <i class="pi" [class.pi-sun]="isDark()" [class.pi-moon]="!isDark()" aria-hidden="true"></i>
       </button>
     </div>
   </header>
@@ -31,8 +31,12 @@
         <h1>{{ content.hero.title }}</h1>
         <p class="lede">{{ content.hero.body }}</p>
         <div class="hero__actions">
-          <a class="button" href="#possibility">Start with what changed <span>↘</span></a>
-          <a class="button" href="/growing-human/">Explore ambitions <span>↗</span></a>
+          <a class="button" href="#possibility"
+            >Start with what changed <i class="pi pi-arrow-down-right" aria-hidden="true"></i
+          ></a>
+          <a class="button" href="/growing-human/"
+            >Explore ambitions <i class="pi pi-arrow-up-right" aria-hidden="true"></i
+          ></a>
         </div>
       </div>
       <figure
@@ -138,7 +142,7 @@
               <h3>{{ influence.title }}</h3>
               <p>{{ influence.reflection }}</p>
               <button type="button" class="influence__link" (click)="openQuote(influence)">
-                Read passage <span aria-hidden="true">↗</span>
+                Read passage <i class="pi pi-arrow-up-right" aria-hidden="true"></i>
               </button>
             </div>
           </article>
@@ -161,7 +165,7 @@
             aria-label="Close quote"
             (click)="closeQuote()"
           >
-            ×
+            <i class="pi pi-times" aria-hidden="true"></i>
           </button>
           <p class="quote-dialog__source">{{ influence.source }}</p>
           <h2 id="quote-dialog-title">{{ influence.title }}</h2>
@@ -187,7 +191,7 @@
           skills—designed with guardrails before the first message.
         </p>
         <a class="work__link" href="/growing-human/">
-          Explore Growing Human <span aria-hidden="true">↗</span>
+          Explore Growing Human <i class="pi pi-arrow-up-right" aria-hidden="true"></i>
         </a>
       </article>
     </section>
@@ -198,7 +202,9 @@
       <p class="eyebrow">{{ content.contact.eyebrow }}</p>
       <h2>{{ content.contact.title }}</h2>
       <p>{{ content.contact.body }}</p>
-      <a class="button" [href]="'mailto:' + content.contact.email">Email Shwetha <span>↗</span></a>
+      <a class="button" [href]="'mailto:' + content.contact.email"
+        >Email Shwetha <i class="pi pi-arrow-up-right" aria-hidden="true"></i
+      ></a>
     </section>
   </main>
 

@@ -210,6 +210,11 @@ button:focus-visible {
   top: 16px;
 }
 
+// Primeicons inherit font-size; the close glyph was sized for "×".
+.quote-dialog__close .pi {
+  font-size: 20px;
+}
+
 .quote-dialog__source {
   color: var(--muted);
   font-size: 12px;

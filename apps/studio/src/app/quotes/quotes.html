@@ -15,7 +15,7 @@
       [attr.aria-pressed]="isDark()"
       [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
     >
-      <span aria-hidden="true">{{ isDark() ? '☀' : '☾' }}</span>
+      <i class="pi" [class.pi-sun]="isDark()" [class.pi-moon]="!isDark()" aria-hidden="true"></i>
     </button>
   </header>
 
@@ -92,7 +92,7 @@
       </div>
       <div class="browse__actions">
         <button type="button" class="button" (click)="refreshQuote()">
-          Refresh quote <span aria-hidden="true">↻</span>
+          Refresh quote <i class="pi pi-refresh" aria-hidden="true"></i>
         </button>
         <button
           type="button"
@@ -101,7 +101,7 @@
           [disabled]="browseState() === 'loading'"
         >
           {{ browseState() === 'loading' ? 'Loading the archive' : 'Browse deterministic results' }}
-          <span aria-hidden="true">↓</span>
+          <i class="pi pi-arrow-down" aria-hidden="true"></i>
         </button>
       </div>
       @if (browseState() === 'loading') {
@@ -144,7 +144,7 @@
               <blockquote>“{{ anchor.quote }}”</blockquote>
               <h3>{{ anchor.title }}</h3>
               <button type="button" class="text-link" (click)="openAnchor(anchor)">
-                Read full passage <span aria-hidden="true">↗</span>
+                Read full passage <i class="pi pi-arrow-up-right" aria-hidden="true"></i>
               </button>
             </div>
           </article>
@@ -162,7 +162,7 @@
       </div>
       @if (!authorsRequested()) {
         <button type="button" class="button" (click)="showAuthors()">
-          Explore authors <span aria-hidden="true">↗</span>
+          Explore authors <i class="pi pi-arrow-up-right" aria-hidden="true"></i>
         </button>
       } @else if (authorState() === 'loading') {
         <p class="quote-status" aria-live="polite">Opening the catalogue…</p>
@@ -193,7 +193,7 @@
           aria-label="Close passage"
           (click)="closeAnchor()"
         >
-          ×
+          <i class="pi pi-times" aria-hidden="true"></i>
         </button>
         <p class="eyebrow">{{ anchor.source }}</p>
         <h2 id="anchor-dialog-title">{{ anchor.title }}</h2>
@@ -219,6 +219,8 @@
 
   <footer>
     <span>Keep the useful sentence.</span>
-    <a routerLink="/">Back to the portfolio ↗</a>
+    <a routerLink="/"
+      >Back to the portfolio <i class="pi pi-arrow-up-right" aria-hidden="true"></i
+    ></a>
   </footer>
 </div>

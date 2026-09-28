@@ -8,9 +8,9 @@
 
 | #   | Requirement                                                                                                                                                                            | Measured by                                                               |
 | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| R1  | Tailwind handles every utility concern: spacing, margin, padding, gap, display, flex, grid, sizing, position, font size, weight, line height, letter spacing, radius and border width. | Stylelint property ban on component and global SCSS (Phase 9)             |
+| R1  | Tailwind handles every utility concern: spacing, margin, padding, gap, display, flex, grid, sizing, position, font size, weight, line height, letter spacing, radius and border width. It is used either as classes in the template or through `@apply` inside a custom SCSS class. | Stylelint (Phase 9): simple utility declarations in SCSS must use `@apply`, and only complex values may be written as raw CSS |
 | R2  | Common UI elements live in an Angular library, organised as atoms, molecules and organisms.                                                                                            | `libs/ui` exists; apps contain no duplicate primitives                    |
-| R3  | No HTML element has more than 5 classes (Tailwind and custom combined).                                                                                                                | Template class-count lint rule based on the AST (Phase 9)                 |
+| R3  | No HTML element has more than 5 classes (Tailwind and custom combined). If an element needs more, it gets one custom class in SCSS.                                                   | Template class-count lint rule based on the AST (Phase 9)                 |
 | R4  | Every element is semantic and accessible (WCAG 2.2 AA).                                                                                                                                | angular-eslint template a11y rules, axe-core specs and a manual checklist |
 
 ---
@@ -51,12 +51,12 @@
 
 ### 1.3 Class-count risk (R3)
 
-No element exceeds 5 classes today. That will change once the BEM classes are replaced with raw Tailwind. For example, the pill button needs about 12 utilities, and the hero grid needs about 8 plus responsive variants. **R3 is met by design, not by trimming:** any element that needs more than 5 utilities becomes a library component, or uses a registered design-token utility (see §3.2). Current elements that will need a component or a token:
+No element exceeds 5 classes today. That will change once the BEM classes are replaced with raw Tailwind. For example, the pill button needs about 12 utilities, and the hero grid needs about 8 plus responsive variants. **Rule (decision 1):** an element that needs more than 5 utilities gets **one custom class** in its SCSS, built with `@apply` for utility concerns and raw CSS only for complex values. Other Tailwind classes can still sit next to it, as long as the total stays at 5 or fewer. Current elements that will need a custom class:
 
 - `.button`, `.theme-toggle`, `.growing-human__option`/`__lane`, `.growing-human__composer`, `.growing-human__send`, `.category-controls button`
 - Hero, possibility, leadership and beyond grids (`grid-template-columns` with `minmax()`, gap `clamp()`, alignment, responsive collapse)
 - Every `h1`/`h2` (font, size clamp, line height, letter spacing, margin, text-wrap)
-- Motif spans (mask, size, opacity, absolute position, rotation and scale per instance). There are 25+ one-off transforms, which should become data rather than classes.
+- Motif spans (mask, size, opacity, absolute position, rotation and scale per instance). The base look becomes a custom class (`ui-motif--sprig`). The 25+ one-off positions and transforms become data passed as inline style, not classes.
 
 ### 1.4 Accessibility and semantics findings (R4)
 
@@ -105,18 +105,32 @@ No element exceeds 5 classes today. That will change once the BEM classes are re
 
 ---
 
-## 2. Decisions to confirm before starting
+## 2. Decisions (confirmed 2026-09-28)
 
-1. **How R3 is enforced when an element needs more than 5 utilities.** Proposed order of preference:
-   1. Extract a library component (atom, molecule or organism) and pass variants through inputs.
-   2. Split the styling across wrapper and child elements, but only where the extra element is semantically justified.
-   3. Use a registered **design-token utility**: a Tailwind `theme.extend` value or a small plugin utility such as `px-page`, `py-section`, `text-display` or `gap-split`. These are Tailwind classes, so they satisfy R1.
-   4. **Not allowed:** `@apply` bundles that recreate BEM classes. This hides R3 violations and weakens R1.
-2. **What counts toward the 5.** Proposal: static `class` tokens + `[class.x]` bindings + `[ngClass]` keys + each interpolated `class="{{…}}"` segment. Host classes set through `host: { class }` count on the host element. Responsive and state variants (`md:grid-cols-2`, `hover:bg-text`) each count as one.
-3. **What SCSS may still contain** (it can't be expressed as a Tailwind utility): palette mixins, gradients, `mask` images, multi-stop `radial-gradient` motifs, `::backdrop`, `::marker`, `::placeholder`, `@keyframes` not covered by Tailwind (`animate-spin` covers the spinner), and `:host-context` theme switches. No spacing, layout or typography properties.
-4. **Breakpoints.** Replace 620/720/760/1000 with `sm: 640px`, `md: 768px`, `lg: 1024px`, `xl: 1280px`. There may be a few px of visual drift at the edges; is that acceptable?
-5. **Library shape.** Use one `libs/ui` library with folder tiers (`atoms/`, `molecules/`, `organisms/`), exported through a single `@studio/ui` entry point. Alternatively, use secondary entry points (`@studio/ui/atoms`). Recommendation: a single entry point, because the library is small and tree-shaken.
-6. **Brand theming.** Components read **semantic** CSS variables (`--color-surface`, `--color-text`, `--color-accent`, ...). Each palette mixin (studio, studio-dark, growing-human) sets them. The components themselves stay brand-agnostic.
+1. **An element that needs more than 5 utilities gets a custom class moved into SCSS.**
+   - Give the element one semantic custom class (for example `ui-button--pill` or `landing-hero__grid`) and define it in the component's `.scss`.
+   - Write the utility concerns inside that class with `@apply`, for example `@apply inline-flex items-center gap-5 rounded-full border px-5 py-3.5 text-sm font-semibold;`. This keeps R1 intact, because the values still come from the Tailwind theme.
+   - The element can keep a few other Tailwind classes next to the custom class, for example one-off responsive or state tweaks, as long as the total is **5 or fewer**.
+   - Prefer moving the whole styling into the custom class over splitting it between the class and the template. That keeps things readable.
+2. **What counts toward the 5: Tailwind classes and custom classes combined.** Count:
+   - static `class` tokens
+   - `[class.x]` bindings
+   - `[ngClass]` keys
+   - each interpolated `class="{{…}}"` segment
+   - host classes set through `host: { class }`, counted on the host element
+
+   Responsive and state variants (`md:grid-cols-2`, `hover:bg-text`) each count as one class.
+3. **SCSS may hold complex CSS that would be verbose as Tailwind.** Examples:
+   - multi-stop gradients, and `mask` / `radial-gradient` motifs
+   - `grid-template-columns` with `minmax()`, and fluid `clamp()` / `max(calc())` values
+   - multi-property transitions and `@keyframes`
+   - pseudo-elements (`::before` accent tabs, `::backdrop`, `::marker`, `::placeholder`)
+   - `:host-context` theme switches, and palette mixins
+
+   Simple utility values (a padding of 16px, `display: flex`, a font weight) always go through Tailwind, in the template or through `@apply`.
+4. **Breakpoints:** use `sm: 640px`, `md: 768px`, `lg: 1024px`, `xl: 1280px`. They replace 620/720/760/1000. A few px of layout drift at the edges is accepted.
+5. **Library shape:** one `libs/ui` library with folder tiers (`atoms/`, `molecules/`, `organisms/`) and a **single** `@studio/ui` entry point.
+6. **Brand theming:** shared semantic CSS variables (`--color-surface`, `--color-text`, `--color-accent`, ...) are set by each palette mixin (studio, studio-dark, growing-human). Components read only these semantic names and don't depend on either brand.
 
 ---
 
@@ -169,19 +183,21 @@ Conventions:
 - Prefer attribute selectors for native elements so the semantics are preserved: `button[ui-button]`, `a[ui-button]`, `h2[ui-heading]`. Use element selectors only when the component owns its markup.
 - Variant → class maps live in TypeScript (`const VARIANTS = { pill: '…' }`) so templates stay under 5 classes. **The resolved string on a single element must still be ≤5 tokens.** When a variant needs more, add a design-token utility or split the element.
 - The library contains no copy and no app content. Content stays in `editorial-content` or the app content files.
-- Each component has a spec that includes an axe-core check.
+- Each variant maps to **one custom class** (for example `ui-button--pill`) defined in the component SCSS with `@apply` plus any complex CSS (decision 1). A variant never maps to a long utility string, so the rendered element always stays at 5 classes or fewer.
+- Custom class naming: `ui-<component>` / `ui-<component>--<variant>` in the library, and `<page>__<element>` in apps
 
 ### 3.2 Tailwind foundation (`tailwind.config.cjs`)
 
 - **Colours** mapped to semantic CSS variables: `canvas`, `surface`, `surface-soft`, `raised`, `text`, `muted`, `line`, `accent`, `accent-2`, `on-accent`, `focus`, `tone-sage`, `tone-butter`, `tone-coral`. Use the `rgb(var(--x) / <alpha-value>)` form so that opacity modifiers work.
 - **Fluid spacing tokens**, replacing the repeated `clamp()` and `max()` values: `section` (`clamp(82px,10vw,150px)`), `section-sm`, `page` (`max(5%, calc((100% - 1280px)/2))`), `split` (`clamp(45px,7vw,110px)`), `stack`.
 - **Type scale** with bundled line height and letter spacing: `display`, `title`, `section`, `card`, `quote`, `quote-sm`, `lede`, `eyebrow`. Each is one class, for example `text-display` = size + line height + letter spacing.
-- **Screens:** `sm`, `md`, `lg`, `xl` (see decision 4).
+- **Screens:** `sy:** only `focus-ring`, one consistent outline used everywhere. Complex CSS such as the `minmax()` grid templates and the sprig mask stays in SCSS (decision 3).
+- **`@apply` in component SCSS:** in Phase 1, confirm that `@angular/build` runs the root Tailwind config over component styles, and that `@apply` with custom theme tokens resolves there. With Tailwind 3 this needs no import in each file
 - **Plugin utilities** for things that currently need several declarations: `focus-ring` (one consistent outline), `text-pretty` (built in from Tailwind 3.4), `grid-split` (`minmax(0,.9fr) minmax(440px,1.1fr)` and its variants), `mask-sprig`.
 - Keep `preflight: false` for now, and add targeted resets (`ul`/`ol` list reset, `fieldset` reset, `button` font inherit) in `_base.scss` under `@layer base`. Revisit enabling preflight after migration.
-- Add `libs/ui/**/*.{html,ts}` to `content` (already covered by `./libs/**`; verify).
+- Add `libs/ui/**/*.{html,ts}` to `co
 
-### 3.3 Tokens (`libs/design-tokens`)
+### 3.3 Tokens (`libs/design-tokens`)color-no-hex` outside `libs/design-tokens`. Also add `declaration-property-value-allowed-list`, which allows spacing, layout and typography properties in raw CSS only when the value is complex: `clamp(`, `calc(`, `max(`, `min(`, `minmax(`, `repeat(`, or `var(`. Simple values must be written with `@apply
 
 - Introduce the semantic variable layer (`--color-*`) and have each palette mixin set it. Keep the existing names as aliases during migration, then remove them.
 - Move every stray hex value from §1.1 into a palette. Document a contrast pair for each foreground/background combination and verify it meets AA.
@@ -206,6 +222,7 @@ Each phase leaves the apps building and all tests green. Migrate one page per PR
 - [ ] Extend `tailwind.config.cjs` as described in §3.2 (colours, spacing, type scale, screens, plugin utilities).
 - [ ] Add the semantic `--color-*` layer to `_palettes.scss` and move the stray hex values into it.
 - [ ] Add global `@layer base` resets, a single `focus-visible` ring, and one complete `prefers-reduced-motion` block (transitions, animations and smooth scroll) in `_base.scss`. Remove the duplicate from `landing.scss`.
+- [ ] Spike: add one custom class that uses `@apply` with a custom token (for example `@apply py-section px-page;`) to a component SCSS file, and confirm it compiles in both apps and in Karma.
 - [ ] Verify with `npm run build`: bundle and CSS budgets pass, and the current pages have no visual changes yet.
 
 ### Phase 2 — Library scaffold
@@ -269,8 +286,8 @@ Each phase leaves the apps building and all tests green. Migrate one page per PR
 
 - [ ] `npm run build` and `npm test` are green, with no new budget warnings. Component SCSS should shrink well below the 10 kB `anyComponentStyle` budget.
 - [ ] Lint is clean at error level: 0 elements over 5 classes, 0 banned SCSS properties, 0 template a11y errors.
-- [ ] axe-core finds 0 violations on every page and state (landing light/dark, quotes loading/success/error, GH age/lane/chat, about, open dialogs).
-- [ ] Manual checklist:
+- Custom classes grow into a second, hand-written design system                            | Utility values inside them must use `@apply` (Stylelint enforces this). Raw CSS is allowed only for complex values. Review flags custom classes that are only thin wrappers. |
+| Variant maps resolve to more than 5 tokens on one element                                | Each variant maps to one custom class. Per-component specs check the rendered class count, and the lint rule checks `[class]` bindings where it can resolve them statically
   - Keyboard-only walkthrough of every page: skip link, focus order, visible focus, dialog trap and return, radio arrow keys, mobile menu.
   - VoiceOver (Safari) and NVDA (Firefox) pass: landmarks, headings outline, live-region announcements, chat log.
   - Readable at 200% and 400% zoom / 320 px width without horizontal scroll.

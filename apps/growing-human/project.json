@@ -30,6 +30,7 @@
           }
         ],
         "styles": [
+          "node_modules/primeicons/primeicons.css",
           "apps/growing-human/src/styles.scss"
         ],
         "outputPath": "dist/growing-human",
@@ -100,6 +101,7 @@
           }
         ],
         "styles": [
+          "node_modules/primeicons/primeicons.css",
           "apps/growing-human/src/styles.scss"
         ],
         "stylePreprocessorOptions": {
