@@ -4,6 +4,29 @@
     <h2 id="scout-title">Today I discovered…</h2>
   </div>
 
+  <button
+    type="button"
+    class="scout__again"
+    aria-label="Scout another idea"
+    title="Scout another idea"
+    [disabled]="client.loading() || client.exhausted()"
+    (click)="scoutAgain()"
+  >
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path
+        d="M4 7h2c5 0 7 10 12 10h2m-3-3 3 3-3 3M4 17h2c2 0 3-2 4-4m4-4c1-1 2-2 4-2h2m-3-3 3 3-3 3"
+      />
+    </svg>
+  </button>
+
   <div class="scout__controls">
     <label for="knowledge-category">Choose a topic</label>
     <select id="knowledge-category" [value]="client.category()" (change)="chooseCategory($event)">
@@ -11,14 +34,6 @@
         <option [value]="category.id">{{ category.label }}</option>
       }
     </select>
-    <button
-      type="button"
-      class="scout__again"
-      [disabled]="client.loading() || client.exhausted()"
-      (click)="scoutAgain()"
-    >
-      <span aria-hidden="true">↻</span> Scout another
-    </button>
     @if (client.exhausted()) {
       <p class="scout__limit" role="status">
         You've seen all the reviewed ideas here. Try another topic.

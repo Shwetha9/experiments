@@ -7,6 +7,7 @@
   gap: 10px 24px;
   grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
   padding: 22px 24px;
+  position: relative;
 }
 .scout__intro,
 .scout__controls,
@@ -29,6 +30,7 @@
 }
 .scout--full .scout__controls {
   grid-column: 2;
+  padding-top: 16px;
 }
 .scout--full .scout__card,
 .scout__lower {
@@ -53,19 +55,16 @@
   margin: 8px 0;
 }
 .scout__controls {
-  align-items: end;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr);
 }
 .scout__controls label {
   color: #c0bfcc;
-  flex-basis: 100%;
   font-size: 13px;
 }
 .scout__limit {
   color: #c0bfcc;
-  flex-basis: 100%;
   font-size: 13px;
   margin: 0;
 }
@@ -83,8 +82,11 @@
   background-position: right 14px center;
   background-repeat: no-repeat;
   background-size: 12px 8px;
-  min-width: 190px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  min-width: 0;
   padding-right: 38px;
+  width: 100%;
 }
 .scout button {
   cursor: pointer;
@@ -94,14 +96,36 @@
   cursor: wait;
   opacity: 0.55;
 }
-.scout__again,
 .scout__reveal {
   background: #efaac3;
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   color: #251c2c;
+  font-size: 14px !important;
   font-weight: 700 !important;
-  padding: 11px 16px;
+  padding: 8px 12px;
+}
+.scout__again {
+  background: transparent;
+  border: 1px solid #b98fab;
+  border-radius: 999px;
+  color: #f0bdd4;
+  display: grid;
+  height: 34px;
+  padding: 0;
+  place-items: center;
+  position: absolute;
+  right: 22px;
+  top: 22px;
+  width: 34px;
+}
+.scout--full .scout__again {
+  right: 0;
+  top: 0;
+}
+.scout__again svg {
+  height: 17px;
+  width: 17px;
 }
 .scout__reveal {
   align-self: flex-start;
@@ -231,6 +255,17 @@
     grid-template-columns: 1fr;
     padding: 20px;
   }
+  .scout__intro {
+    padding-right: 44px;
+  }
+  .scout__again {
+    right: 20px;
+    top: 20px;
+  }
+  .scout--full .scout__again {
+    right: 0;
+    top: 0;
+  }
   .scout__intro,
   .scout__controls,
   .scout__open,
@@ -253,8 +288,5 @@
   }
   .scout__lower {
     grid-template-columns: 1fr;
-  }
-  .scout__controls select {
-    flex: 1;
   }
 }
