@@ -365,8 +365,9 @@ ol {
 }
 
 .growing-human__discovery { gap: 20px; }
-.growing-human__discovery-heading { display: grid; gap: 14px; }
-.growing-human__discovery-heading .growing-human__title { font-size: clamp(34px, 4vw, 48px); }
+.growing-human__discovery-heading { display: grid; gap: 7px; }
+.growing-human__discovery-heading .growing-human__title { font-size: clamp(30px, 3.2vw, 38px); }
+.growing-human__discovery-heading .growing-human__copy { font-size: 15px; }
 .growing-human__discovery-pair { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .growing-human__fact {
   background: linear-gradient(125deg, #302537, #1b2438 70%);
@@ -412,15 +413,13 @@ ol {
 }
 .growing-human__shuffle svg { height: 20px; width: 20px; }
 .growing-human__fact h2,
-.growing-human__quiz h2,
-.growing-human__journal h2 {
-  font: 600 clamp(22px, 2.4vw, 28px)/1.2 Georgia, serif;
+.growing-human__quiz h2 {
+  font: 600 clamp(21px, 2.2vw, 25px)/1.2 Georgia, serif;
   margin: 8px 0 12px;
 }
 .growing-human__fact-copy > p:not(.growing-human__fact-eyebrow) { font-size: 15px; line-height: 1.6; }
 .growing-human__fact a { color: #e9d1ff; font-size: 14px; text-underline-offset: 3px; }
-.growing-human__quiz,
-.growing-human__journal {
+.growing-human__quiz {
   background: var(--ink-raised);
   border: 1px solid var(--ink-line);
   border-radius: 18px;
@@ -443,44 +442,6 @@ ol {
 .growing-human__answers .growing-human__answer--try-again { background: #49353a; border-color: var(--rose); }
 .growing-human__quiz-feedback { color: var(--text); line-height: 1.5; margin: 16px 0 0; }
 .growing-human__quiz-feedback strong { color: #aee4ba; }
-.growing-human__journal form button {
-  background: linear-gradient(135deg, var(--rose), var(--lavender));
-  border: 0;
-  border-radius: 10px;
-  color: var(--on-accent);
-  cursor: pointer;
-  font-weight: 700;
-  margin-top: 18px;
-  padding: 11px 16px;
-}
-.growing-human__journal > p:not(.growing-human__kicker) { color: var(--muted); font-size: 15px; line-height: 1.5; }
-.growing-human__journal form { display: grid; justify-items: start; }
-.growing-human__journal textarea {
-  background: #222334;
-  border: 1px solid var(--ink-line);
-  border-radius: 11px;
-  color: var(--text);
-  line-height: 1.5;
-  padding: 12px 14px;
-  resize: vertical;
-  width: min(100%, 620px);
-}
-.growing-human__journal form button:disabled { cursor: not-allowed; opacity: .45; }
-.growing-human__saved-note {
-  border-left: 3px solid var(--rose);
-  margin: 16px 0;
-  padding: 2px 0 2px 15px;
-}
-.growing-human__saved-note p { line-height: 1.5; overflow-wrap: anywhere; }
-.growing-human__saved-note button {
-  background: none;
-  border: 0;
-  color: var(--lavender);
-  cursor: pointer;
-  padding: 0;
-  text-decoration: underline;
-}
-.growing-human__journal .growing-human__journal-privacy { font-size: 12px; margin-bottom: 0; }
 
 .growing-human__visually-hidden {
   clip: rect(0 0 0 0);
@@ -501,11 +462,11 @@ ol {
   .growing-human__main--discovery { padding-top: 32px; }
   .growing-human__activities { margin: -24px 0 26px; }
   .growing-human__activities button { font-size: 14px; padding: 8px 10px; }
-  .growing-human__discovery-heading .growing-human__title { font-size: 32px; }
+  .growing-human__discovery-heading .growing-human__title { font-size: 30px; }
   .growing-human__fact { grid-template-columns: 1fr; }
   .growing-human__fact-art { bottom: 8px; font-size: 60px; opacity: .2; position: absolute; right: 18px; }
   .growing-human__fact-copy { padding: 20px; position: relative; }
-  .growing-human__quiz, .growing-human__journal { padding: 20px; }
+  .growing-human__quiz { padding: 20px; }
   .growing-human__bar {
     flex-wrap: wrap;
     gap: 12px;

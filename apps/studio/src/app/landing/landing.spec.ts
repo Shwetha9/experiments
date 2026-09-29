@@ -64,13 +64,13 @@ describe('LandingPage', () => {
     expect(hero.getAttribute('aria-busy')).toBe('false');
   });
 
-  it('links to Growing Human with normal page navigation and to quotes in-app', () => {
+  it('links to Growing Humans with normal page navigation and to quotes in-app', () => {
     const fixture = TestBed.createComponent(LandingPage);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.querySelectorAll('a[href="/growing-human/"]')).toHaveSize(3);
-    expect(compiled.querySelector('header a[href="/growing-human/"]')?.textContent).toContain('Growing Human');
+    expect(compiled.querySelector('header a[href="/growing-human/"]')?.textContent).toContain('Growing Humans');
     expect(compiled.querySelector('header a[href="/quotes"]')).toBeNull();
     expect(compiled.querySelector('#beyond a[href="/quotes"]')?.textContent).toContain('quotes');
   });

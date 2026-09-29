@@ -1,6 +1,6 @@
 # UI Library, Tailwind Utilities & Accessibility — Plan
 
-**Goal:** Rebuild the Studio and Growing Human front ends from one shared Angular UI library (`@studio/ui`) that uses Tailwind for every utility. Keep the current visual design and make every page semantic and accessible.
+**Goal:** Rebuild the Studio and Growing Humans front ends from one shared Angular UI library (`@studio/ui`) that uses Tailwind for every utility. Keep the current visual design and make every page semantic and accessible.
 
 **Scope:** `apps/studio` (landing, quotes), `apps/growing-human` (guide, about), `libs/design-tokens`, the new `libs/ui`, and `tailwind.config.cjs`. `apps/api` and the non-UI libraries (`quote-data`, `editorial-content`, `growing-human-contracts`, `theme`) keep their behaviour. The only change to them is that their consumers move to the new components.
 
@@ -91,7 +91,7 @@ No element exceeds 5 classes today. That will change once the BEM classes are re
 - The error message shows users a developer path: "Edit `src/app/quotes/config.ts`". That path is also stale; config now lives in `libs/quote-data/src/lib/config.ts`.
 - The hero `<section>` has no accessible name.
 
-**Growing Human guide**
+**Growing Humans guide**
 
 - `<nav>` contains the age badge and the "Start over" button. Nav landmarks should contain only navigation links, so these belong in a separate status or toolbar area.
 - Age choice and lane choice are both single-select, but they are built from `button`s inside `fieldset`/`legend` (age) or with `aria-pressed` (lane). Use native `input type="radio"` styled as cards. This gives correct roles, arrow-key behaviour and a `fieldset`/`legend` that makes sense.
@@ -101,7 +101,7 @@ No element exceeds 5 classes today. That will change once the BEM classes are re
 - `:focus { outline: none }` on the step headings is acceptable (`tabindex="-1"` programmatic focus). Keep it, but document why.
 - Check the colour contrast of the placeholder `#8f90a0` on `#1c1d2b` and of the notice text `#aaa8b4` inside the dashed-border box at 13 px.
 
-**Growing Human about**
+**Growing Humans about**
 
 - Mostly sound: correct `article`, `aside`, `dl` and heading structure. It still needs the shared header, skip link and focus ring.
 
@@ -283,7 +283,7 @@ Each phase leaves the apps building and all tests green. Migrate one page per PR
 - [ ] `dialog`: native `showModal()`, a stable title id, focus moved into the dialog on open and returned to the trigger on close, Esc and backdrop close, and `aria-modal` implied by the native element.
 - [ ] `chat-thread`: a `div role="log" aria-live="polite" aria-relevant="additions"` around an `ol`.
 
-### Phase 6 — Migrate Growing Human (pilot: smaller and self-contained)
+### Phase 6 — Migrate Growing Humans (pilot: smaller and self-contained)
 
 - [ ] **About page:** `site-header`, `skip-link`, `heading`, `section-heading`, `notice`. Convert the helplines `dl` layout to Tailwind grid. Reduce `about.scss` to the palette `:host` plus any custom classes the page still needs.
 - [ ] **Guide page:**

@@ -1,4 +1,4 @@
-# Growing Human — Phase 2 Completion Plan
+# Growing Humans — Phase 2 Completion Plan
 
 **Goal:** Complete the safety-gated BFF so that the approved red-team suite passes before a guide model can be enabled.
 

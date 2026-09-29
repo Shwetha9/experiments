@@ -56,7 +56,7 @@ export const CHAT_RATE_LIMITS = [
 
 export const PREVIEW_REPLY: ChatReply = {
   kind: 'preview',
-  text: 'Thank you for asking. Growing Human is still being built, so I’m not able to answer yet. The guide is only switched on after every safety check has been reviewed.',
+  text: 'Thank you for asking. Growing Humans is still being built, so I’m not able to answer yet. The guide is only switched on after every safety check has been reviewed.',
   action: 'In the meantime, a trusted adult is a great person to explore this question with.',
 };
 

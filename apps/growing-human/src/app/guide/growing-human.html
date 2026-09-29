@@ -2,7 +2,7 @@
   <p class="growing-human__brand">
     <span class="growing-human__leaf" aria-hidden="true"></span>{{ content.brand }}
   </p>
-  <nav class="growing-human__nav" aria-label="Growing Human">
+  <nav class="growing-human__nav" aria-label="Growing Humans">
     @if (ageBand()) {
       <span class="growing-human__age">{{ ageLabel() }}</span>
       <button type="button" class="growing-human__reset" (click)="startOver()">Start over</button>
@@ -36,7 +36,7 @@
       <section class="growing-human__step growing-human__step--age" aria-labelledby="age-title">
         <div class="growing-human__welcome">
           <div class="growing-human__welcome-copy">
-            <p class="growing-human__kicker">Growing Human</p>
+            <p class="growing-human__kicker">Growing Humans</p>
             <h1 id="age-title" class="growing-human__title" tabindex="-1" #stepHeading>
               {{ content.ageStep.introTitle }}
             </h1>
@@ -82,14 +82,16 @@
         aria-labelledby="discovery-title"
       >
         <div class="growing-human__discovery-heading">
-          <p class="growing-human__kicker">Space explorer · NASA facts</p>
+          <p class="growing-human__kicker">Discover & quiz</p>
           <h1 id="discovery-title" class="growing-human__title" tabindex="-1" #stepHeading>
-            One new thing can start a thousand questions.
+            What will you discover?
           </h1>
           <p class="growing-human__copy">
-            Explore a little, try a question, and put a discovery into your own words.
+            Pick a topic and follow your curiosity.
           </p>
         </div>
+
+        <app-knowledge-scout />
 
         <div class="growing-human__discovery-pair">
           <article class="growing-human__fact" [attr.data-place]="discovery().id">
@@ -161,34 +163,6 @@
           </section>
         </div>
 
-        <section class="growing-human__journal" aria-labelledby="journal-title">
-          <p class="growing-human__kicker">Make it yours</p>
-          <h2 id="journal-title">Today I discovered…</h2>
-          <p>Write one thing you learned, or a new question you want to explore.</p>
-          @if (discoveryNote()) {
-            <div class="growing-human__saved-note">
-              <p>{{ discoveryNote() }}</p>
-              <button type="button" (click)="clearDiscoveryNote()">Clear note</button>
-            </div>
-          }
-          <form (submit)="saveDiscovery($event)">
-            <label for="discovery-note" class="growing-human__visually-hidden">My discovery</label>
-            <textarea
-              id="discovery-note"
-              rows="2"
-              maxlength="160"
-              [value]="discoveryDraft()"
-              placeholder="I discovered that…"
-              (input)="updateDiscoveryDraft($event)"
-            ></textarea>
-            <button type="submit" [disabled]="!discoveryDraft().trim()">Keep on this page</button>
-          </form>
-          <p class="growing-human__journal-privacy">
-            Your note stays on this page until you leave or start over. Please don't include private
-            details.
-          </p>
-        </section>
-
         <app-earth-image />
       </section>
     }
@@ -248,7 +222,7 @@
             @for (entry of thread(); track $index) {
               <li class="growing-human__message growing-human__message--{{ entry.message.role }}">
                 <span class="growing-human__visually-hidden">
-                  {{ entry.message.role === 'child' ? 'You said:' : 'Growing Human said:' }}
+                  {{ entry.message.role === 'child' ? 'You said:' : 'Growing Humans said:' }}
                 </span>
                 <p>{{ entry.message.text }}</p>
                 @if (entry.action) {

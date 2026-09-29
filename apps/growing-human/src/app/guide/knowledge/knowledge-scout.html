@@ -1,0 +1,113 @@
+<section class="scout" [class.scout--full]="full()" aria-labelledby="scout-title">
+  <div class="scout__intro">
+    <p class="scout__kicker">Knowledge explorer</p>
+    <h2 id="scout-title">Today I discovered…</h2>
+  </div>
+
+  <div class="scout__controls">
+    <label for="knowledge-category">Choose a topic</label>
+    <select id="knowledge-category" [value]="client.category()" (change)="chooseCategory($event)">
+      @for (category of categories; track category.id) {
+        <option [value]="category.id">{{ category.label }}</option>
+      }
+    </select>
+    <button
+      type="button"
+      class="scout__again"
+      [disabled]="client.loading() || client.exhausted()"
+      (click)="scoutAgain()"
+    >
+      <span aria-hidden="true">↻</span> Scout another
+    </button>
+    @if (client.exhausted()) {
+      <p class="scout__limit" role="status">
+        You've seen all the reviewed ideas here. Try another topic.
+      </p>
+    }
+  </div>
+
+  <div class="scout__card" [class.scout__card--question]="client.item().kind === 'question'">
+    <p class="scout__kind">
+      {{ client.item().kind === 'question' ? 'Curiosity question' : 'Surprise fact' }}
+    </p>
+    <p class="scout__idea" aria-live="polite">{{ client.item().text }}</p>
+    @if (client.item().kind === 'question') {
+      @if (revealed()) {
+        <p class="scout__answer" role="status">
+          <span>The answer</span> {{ client.item().answer }}
+        </p>
+      } @else {
+        <button type="button" class="scout__reveal" (click)="revealed.set(true)">
+          Reveal the answer
+        </button>
+      }
+    }
+    <p class="scout__source">
+      {{
+        client.item().source === 'api-ninjas'
+          ? 'Scouted with API Ninjas'
+          : 'A reviewed Growing Humans pick'
+      }}
+      @if (client.loading()) {
+        <span role="status"> · Finding a fresh pick…</span>
+      }
+    </p>
+    @if (full()) {
+      <button
+        type="button"
+        class="scout__save"
+        [disabled]="client.loading()"
+        [attr.aria-pressed]="client.isSaved(client.item())"
+        (click)="client.toggleSaved(client.item())"
+      >
+        {{ client.isSaved(client.item()) ? '✓ Saved · remove' : '+ Save this idea' }}
+      </button>
+    }
+  </div>
+
+  @if (full()) {
+    <div class="scout__lower">
+      <section class="scout__saved-list" aria-labelledby="saved-title">
+        <p class="scout__kicker">Your collection</p>
+        <h3 id="saved-title">
+          Saved ideas <span>{{ client.saved().length }}</span>
+        </h3>
+        @if (client.saved().length) {
+          <div class="scout__items">
+            @for (item of client.saved(); track item.category + item.text) {
+              <div class="scout__saved-item">
+                <button type="button" (click)="revisit(item)">{{ item.text }}</button>
+                <button
+                  type="button"
+                  class="scout__remove"
+                  [attr.aria-label]="'Remove saved idea: ' + item.text"
+                  (click)="client.toggleSaved(item)"
+                >
+                  ×
+                </button>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="scout__empty">
+            Save an idea you want to come back to. It stays here until you leave.
+          </p>
+        }
+      </section>
+      <aside class="scout__trail" aria-label="Your discovery trail">
+        <p class="scout__kicker">Your trail</p>
+        <h3>Recently scouted</h3>
+        <p class="scout__hint">Your latest six ideas</p>
+        <div class="scout__items">
+          @for (item of client.trail(); track item.category + item.text) {
+            <button type="button" (click)="revisit(item)">{{ item.text }}</button>
+          }
+        </div>
+      </aside>
+    </div>
+  } @else {
+    <a class="scout__open" routerLink="/discover"
+      >Open the full Knowledge Explorer <span aria-hidden="true">↗</span></a
+    >
+  }
+</section>

@@ -2,7 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import { CHAT_ENDPOINT, PROVIDER_FAILURE_REPLY } from '@shwetha/growing-human-contracts';
+import {
+  CHAT_ENDPOINT,
+  KNOWLEDGE_ENDPOINT,
+  PROVIDER_FAILURE_REPLY,
+} from '@shwetha/growing-human-contracts';
 import { GrowingHumanPage } from './growing-human';
 import { growingHumanContent } from './content/growing-human-content';
 import { NASA_EPIC_ENDPOINT } from './services/earth-image.service';
@@ -116,7 +120,7 @@ describe('GrowingHumanPage', () => {
     expect(session).not.toHaveBeenCalled();
   });
 
-  it('lets a child explore, quiz themselves, and clear a discovery note', () => {
+  it('lets a child explore, quiz themselves, and open the knowledge explorer', () => {
     const local = spyOn(localStorage, 'setItem');
     const { fixture, el } = render();
     chooseAge(fixture, el);
@@ -127,8 +131,18 @@ describe('GrowingHumanPage', () => {
     http
       .expectOne(NASA_EPIC_ENDPOINT)
       .flush([{ image: 'epic_1b_20260928000000', date: '2026-09-28 00:00:00' }]);
+    http.expectOne(`${KNOWLEDGE_ENDPOINT}?category=surprise`).flush({
+      category: 'surprise',
+      kind: 'fact',
+      text: 'Octopuses have three hearts.',
+      source: 'api-ninjas',
+    });
     fixture.detectChanges();
 
+    const discovery = el.querySelector('.growing-human__discovery')!;
+    expect(discovery.children[1].tagName).toBe('APP-KNOWLEDGE-SCOUT');
+    expect(discovery.children[2].classList).toContain('growing-human__discovery-pair');
+    expect(discovery.querySelector('h1')?.textContent).toContain('What will you discover?');
     expect(el.textContent).toContain('The Moon has a familiar face.');
     expect(el.textContent).toContain('Latest available image: 2026-09-28');
     expect(el.querySelector<HTMLAnchorElement>('.earth a')?.href).toBe(
@@ -152,15 +166,10 @@ describe('GrowingHumanPage', () => {
     fixture.detectChanges();
     expect(el.querySelector('.growing-human__quiz-feedback')?.textContent).toContain('You got it!');
 
-    const note = el.querySelector<HTMLTextAreaElement>('#discovery-note')!;
-    note.value = 'The Moon spins as it orbits Earth.';
-    note.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
-    el.querySelector<HTMLFormElement>('.growing-human__journal form')!.dispatchEvent(
-      new Event('submit'),
+    expect(el.querySelector('.scout__idea')?.textContent).toContain('Octopuses have three hearts.');
+    expect(el.querySelector<HTMLAnchorElement>('.scout__open')?.getAttribute('href')).toBe(
+      '/discover',
     );
-    fixture.detectChanges();
-    expect(el.querySelector('.growing-human__saved-note')?.textContent).toContain('The Moon spins');
     expect(local).not.toHaveBeenCalled();
 
     spyOn(Math, 'random').and.returnValue(0);
@@ -168,9 +177,6 @@ describe('GrowingHumanPage', () => {
     fixture.detectChanges();
     expect(el.textContent).toContain('Mars has a giant volcano.');
     expect(el.querySelector('.growing-human__quiz-feedback')).toBeNull();
-    el.querySelector<HTMLButtonElement>('.growing-human__saved-note button')!.click();
-    fixture.detectChanges();
-    expect(el.querySelector('.growing-human__saved-note')).toBeNull();
   });
 
   it('shuffles to a different discovery and clears the previous answer', () => {
@@ -181,6 +187,14 @@ describe('GrowingHumanPage', () => {
     )[1].click();
     fixture.detectChanges();
     http.expectOne(NASA_EPIC_ENDPOINT).flush([]);
+    http
+      .expectOne(`${KNOWLEDGE_ENDPOINT}?category=surprise`)
+      .flush({
+        category: 'surprise',
+        kind: 'fact',
+        text: 'An octopus has three hearts.',
+        source: 'reviewed',
+      });
     fixture.detectChanges();
 
     const random = spyOn(Math, 'random').and.returnValue(0.99);
@@ -210,6 +224,9 @@ describe('GrowingHumanPage', () => {
     fixture.detectChanges();
     http
       .expectOne(NASA_EPIC_ENDPOINT)
+      .flush('unavailable', { status: 503, statusText: 'Unavailable' });
+    http
+      .expectOne(`${KNOWLEDGE_ENDPOINT}?category=surprise`)
       .flush('unavailable', { status: 503, statusText: 'Unavailable' });
     fixture.detectChanges();
 

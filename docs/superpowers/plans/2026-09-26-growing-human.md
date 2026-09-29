@@ -1,4 +1,4 @@
-# Growing Human — Phase 1 Implementation Plan
+# Growing Humans — Phase 1 Implementation Plan
 
 **Status:** Complete. Phase 2 is tracked in `2026-09-27-growing-human-phase-2.md`.
 
@@ -30,7 +30,7 @@
 
 - [x] `src/app/growing-human/services/growing-human-chat.service.ts`: `reply(request): Observable<ChatReply>`, an offline preview that returns the fixed “not connected yet” message.
 
-### Task 4: Growing Human page
+### Task 4: Growing Humans page
 
 - [x] `growing-human.ts/.html/.scss`: steps are derived from signals (`ageBand`, `messages`); the lane is changeable mid-chat; “Start over” clears everything.
 - [x] Chat log `role="log"`, thinking state announced with `aria-live="polite"`, message `maxlength` enforced.

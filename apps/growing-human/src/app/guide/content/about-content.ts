@@ -5,7 +5,7 @@ export const aboutContent: AboutContent = {
   kicker: 'For parents, carers and teachers',
   title: 'About this experiment',
   intro:
-    'Growing Human is a small experiment by Shwetha: a calm place where young people aged 7–16 can ask big questions and practise everyday human skills. It is an AI, not a counsellor, and it is designed around safety before anything else.',
+    'Growing Humans is a small experiment by Shwetha: a calm place where young people aged 7–16 can ask big questions and practise everyday human skills. It is an AI, not a counsellor, and it is designed around safety before anything else.',
   sections: [
     {
       heading: 'What it does',
@@ -40,7 +40,7 @@ export const aboutContent: AboutContent = {
       points: [
         'No accounts, names or birthdays. Age is chosen as a band only.',
         'Conversations are not stored or logged. Refreshing the page or choosing “Start over” clears everything.',
-        'No cookies or tracking are used by Growing Human.',
+        'No cookies or tracking are used by Growing Humans.',
         'Requests are rate-limited to prevent misuse.',
       ],
     },

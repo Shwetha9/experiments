@@ -2,11 +2,11 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.0.
 
-## Growing Human guide API
+## Growing Humans guide API
 
 The Nest API owns the guide model and its safety checks. It is deliberately disabled by default; with no configuration, `/api/growing-human/chat` returns the reviewed preview reply. Copy `.env.example` to `.env` on the server and set the three `OPENROUTER_*` values only for an approved staging evaluation. The key must never be placed in the Angular app or committed.
 
-Before setting `GROWING_HUMAN_ENABLE_GUIDE=true`, run and document the approved red-team evaluation, obtain the required human review, and complete the launch gates in [the Growing Human design spec](docs/superpowers/specs/2026-09-26-growing-human-design.md). The flag is an operational release control, not approval to bypass those gates.
+Before setting `GROWING_HUMAN_ENABLE_GUIDE=true`, run and document the approved red-team evaluation, obtain the required human review, and complete the launch gates in [the Growing Humans design spec](docs/superpowers/specs/2026-09-26-growing-human-design.md). The flag is an operational release control, not approval to bypass those gates.
 
 The Discover activity uses NASA's [EPIC natural-colour API](https://epic.gsfc.nasa.gov/about/api) for the latest available Earth image. The browser requests public NASA metadata directly; EPIC supports cross-origin requests and needs no API key. The app validates the image name and date before constructing the image URL. If NASA is unavailable, the activity shows a fallback and the reviewed space facts and quizzes continue to work.
 
@@ -52,6 +52,17 @@ passes it to API Ninjas and the browser never receives it. Re-deploy after
 changing the Vercel environment variable. The live daily and category requests
 use API Ninjas' free-tier-compatible parameters; its author catalogue and
 pagination are premium API features.
+
+## Growing Humans Knowledge Explorer
+
+The same `API_NINJAS_API_KEY` is used by `/api/growing-human/knowledge`. The
+server requests random Facts for “Surprise me” and category-specific Trivia for
+the other topics. It always asks API Ninjas for `safe=true`. API Ninjas marks
+both the safety filter and Trivia category filter as premium features, so a free
+key returns reviewed in-app picks instead. The browser never sees the key.
+There are several reviewed picks per category so “Scout another” still works
+when the premium filters or API are unavailable. Notes and the discovery trail
+stay in memory for the current visit only.
 
 ## Running unit tests
 

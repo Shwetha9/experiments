@@ -2,7 +2,7 @@ import { CHAT_LIMITS } from '@shwetha/growing-human-contracts';
 import { GrowingHumanContent } from '../models/growing-human';
 
 export const growingHumanContent: GrowingHumanContent = {
-  brand: 'Growing Human',
+  brand: 'Growing Humans',
   ageStep: {
     introTitle: 'A place for big questions and little discoveries.',
     introBody:
@@ -67,7 +67,7 @@ export const growingHumanContent: GrowingHumanContent = {
     privacy:
       'Please don’t share your full name, school, address, phone number, passwords or photos.',
     notCounsellor:
-      'Growing Human is an AI, not a counsellor. If you feel unsafe, talk to a trusted adult now.',
+      'Growing Humans is an AI, not a counsellor. If you feel unsafe, talk to a trusted adult now.',
   },
   limits: CHAT_LIMITS,
 };

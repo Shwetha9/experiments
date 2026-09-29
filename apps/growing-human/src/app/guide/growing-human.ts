@@ -16,6 +16,9 @@ import { spaceDiscoveries } from './content/space-discoveries';
 import { AgeBand, ChatMessage, ChatReply, TopicLaneId } from './models/growing-human';
 import { GrowingHumanChatService } from './services/growing-human-chat.service';
 import { EarthImagePanel } from './earth-image/earth-image';
+import { KnowledgeScout } from './knowledge/knowledge-scout';
+import { GrowingHumanJourney } from './services/journey.service';
+import { KnowledgeScoutClient } from './services/knowledge.service';
 
 type Step = 'age' | 'lane' | 'chat' | 'discover';
 
@@ -26,12 +29,14 @@ interface ThreadEntry {
 
 @Component({
   selector: 'app-growing-human',
-  imports: [RouterLink, EarthImagePanel],
+  imports: [RouterLink, EarthImagePanel, KnowledgeScout],
   templateUrl: './growing-human.html',
   styleUrl: './growing-human.scss',
 })
 export class GrowingHumanPage {
   private readonly chat = inject(GrowingHumanChatService);
+  private readonly journey = inject(GrowingHumanJourney);
+  private readonly knowledge = inject(KnowledgeScoutClient);
   private readonly injector = inject(Injector);
   private readonly stepHeading = viewChild<ElementRef<HTMLElement>>('stepHeading');
   private readonly factTitle = viewChild<ElementRef<HTMLElement>>('factTitle');
@@ -40,12 +45,10 @@ export class GrowingHumanPage {
 
   protected readonly content = growingHumanContent;
   protected readonly discoveries = spaceDiscoveries;
-  protected readonly ageBand = signal<AgeBand | null>(null);
-  protected readonly activity = signal<'guide' | 'discover'>('guide');
+  protected readonly ageBand = this.journey.ageBand;
+  protected readonly activity = this.journey.activity;
   protected readonly discoveryIndex = signal(0);
   protected readonly chosenAnswer = signal<number | null>(null);
-  protected readonly discoveryDraft = signal('');
-  protected readonly discoveryNote = signal('');
   protected readonly laneId = signal<TopicLaneId>('anything');
   protected readonly thread = signal<readonly ThreadEntry[]>([]);
   protected readonly draft = signal('');
@@ -92,23 +95,6 @@ export class GrowingHumanPage {
     this.discoveryIndex.set(pick >= current ? pick + 1 : pick);
     this.chosenAnswer.set(null);
     this.focusAfterRender(() => this.factTitle()?.nativeElement);
-  }
-
-  protected updateDiscoveryDraft(event: Event): void {
-    if (!(event.target instanceof HTMLTextAreaElement)) return;
-    this.discoveryDraft.set(event.target.value);
-  }
-
-  protected saveDiscovery(event: SubmitEvent): void {
-    event.preventDefault();
-    const note = this.discoveryDraft().trim().slice(0, 160);
-    if (!note) return;
-    this.discoveryNote.set(note);
-    this.discoveryDraft.set('');
-  }
-
-  protected clearDiscoveryNote(): void {
-    this.discoveryNote.set('');
   }
 
   protected selectLane(laneId: TopicLaneId): void {
@@ -160,12 +146,11 @@ export class GrowingHumanPage {
 
   protected startOver(): void {
     this.cancelPending();
+    this.knowledge.reset();
     this.ageBand.set(null);
     this.activity.set('guide');
     this.discoveryIndex.set(0);
     this.chosenAnswer.set(null);
-    this.discoveryDraft.set('');
-    this.discoveryNote.set('');
     this.laneId.set('anything');
     this.thread.set([]);
     this.draft.set('');

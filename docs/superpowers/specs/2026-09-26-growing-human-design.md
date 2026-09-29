@@ -1,4 +1,4 @@
-# Growing Human — Design Spec
+# Growing Humans — Design Spec
 
 **Status:** Phase 1 approved for build. Safety contract (§5) **signed off by Shwetha on 2026-09-27**. Launch is still gated by §5.6.
 
@@ -23,7 +23,7 @@ A safe, age-aware place inside Shwetha’s portfolio where young people can ask 
 1. **Discover** — a “Selected work” card on the landing page links to `/growing-human`. The main site does not become a children’s product.
 2. **Choose age band** — `7–10`, `11–13`, `14–16`. Required once per session; no birthday, name or account. Privacy notice: do not share full name, school, address, phone number, passwords or photos.
 3. **Pick a lane — or don’t** — Understand my feelings · Krishna & Arjuna · Life skills · Ask anything. A lane supplies starter questions and context but never blocks a different question.
-4. **Talk and practise** — brief, reflective, actionable replies. Persistent notice: “Growing Human is an AI, not a counsellor. If you feel unsafe, talk to a trusted adult now.”
+4. **Talk and practise** — brief, reflective, actionable replies. Persistent notice: “Growing Humans is an AI, not a counsellor. If you feel unsafe, talk to a trusted adult now.”
 
 **Rules:** keyboard-first and screen-reader friendly; visible thinking state with no simulated typing; topic changes allowed mid-chat; refresh or “Start over” permanently clears the session.
 
