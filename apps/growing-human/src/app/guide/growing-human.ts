@@ -149,6 +149,7 @@ export class GrowingHumanPage {
     this.knowledge.reset();
     this.ageBand.set(null);
     this.activity.set('guide');
+    this.journey.steamCompleted.set([]);
     this.discoveryIndex.set(0);
     this.chosenAnswer.set(null);
     this.laneId.set('anything');

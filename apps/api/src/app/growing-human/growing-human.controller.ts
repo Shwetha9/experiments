@@ -14,16 +14,20 @@ import {
   KNOWLEDGE_CATEGORIES,
   KnowledgeCategory,
   KnowledgeItem,
+  SteamQuestionReply,
+  SteamQuestionRequest,
 } from '@shwetha/growing-human-contracts';
 import { GrowingHumanService } from './growing-human.service';
 import { KnowledgeService } from './knowledge.service';
 import { ChatRequestPipe } from './pipes/chat-request.pipe';
+import { SteamLabService } from './steam-lab.service';
 
 @Controller('growing-human')
 export class GrowingHumanController {
   constructor(
     private readonly growingHuman: GrowingHumanService,
     private readonly knowledge: KnowledgeService,
+    private readonly steamLab: SteamLabService,
   ) {}
 
   @Get('knowledge')
@@ -38,5 +42,11 @@ export class GrowingHumanController {
   @HttpCode(HttpStatus.OK)
   async chat(@Body(ChatRequestPipe) request: ChatRequest): Promise<ChatReply> {
     return this.growingHuman.reply(request);
+  }
+
+  @Post('steam/question')
+  @HttpCode(HttpStatus.OK)
+  async steamQuestion(@Body() request: SteamQuestionRequest): Promise<SteamQuestionReply> {
+    return this.steamLab.question(request);
   }
 }

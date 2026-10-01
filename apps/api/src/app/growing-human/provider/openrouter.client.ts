@@ -59,6 +59,15 @@ export class OpenRouterClient {
     );
   }
 
+  get steamAiEnabled(): boolean {
+    return (
+      this.config.get<string>('GROWING_HUMAN_ENABLE_STEAM_AI') === 'true' &&
+      Boolean(this.config.get<string>('OPENROUTER_API_KEY')) &&
+      Boolean(this.config.get<string>('OPENROUTER_JEV_MODEL')) &&
+      Boolean(this.config.get<string>('OPENROUTER_CHAT_MODEL'))
+    );
+  }
+
   async classifyInput(text: string): Promise<ProviderInputDecision | null> {
     const result = await this.decide(
       { text },
@@ -127,11 +136,42 @@ export class OpenRouterClient {
     };
   }
 
+  async classifySteamQuestion(candidate: string): Promise<ProviderOutputDecision | null> {
+    const result = await this.decide(
+      { candidate },
+      {
+        decision: {
+          type: 'choice',
+          instructions:
+            'Audit a single follow-up question for a child doing a STEAM activity. Block questions asking for personal data, location, contact, photos or uploads, or encouraging dangerous experiments. Rewrite questions with new factual claims, unsafe or age-inappropriate framing, or more than one task. Release only a safe, short question about testing, comparing, observing or changing a variable.',
+          criteria: {
+            release: 'One safe, age-suitable, open-ended STEAM inquiry question with no personal data request or new factual claim.',
+            rewrite: 'Generally safe but too complex, leading, or contains an unsupported factual claim.',
+            block: 'Requests personal data or media, encourages harm, or contains disallowed content.',
+          },
+        },
+      },
+    );
+    const answer = result?.answers?.['decision'];
+    if (
+      !answer || answer.type !== 'choice' || typeof answer.choice !== 'string' ||
+      !OUTPUT_DECISIONS.some((decision) => decision === answer.choice)
+    ) return null;
+    return {
+      decision: answer.choice as OutputSafetyDecision,
+      confident: isHighConfidence(answer.confidence),
+    };
+  }
+
   completeGuide(system: string, user: string): Promise<string | null> {
     return this.complete(this.config.get<string>('OPENROUTER_CHAT_MODEL'), [
       { role: 'system', content: system },
       { role: 'user', content: user },
     ]);
+  }
+
+  completeSteamQuestion(system: string, user: string): Promise<string | null> {
+    return this.completeGuide(system, user);
   }
 
   private classifierModel(): string | undefined {

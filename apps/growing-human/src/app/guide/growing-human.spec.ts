@@ -141,7 +141,9 @@ describe('GrowingHumanPage', () => {
 
     const discovery = el.querySelector('.growing-human__discovery')!;
     expect(discovery.children[1].tagName).toBe('APP-KNOWLEDGE-SCOUT');
-    expect(discovery.children[2].classList).toContain('growing-human__discovery-pair');
+    expect(discovery.children[2].classList).toContain('growing-human__lab-link');
+    expect(el.querySelector<HTMLAnchorElement>('.growing-human__lab-link')?.getAttribute('href')).toBe('/lab');
+    expect(discovery.children[3].classList).toContain('growing-human__discovery-pair');
     expect(discovery.querySelector('h1')?.textContent).toContain('What will you discover?');
     expect(el.textContent).toContain('The Moon has a familiar face.');
     expect(el.textContent).toContain('Latest available image: 2026-09-28');

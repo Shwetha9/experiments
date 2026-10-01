@@ -6,4 +6,5 @@ import { AgeBand } from '../models/growing-human';
 export class GrowingHumanJourney {
   readonly ageBand = signal<AgeBand | null>(null);
   readonly activity = signal<'guide' | 'discover'>('guide');
+  readonly steamCompleted = signal<readonly string[]>([]);
 }

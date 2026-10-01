@@ -1,0 +1,94 @@
+<div class="lab">
+  <header class="lab__bar">
+    <a class="lab__brand" routerLink="/">Growing Humans</a>
+    <a class="lab__back" routerLink="/">← Back to Discover & quiz</a>
+  </header>
+
+  <main class="lab__main">
+    <div class="lab__intro">
+      <p class="lab__eyebrow">The STEAM Lab</p>
+      <h1>Make a guess. Test an idea.</h1>
+      <p>Five quick challenges across science, technology, engineering, arts and maths. Pick one and see what you discover.</p>
+    </div>
+
+    @if (!ageBand()) {
+      <section class="lab__age" aria-labelledby="lab-age-title">
+        <h2 id="lab-age-title">First, choose your age group</h2>
+        <p>This helps us phrase the next question for you.</p>
+        <div class="lab__age-options">
+          @for (age of ages; track age.id) {
+            <button type="button" (click)="selectAge(age.id)">{{ age.label }}</button>
+          }
+        </div>
+      </section>
+    } @else {
+      <section class="lab__workspace" aria-labelledby="mission-title">
+        <div class="lab__workspace-top">
+          <p class="lab__eyebrow">Choose a challenge</p>
+          <p class="lab__progress">{{ completed().length }} of {{ missions.length }} explored</p>
+        </div>
+        <nav class="lab__missions" aria-label="STEAM challenges">
+          @for (item of missions; track item.id; let i = $index) {
+            <button
+              type="button"
+              [attr.aria-current]="missionIndex() === i ? 'step' : null"
+              (click)="selectMission(i)"
+            >
+              <span>{{ item.field }}</span>
+              @if (completed().includes(item.id)) { <span class="lab__done" aria-label="explored">✓</span> }
+            </button>
+          }
+        </nav>
+
+        <div class="lab__challenge">
+          <div class="lab__prompt">
+            <p class="lab__eyebrow">{{ mission().field }} · Challenge {{ missionIndex() + 1 }}</p>
+            <h2 id="mission-title">{{ mission().title }}</h2>
+            <p class="lab__setup">{{ mission().setup }}</p>
+            <h3>{{ mission().question }}</h3>
+            <div class="lab__choices" role="group" aria-label="Choose your prediction">
+              @for (choice of mission().choices; track choice.id) {
+                <button
+                  type="button"
+                  [disabled]="selectedChoice() !== null"
+                  [class.lab__choice--selected]="selectedChoice() === choice.id"
+                  (click)="predict(choice.id)"
+                >{{ choice.label }}</button>
+              }
+            </div>
+          </div>
+
+          <div class="lab__result" aria-live="polite">
+            @if (selectedChoice()) {
+              <p class="lab__eyebrow">What happened?</p>
+              <h3>{{ isCorrect() ? 'Your prediction fits!' : 'A useful surprise!' }}</h3>
+              <p>{{ mission().explanation }}</p>
+              <div class="lab__try">
+                <strong>Try it your way</strong>
+                <p>{{ mission().tryIt }}</p>
+              </div>
+              @if (loading()) {
+                <p class="lab__thinking" role="status">Finding another question…</p>
+              } @else if (followUp()) {
+                <div class="lab__wonder">
+                  <strong>Wonder next</strong>
+                  <p>{{ followUp()?.question }}</p>
+                  @if (followUp()?.source === 'ai') {
+                    <small>AI suggested this question. The explanation above is from our challenge.</small>
+                  }
+                </div>
+              }
+              <button class="lab__next" type="button" (click)="nextMission()">Try another challenge <span aria-hidden="true">→</span></button>
+            } @else {
+              <p class="lab__eyebrow">The experiment starts here</p>
+              <h3>What do you think?</h3>
+              <p>Pick a prediction. Then uncover why it happens and try a small test of your own.</p>
+              <div class="lab__hint" aria-hidden="true">? → ! → ?</div>
+            }
+          </div>
+        </div>
+      </section>
+      <p class="lab__privacy">Your choices stay in this browser tab for this visit. Please do not share private details.</p>
+    }
+  </main>
+</div>

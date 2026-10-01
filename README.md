@@ -64,6 +64,20 @@ There are several reviewed picks per category so “Scout another” still works
 when the premium filters or API are unavailable. Notes and the discovery trail
 stay in memory for the current visit only.
 
+## Growing Humans STEAM Lab (local work in progress)
+
+The Discover & quiz page links to five short prediction challenges at `/growing-human/lab`.
+Each challenge has a fixed explanation and a simple test or observation. The browser sends
+only an age band, mission ID and choice ID to `/api/growing-human/steam/question`; it
+does not send child-authored text. Progress stays in memory for the current visit.
+
+The API returns a curated next question by default. `GROWING_HUMAN_ENABLE_STEAM_AI=false`
+is a separate server-side gate from the guide. If enabled for a reviewed staging trial,
+OpenRouter proposes only a follow-up question; Jev must release it with high confidence
+and format checks must pass, or the curated question is used. The factual explanation
+always comes from the fixed challenge. Do not enable this flag in production without
+reviewing child-facing output and the staging evaluation.
+
 ## Running unit tests
 
 To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
