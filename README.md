@@ -76,7 +76,7 @@ URL still opens the same experience.
 The browser sends only an age band and fixed selection IDs to `/api/growing-human/steam/mission`.
 No child-authored text, names or location are sent to OpenRouter. OpenRouter returns a short
 structured activity. The server validates the JSON and Jev must choose release with a strong
-release probability and low block probability;
+release probability and low block probability. It tries one new idea if the first fails review;
 otherwise it returns a clearly labelled starter mission. AI requires the server-only
 `OPENROUTER_API_KEY`, `OPENROUTER_CHAT_MODEL` and `OPENROUTER_JEV_MODEL`. Set
 `GROWING_HUMAN_ENABLE_STEAM_AI=false` to disable it independently of the guide.

@@ -37,20 +37,27 @@ export class SteamLabService {
       'Make the action feasible at home or on screen with paper and ordinary safe objects. No factual claims beyond the supplied metadata.',
       'Use one short question only in the question field. Do not judge the child or present a single correct answer.',
     ].join(' ');
-    const user = JSON.stringify({
-      ageBand: input.ageBand,
-      nasaImageTitle: image.title,
-      theme: gallery.theme,
-      lens: lens.field,
-      noticed: notice.label,
-      variation: input.remix,
-    });
-    const candidate = await this.provider.completeSteamMission(system, user);
-    const draft = parseMission(candidate);
-    if (!draft) return fallback;
-    const decision = await this.provider.classifySteamMission(JSON.stringify(draft), image.title);
-    if (decision?.decision !== 'release' || !decision.confident) return fallback;
-    return { ...draft, source: 'ai' };
+    const retryBefore = Date.now() + 11_000;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      if (attempt && Date.now() >= retryBefore) break;
+      const user = JSON.stringify({
+        ageBand: input.ageBand,
+        nasaImageTitle: image.title,
+        theme: gallery.theme,
+        lens: lens.field,
+        noticed: notice.label,
+        variation: input.remix + attempt,
+        request: attempt ? 'Try a different, shorter idea grounded in the image title.' : undefined,
+      });
+      const candidate = await this.provider.completeSteamMission(system, user);
+      const draft = parseMission(candidate);
+      if (!draft) continue;
+      const decision = await this.provider.classifySteamMission(JSON.stringify(draft), image.title);
+      if (decision?.decision === 'release' && decision.confident) {
+        return { ...draft, source: 'ai' };
+      }
+    }
+    return fallback;
   }
 }
 

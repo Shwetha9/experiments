@@ -71,6 +71,17 @@ describe('SteamLabService', () => {
     expect(JSON.parse(user)).not.toHaveProperty('messages');
   });
 
+  it('tries one different mission when the first AI answer is unusable', async () => {
+    const completeSteamMission = jest.fn()
+      .mockResolvedValueOnce('not json')
+      .mockResolvedValueOnce(draft);
+    const client = provider({ completeSteamMission });
+    await expect(new SteamLabService(gallery, client).mission(request))
+      .resolves.toMatchObject({ title: 'Tracks and treads', source: 'ai' });
+    expect(completeSteamMission).toHaveBeenCalledTimes(2);
+    expect(JSON.parse(completeSteamMission.mock.calls[1][1]).variation).toBe(1);
+  });
+
   it.each([
     [{ completeSteamMission: jest.fn().mockResolvedValue('not json') }],
     [{ classifySteamMission: jest.fn().mockResolvedValue({ decision: 'block', confident: true }) }],
