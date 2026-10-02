@@ -1,20 +1,22 @@
-<div class="lab">
-  <header class="lab__bar">
-    <a class="lab__brand" routerLink="/">Growing Humans</a>
-    <a class="lab__back" routerLink="/">← Back to Discover & quiz</a>
-  </header>
+<div class="lab" [class.lab--embedded]="embedded()">
+  @if (!embedded()) {
+    <header class="lab__bar">
+      <a class="lab__brand" routerLink="/">Growing Humans</a>
+      <a routerLink="/">← Back to Growing Humans</a>
+    </header>
+  }
 
-  <main class="lab__main">
+  <section class="lab__main" aria-labelledby="lab-title">
     <div class="lab__intro">
-      <p class="lab__eyebrow">The STEAM Lab</p>
-      <h1>Make a guess. Test an idea.</h1>
-      <p>Five quick challenges across science, technology, engineering, arts and maths. Pick one and see what you discover.</p>
+      <p class="lab__eyebrow">NASA IMAGE LIBRARY · STEAM MISSION MAKER</p>
+      <h1 id="lab-title">See it. Wonder. Make something.</h1>
+      <p>Explore a real NASA image, choose what catches your eye, then make a mission you can try.</p>
     </div>
 
     @if (!ageBand()) {
       <section class="lab__age" aria-labelledby="lab-age-title">
-        <h2 id="lab-age-title">First, choose your age group</h2>
-        <p>This helps us phrase the next question for you.</p>
+        <h2 id="lab-age-title">Choose your age group</h2>
+        <p>We use this only to shape the activity. No name or account needed.</p>
         <div class="lab__age-options">
           @for (age of ages; track age.id) {
             <button type="button" (click)="selectAge(age.id)">{{ age.label }}</button>
@@ -22,73 +24,129 @@
         </div>
       </section>
     } @else {
-      <section class="lab__workspace" aria-labelledby="mission-title">
-        <div class="lab__workspace-top">
-          <p class="lab__eyebrow">Choose a challenge</p>
-          <p class="lab__progress">{{ completed().length }} of {{ missions.length }} explored</p>
-        </div>
-        <nav class="lab__missions" aria-label="STEAM challenges">
-          @for (item of missions; track item.id; let i = $index) {
-            <button
-              type="button"
-              [attr.aria-current]="missionIndex() === i ? 'step' : null"
-              (click)="selectMission(i)"
-            >
-              <span>{{ item.field }}</span>
-              @if (completed().includes(item.id)) { <span class="lab__done" aria-label="explored">✓</span> }
-            </button>
-          }
-        </nav>
+      <div class="lab__topic-line">
+        <p class="lab__eyebrow">1 · Choose a place to explore</p>
+        <a href="https://images.nasa.gov/" target="_blank" rel="noopener noreferrer">Images from NASA ↗</a>
+      </div>
+      <nav class="lab__themes" aria-label="NASA image topics">
+        @for (topic of themes; track topic.id) {
+          <button type="button" [attr.aria-pressed]="theme() === topic.id" (click)="selectTheme(topic.id)">
+            {{ topic.label }}
+          </button>
+        }
+      </nav>
 
-        <div class="lab__challenge">
-          <div class="lab__prompt">
-            <p class="lab__eyebrow">{{ mission().field }} · Challenge {{ missionIndex() + 1 }}</p>
-            <h2 id="mission-title">{{ mission().title }}</h2>
-            <p class="lab__setup">{{ mission().setup }}</p>
-            <h3>{{ mission().question }}</h3>
-            <div class="lab__choices" role="group" aria-label="Choose your prediction">
-              @for (choice of mission().choices; track choice.id) {
+      @if (galleryLoading()) {
+        <p class="lab__status" role="status">Finding NASA images…</p>
+      } @else if (galleryError()) {
+        <div class="lab__error" role="status">
+          <p>{{ galleryError() }}</p>
+          <button type="button" (click)="retryGallery()">Try again</button>
+        </div>
+      } @else if (selectedImage(); as image) {
+        <div class="lab__workspace">
+          <div class="lab__visual">
+            <div class="lab__image-wrap">
+              <img [src]="image.thumbnailUrl" [alt]="image.title" />
+              <span class="lab__image-credit">NASA Image and Video Library</span>
+            </div>
+            <div class="lab__image-caption">
+              <div>
+                <strong>{{ image.title }}</strong>
+                @if (image.date) { <span>{{ image.date }}</span> }
+              </div>
+              <a [href]="image.sourceUrl" target="_blank" rel="noopener noreferrer">View at NASA ↗</a>
+            </div>
+            <div class="lab__photo-controls">
+              <button type="button" (click)="shuffleImage()" [disabled]="(gallery()?.images?.length ?? 0) < 2">
+                ↝ Another image
+              </button>
+              <button type="button" (click)="moreImages()">More NASA images →</button>
+            </div>
+            <div class="lab__filmstrip" aria-label="Choose a NASA image">
+              @for (photo of gallery()?.images; track photo.id) {
                 <button
                   type="button"
-                  [disabled]="selectedChoice() !== null"
-                  [class.lab__choice--selected]="selectedChoice() === choice.id"
-                  (click)="predict(choice.id)"
-                >{{ choice.label }}</button>
+                  [attr.aria-label]="'Explore ' + photo.title"
+                  [attr.aria-pressed]="selectedId() === photo.id"
+                  (click)="selectImage(photo)"
+                >
+                  <img [src]="photo.thumbnailUrl" alt="" loading="lazy" />
+                </button>
               }
             </div>
           </div>
 
-          <div class="lab__result" aria-live="polite">
-            @if (selectedChoice()) {
-              <p class="lab__eyebrow">What happened?</p>
-              <h3>{{ isCorrect() ? 'Your prediction fits!' : 'A useful surprise!' }}</h3>
-              <p>{{ mission().explanation }}</p>
-              <div class="lab__try">
-                <strong>Try it your way</strong>
-                <p>{{ mission().tryIt }}</p>
-              </div>
-              @if (loading()) {
-                <p class="lab__thinking" role="status">Finding another question…</p>
-              } @else if (followUp()) {
-                <div class="lab__wonder">
-                  <strong>Wonder next</strong>
-                  <p>{{ followUp()?.question }}</p>
-                  @if (followUp()?.source === 'ai') {
-                    <small>AI suggested this question. The explanation above is from our challenge.</small>
-                  }
-                </div>
+          <div class="lab__maker">
+            <p class="lab__eyebrow">2 · What catches your eye?</p>
+            <div class="lab__options" role="group" aria-label="What you notice">
+              @for (item of notices; track item.id) {
+                <button type="button" [attr.aria-pressed]="notice() === item.id" (click)="selectNotice(item.id)">
+                  {{ item.label }}
+                </button>
               }
-              <button class="lab__next" type="button" (click)="nextMission()">Try another challenge <span aria-hidden="true">→</span></button>
-            } @else {
-              <p class="lab__eyebrow">The experiment starts here</p>
-              <h3>What do you think?</h3>
-              <p>Pick a prediction. Then uncover why it happens and try a small test of your own.</p>
-              <div class="lab__hint" aria-hidden="true">? → ! → ?</div>
-            }
+            </div>
+            <p class="lab__eyebrow">3 · Choose your STEAM lens</p>
+            <div class="lab__lenses" role="group" aria-label="STEAM lens">
+              @for (item of lenses; track item.id) {
+                <button type="button" [attr.aria-pressed]="lens() === item.id" (click)="selectLens(item.id)">
+                  <small>{{ item.field }}</small>
+                  <strong>{{ item.label }}</strong>
+                </button>
+              }
+            </div>
+            <button class="lab__make" type="button" [disabled]="missionLoading()" (click)="makeMission()">
+              {{ missionLoading() ? 'Making your mission…' : 'Make my mission →' }}
+            </button>
+            <p class="lab__privacy">Only your selections go to the mission maker. No typing or account.</p>
           </div>
         </div>
-      </section>
-      <p class="lab__privacy">Your choices stay in this browser tab for this visit. Please do not share private details.</p>
+
+        @if (missionError()) {
+          <p class="lab__error" role="status">{{ missionError() }}</p>
+        }
+        @if (mission(); as idea) {
+          <section class="lab__mission" aria-labelledby="made-mission-title">
+            <div class="lab__mission-top">
+              <p class="lab__eyebrow">{{ idea.source === 'ai' ? 'AI-MADE · SAFETY CHECKED' : 'STARTER MISSION · READY TO TRY' }}</p>
+              @if (idea.source === 'ai' && remix() < 50) {
+                <button type="button" [disabled]="missionLoading()" (click)="makeMission(true)" aria-label="Remix this mission">
+                  ↝ Remix
+                </button>
+              }
+            </div>
+            <h2 id="made-mission-title">{{ idea.title }}</h2>
+            <p>{{ idea.challenge }}</p>
+            <div class="lab__mission-steps">
+              <div><strong>Try it</strong><p>{{ idea.action }}</p></div>
+              <div><strong>Wonder next</strong><p>{{ idea.question }}</p></div>
+            </div>
+            <div class="lab__mission-actions">
+              <button type="button" [attr.aria-pressed]="tried()" (click)="markTried()">
+                {{ tried() ? '✓ I tried it' : 'I tried it' }}
+              </button>
+              <button type="button" [attr.aria-pressed]="isSaved()" (click)="saveMission()">
+                {{ isSaved() ? '✓ Saved for this visit' : 'Save this mission' }}
+              </button>
+            </div>
+          </section>
+        }
+      }
+
+      @if (saved().length) {
+        <section class="lab__saved" aria-labelledby="saved-title">
+          <h2 id="saved-title">Your mission trail <span>{{ saved().length }}</span></h2>
+          <p>Saved in this tab until you leave or start over.</p>
+          <ul>
+            @for (item of saved(); track item.id) {
+              <li>
+                <div><strong>{{ item.mission.title }}</strong><span>{{ item.imageTitle }}</span><p>{{ item.mission.action }}</p></div>
+                <button type="button" [attr.aria-label]="'Remove ' + item.mission.title" (click)="removeSaved(item.id)">×</button>
+              </li>
+            }
+          </ul>
+        </section>
+      }
     }
-  </main>
+  </section>
 </div>

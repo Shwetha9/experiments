@@ -64,19 +64,22 @@ There are several reviewed picks per category so “Scout another” still works
 when the premium filters or API are unavailable. Notes and the discovery trail
 stay in memory for the current visit only.
 
-## Growing Humans STEAM Lab (local work in progress)
+## Growing Humans STEAM Lab
 
-The Discover & quiz page links to five short prediction challenges at `/growing-human/lab`.
-Each challenge has a fixed explanation and a simple test or observation. The browser sends
-only an age band, mission ID and choice ID to `/api/growing-human/steam/question`; it
-does not send child-authored text. Progress stays in memory for the current visit.
+The third activity tab is a NASA image investigation. The API fetches curated topic searches
+from the public [NASA Image and Video Library](https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf),
+validates image metadata and caches each page briefly. Kids choose an image, what they notice,
+and a science, technology, engineering, art or maths lens. They can make and remix a mission,
+mark it tried, and save up to eight missions in memory for the visit. The old `/growing-human/lab`
+URL still opens the same experience.
 
-The API returns a curated next question by default. `GROWING_HUMAN_ENABLE_STEAM_AI=false`
-is a separate server-side gate from the guide. If enabled for a reviewed staging trial,
-OpenRouter proposes only a follow-up question; Jev must release it with high confidence
-and format checks must pass, or the curated question is used. The factual explanation
-always comes from the fixed challenge. Do not enable this flag in production without
-reviewing child-facing output and the staging evaluation.
+The browser sends only an age band and fixed selection IDs to `/api/growing-human/steam/mission`.
+No child-authored text, names or location are sent to OpenRouter. OpenRouter returns a short
+structured activity. The server validates the JSON and Jev must choose release with a strong
+release probability and low block probability;
+otherwise it returns a clearly labelled starter mission. AI requires the server-only
+`OPENROUTER_API_KEY`, `OPENROUTER_CHAT_MODEL` and `OPENROUTER_JEV_MODEL`. Set
+`GROWING_HUMAN_ENABLE_STEAM_AI=false` to disable it independently of the guide.
 
 ## Running unit tests
 

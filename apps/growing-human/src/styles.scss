@@ -7,23 +7,3 @@ body {
   background: var(--ink);
   color: var(--text);
 }
-
-.growing-human__lab-link {
-  align-items: center;
-  background: linear-gradient(110deg, #26303b, #252337);
-  border: 1px solid #58717b;
-  border-radius: 18px;
-  color: var(--text);
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 19px 23px;
-  text-decoration: none;
-}
-.growing-human__lab-link > span:first-child { display: grid; gap: 4px; }
-.growing-human__lab-link small { color: #a9d9bb; font-size: 11px; font-weight: 700; letter-spacing: .13em; }
-.growing-human__lab-link strong { font: 600 24px/1.2 Georgia, serif; }
-.growing-human__lab-link > span:first-child > span { color: var(--muted); font-size: 14px; line-height: 1.4; }
-.growing-human__lab-arrow { color: #a9d9bb; font-size: 23px; }
-.growing-human__lab-link:hover { border-color: #a9d9bb; }
-.growing-human__lab-link:focus-visible { outline: 3px solid #efaac3; outline-offset: 3px; }

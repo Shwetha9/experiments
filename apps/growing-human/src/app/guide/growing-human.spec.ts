@@ -75,6 +75,20 @@ describe('GrowingHumanPage', () => {
     expect(el.textContent).toContain('an AI, not a counsellor');
   });
 
+  it('opens the NASA STEAM Lab as the third activity tab', () => {
+    const { fixture, el } = render();
+    chooseAge(fixture, el);
+    const tabs = el.querySelectorAll<HTMLButtonElement>('.growing-human__activities button');
+    expect(tabs).toHaveSize(3);
+    expect(tabs[2].textContent).toContain('STEAM Lab');
+    tabs[2].click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-steam-lab')).not.toBeNull();
+    expect(tabs[2].getAttribute('aria-current')).toBe('page');
+    http.expectOne('/api/growing-human/steam/gallery?theme=mars&page=1')
+      .flush({ theme: 'mars', page: 1, images: [] });
+  });
+
   it('sends the chat to the BFF and renders the reply', () => {
     const { fixture, el } = render();
     chooseAge(fixture, el);
@@ -141,9 +155,7 @@ describe('GrowingHumanPage', () => {
 
     const discovery = el.querySelector('.growing-human__discovery')!;
     expect(discovery.children[1].tagName).toBe('APP-KNOWLEDGE-SCOUT');
-    expect(discovery.children[2].classList).toContain('growing-human__lab-link');
-    expect(el.querySelector<HTMLAnchorElement>('.growing-human__lab-link')?.getAttribute('href')).toBe('/lab');
-    expect(discovery.children[3].classList).toContain('growing-human__discovery-pair');
+    expect(discovery.children[2].classList).toContain('growing-human__discovery-pair');
     expect(discovery.querySelector('h1')?.textContent).toContain('What will you discover?');
     expect(el.textContent).toContain('The Moon has a familiar face.');
     expect(el.textContent).toContain('Latest available image: 2026-09-28');

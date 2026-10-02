@@ -12,7 +12,7 @@
   </nav>
 </header>
 
-<main class="growing-human__main" [class.growing-human__main--discovery]="step() === 'discover'">
+<main class="growing-human__main" [class.growing-human__main--discovery]="step() === 'discover' || step() === 'steam'">
   @if (ageBand()) {
     <nav class="growing-human__activities" aria-label="Choose an activity">
       <button
@@ -28,6 +28,13 @@
         (click)="chooseActivity('discover')"
       >
         <span aria-hidden="true">✦</span> Discover & quiz
+      </button>
+      <button
+        type="button"
+        [attr.aria-current]="activity() === 'steam' ? 'page' : null"
+        (click)="chooseActivity('steam')"
+      >
+        <span aria-hidden="true">◉</span> STEAM Lab
       </button>
     </nav>
   }
@@ -92,15 +99,6 @@
         </div>
 
         <app-knowledge-scout />
-
-        <a class="growing-human__lab-link" routerLink="/lab">
-          <span>
-            <small>NEW · THE STEAM LAB</small>
-            <strong>Make a guess. Test an idea.</strong>
-            <span>Five short challenges across science, technology, engineering, arts and maths.</span>
-          </span>
-          <span class="growing-human__lab-arrow" aria-hidden="true">↗</span>
-        </a>
 
         <div class="growing-human__discovery-pair">
           <article class="growing-human__fact" [attr.data-place]="discovery().id">
@@ -173,6 +171,12 @@
         </div>
 
         <app-earth-image />
+      </section>
+    }
+
+    @case ('steam') {
+      <section class="growing-human__step" aria-label="STEAM Lab">
+        <app-steam-lab [embedded]="true" />
       </section>
     }
 

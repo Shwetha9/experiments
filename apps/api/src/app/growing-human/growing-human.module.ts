@@ -6,9 +6,10 @@ import { OpenRouterClient } from './provider/openrouter.client';
 import { InputSafetyService } from './safety/input-safety.service';
 import { KnowledgeService } from './knowledge.service';
 import { SteamLabService } from './steam-lab.service';
+import { SteamGalleryService } from './steam-gallery.service';
 
 @Module({
   controllers: [GrowingHumanController],
-  providers: [GrowingHumanService, KnowledgeService, SteamLabService, InputSafetyService, GuidePromptService, OpenRouterClient],
+  providers: [GrowingHumanService, KnowledgeService, SteamGalleryService, SteamLabService, InputSafetyService, GuidePromptService, OpenRouterClient],
 })
 export class GrowingHumanModule {}

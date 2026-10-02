@@ -14,13 +14,16 @@ import {
   KNOWLEDGE_CATEGORIES,
   KnowledgeCategory,
   KnowledgeItem,
-  SteamQuestionReply,
-  SteamQuestionRequest,
+  SteamGallery,
+  SteamMissionReply,
+  SteamMissionRequest,
+  SteamTheme,
 } from '@shwetha/growing-human-contracts';
 import { GrowingHumanService } from './growing-human.service';
 import { KnowledgeService } from './knowledge.service';
 import { ChatRequestPipe } from './pipes/chat-request.pipe';
 import { SteamLabService } from './steam-lab.service';
+import { SteamGalleryService } from './steam-gallery.service';
 
 @Controller('growing-human')
 export class GrowingHumanController {
@@ -28,6 +31,7 @@ export class GrowingHumanController {
     private readonly growingHuman: GrowingHumanService,
     private readonly knowledge: KnowledgeService,
     private readonly steamLab: SteamLabService,
+    private readonly steamGallery: SteamGalleryService,
   ) {}
 
   @Get('knowledge')
@@ -44,9 +48,17 @@ export class GrowingHumanController {
     return this.growingHuman.reply(request);
   }
 
-  @Post('steam/question')
+  @Get('steam/gallery')
+  async steamImages(
+    @Query('theme') theme: SteamTheme,
+    @Query('page') page: string,
+  ): Promise<SteamGallery> {
+    return this.steamGallery.get(theme, Number(page));
+  }
+
+  @Post('steam/mission')
   @HttpCode(HttpStatus.OK)
-  async steamQuestion(@Body() request: SteamQuestionRequest): Promise<SteamQuestionReply> {
-    return this.steamLab.question(request);
+  async steamMission(@Body() request: SteamMissionRequest): Promise<SteamMissionReply> {
+    return this.steamLab.mission(request);
   }
 }

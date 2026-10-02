@@ -19,8 +19,9 @@ import { EarthImagePanel } from './earth-image/earth-image';
 import { KnowledgeScout } from './knowledge/knowledge-scout';
 import { GrowingHumanJourney } from './services/journey.service';
 import { KnowledgeScoutClient } from './services/knowledge.service';
+import { SteamLabPage } from './steam/steam-lab';
 
-type Step = 'age' | 'lane' | 'chat' | 'discover';
+type Step = 'age' | 'lane' | 'chat' | 'discover' | 'steam';
 
 interface ThreadEntry {
   readonly message: ChatMessage;
@@ -29,7 +30,7 @@ interface ThreadEntry {
 
 @Component({
   selector: 'app-growing-human',
-  imports: [RouterLink, EarthImagePanel, KnowledgeScout],
+  imports: [RouterLink, EarthImagePanel, KnowledgeScout, SteamLabPage],
   templateUrl: './growing-human.html',
   styleUrl: './growing-human.scss',
 })
@@ -57,6 +58,7 @@ export class GrowingHumanPage {
   protected readonly step = computed<Step>(() => {
     if (!this.ageBand()) return 'age';
     if (this.activity() === 'discover') return 'discover';
+    if (this.activity() === 'steam') return 'steam';
     return this.thread().length === 0 ? 'lane' : 'chat';
   });
   protected readonly discovery = computed(() => this.discoveries[this.discoveryIndex()]);
@@ -77,7 +79,7 @@ export class GrowingHumanPage {
     this.focusAfterRender(() => this.stepHeading()?.nativeElement);
   }
 
-  protected chooseActivity(activity: 'guide' | 'discover'): void {
+  protected chooseActivity(activity: 'guide' | 'discover' | 'steam'): void {
     this.activity.set(activity);
     this.focusAfterRender(() => this.stepHeading()?.nativeElement);
   }
@@ -149,7 +151,7 @@ export class GrowingHumanPage {
     this.knowledge.reset();
     this.ageBand.set(null);
     this.activity.set('guide');
-    this.journey.steamCompleted.set([]);
+    this.journey.steamSaved.set([]);
     this.discoveryIndex.set(0);
     this.chosenAnswer.set(null);
     this.laneId.set('anything');
