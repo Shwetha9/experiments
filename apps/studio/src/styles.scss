@@ -286,3 +286,71 @@ button:focus-visible {
   color: var(--muted);
   line-height: 1.7;
 }
+
+// The project showcase sits in global styles to keep the landing component
+// below its Angular component-style budget.
+app-landing {
+  .work__paths {
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: clamp(42px, 6vw, 76px);
+  }
+  .work__path {
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 26px clamp(20px, 3vw, 40px) 9px;
+    text-decoration: none;
+    transition: background-color 180ms ease;
+  }
+  .work__path:first-child { padding-left: 0; }
+  .work__path + .work__path { border-left: 1px solid var(--line); }
+  .work__path:hover,
+  .work__path:focus-visible { background: color-mix(in srgb, var(--tone-sage) 7%, transparent); }
+  .work__path-top {
+    align-items: center;
+    color: var(--tone-sage);
+    display: flex;
+    font-size: 11px;
+    font-weight: 700;
+    justify-content: space-between;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+  }
+  .work__path-top .pi { font-size: 14px; }
+  .work__path h3 {
+    font: 500 clamp(24px, 2.3vw, 31px)/1.2 Georgia, serif;
+    letter-spacing: -.035em;
+    margin: 28px 0 12px;
+  }
+  .work__path p {
+    color: var(--copy-muted);
+    font-size: 14px;
+    line-height: 1.65;
+    margin: 0 0 28px;
+  }
+  .work__path-action {
+    border-bottom: 1px solid currentColor;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: auto;
+    padding-bottom: 4px;
+    width: fit-content;
+  }
+}
+
+@media (max-width: 1000px) {
+  app-landing {
+    .work__paths { grid-template-columns: 1fr; }
+    .work__path,
+    .work__path:first-child { padding: 24px 0; }
+    .work__path + .work__path {
+      border-left: 0;
+      border-top: 1px solid var(--line);
+    }
+    .work__path h3 { margin-top: 14px; }
+    .work__path p { margin-bottom: 17px; }
+  }
+}

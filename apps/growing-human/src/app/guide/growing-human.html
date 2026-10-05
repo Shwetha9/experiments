@@ -17,7 +17,7 @@
     <nav class="growing-human__activities" aria-label="Choose an activity">
       <button
         type="button"
-        [attr.aria-current]="activity() === 'discover' ? null : 'page'"
+        [attr.aria-current]="activity() === 'guide' ? 'page' : null"
         (click)="chooseActivity('guide')"
       >
         <span aria-hidden="true">✳</span> Ask a big question

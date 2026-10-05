@@ -7,6 +7,7 @@
         <a href="#practice" (click)="closeMenu()">Practice</a>
         <a href="#leadership" (click)="closeMenu()">Leadership</a>
         <a href="#beyond" (click)="closeMenu()">Beyond</a>
+        <a href="#work" (click)="closeMenu()">Work</a>
         <a href="#contact" (click)="closeMenu()">Contact</a>
         <a class="header-nav__feature" href="/growing-human/" (click)="closeMenu()">Growing Humans <i class="pi pi-arrow-up-right" aria-hidden="true"></i></a>
       </nav>
@@ -37,8 +38,8 @@
           <a class="button" href="#possibility"
             >Start with what changed <i class="pi pi-arrow-down-right" aria-hidden="true"></i
           ></a>
-          <a class="button" href="/growing-human/"
-            >Explore ambitions <i class="pi pi-arrow-up-right" aria-hidden="true"></i
+          <a class="button" href="#work"
+            >See what kids can do <i class="pi pi-arrow-down-right" aria-hidden="true"></i
           ></a>
         </div>
       </div>
@@ -186,20 +187,42 @@
       <span class="motif motif--sprig motif--work-right" aria-hidden="true"></span>
       <span class="motif motif--dots motif--work-dots" aria-hidden="true"></span>
       <span class="motif motif--rings motif--work-rings" aria-hidden="true"></span>
-      <p class="eyebrow">Selected work · A byproduct of ambition</p>
-      <article class="work__item">
+      <p class="eyebrow">Selected work · Made for curious minds</p>
+      <div class="work__intro">
         <hgroup>
           <h2 id="work-title">Growing Humans</h2>
-          <p class="work__tagline">Big questions. Real feelings. Useful life skills.</p>
+          <p class="work__tagline">A place to ask, discover, and make.</p>
         </hgroup>
-        <p>
-          A safe, age-aware place for young people to ask big questions and practise useful human
-          skills—designed with guardrails before the first message.
-        </p>
-        <a class="work__link" href="/growing-human/">
-          Explore Growing Humans <i class="pi pi-arrow-up-right" aria-hidden="true"></i>
+        <div class="work__overview">
+          <p>
+            An age-aware space where young people can think through real questions, follow their
+            curiosity, and try hands-on STEAM ideas. Built with privacy and safety in mind.
+          </p>
+          <a class="work__link" href="/growing-human/">
+            Enter Growing Humans <i class="pi pi-arrow-up-right" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+      <div class="work__paths" aria-label="Explore Growing Humans activities">
+        <a class="work__path" href="/growing-human/?activity=guide">
+          <span class="work__path-top"><span>01 · Ask &amp; reflect</span><i class="pi pi-arrow-up-right" aria-hidden="true"></i></span>
+          <h3>Big questions belong here.</h3>
+          <p>Explore feelings, friendships, choices, and life skills with an age-aware AI guide.</p>
+          <span class="work__path-action">Start a conversation</span>
         </a>
-      </article>
+        <a class="work__path" href="/growing-human/?activity=discover">
+          <span class="work__path-top"><span>02 · Discover &amp; quiz</span><i class="pi pi-arrow-up-right" aria-hidden="true"></i></span>
+          <h3>Find something surprising.</h3>
+          <p>Scout general knowledge, explore NASA space facts, and quiz yourself as you go.</p>
+          <span class="work__path-action">Discover something</span>
+        </a>
+        <a class="work__path" href="/growing-human/?activity=steam">
+          <span class="work__path-top"><span>03 · Explore STEAM</span><i class="pi pi-arrow-up-right" aria-hidden="true"></i></span>
+          <h3>Turn an image into an idea.</h3>
+          <p>Choose a real NASA image, spot a detail, and make an AI-powered mission to try.</p>
+          <span class="work__path-action">Try the STEAM Lab</span>
+        </a>
+      </div>
     </section>
 
     <section id="contact" class="contact">

@@ -69,8 +69,15 @@ describe('LandingPage', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.querySelectorAll('a[href="/growing-human/"]')).toHaveSize(3);
+    expect(compiled.querySelectorAll('a[href="/growing-human/"]')).toHaveSize(2);
     expect(compiled.querySelector('header a[href="/growing-human/"]')?.textContent).toContain('Growing Humans');
+    expect(compiled.querySelectorAll('#work .work__path')).toHaveSize(3);
+    expect(compiled.querySelector('#work a[href="/growing-human/?activity=guide"]')?.textContent)
+      .toContain('Ask & reflect');
+    expect(compiled.querySelector('#work a[href="/growing-human/?activity=discover"]')?.textContent)
+      .toContain('Discover & quiz');
+    expect(compiled.querySelector('#work a[href="/growing-human/?activity=steam"]')?.textContent)
+      .toContain('Explore STEAM');
     expect(compiled.querySelector('header a[href="/quotes"]')).toBeNull();
     expect(compiled.querySelector('#beyond a[href="/quotes"]')?.textContent).toContain('quotes');
   });

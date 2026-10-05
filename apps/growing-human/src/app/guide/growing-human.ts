@@ -9,7 +9,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { growingHumanContent } from './content/growing-human-content';
 import { spaceDiscoveries } from './content/space-discoveries';
@@ -39,6 +39,7 @@ export class GrowingHumanPage {
   private readonly journey = inject(GrowingHumanJourney);
   private readonly knowledge = inject(KnowledgeScoutClient);
   private readonly injector = inject(Injector);
+  private readonly route = inject(ActivatedRoute);
   private readonly stepHeading = viewChild<ElementRef<HTMLElement>>('stepHeading');
   private readonly factTitle = viewChild<ElementRef<HTMLElement>>('factTitle');
   private readonly composer = viewChild<ElementRef<HTMLTextAreaElement>>('composer');
@@ -72,6 +73,10 @@ export class GrowingHumanPage {
 
   constructor() {
     inject(DestroyRef).onDestroy(() => this.pending?.unsubscribe());
+    const requestedActivity = this.route.snapshot.queryParamMap.get('activity');
+    if (requestedActivity === 'guide' || requestedActivity === 'discover' || requestedActivity === 'steam') {
+      this.activity.set(requestedActivity);
+    }
   }
 
   protected selectAge(ageBand: AgeBand): void {
