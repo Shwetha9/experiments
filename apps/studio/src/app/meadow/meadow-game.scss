@@ -6,54 +6,74 @@ button { font:inherit; cursor:pointer }
 .meadow__bar a { color:#344059; text-decoration:none }
 .meadow__brand { font:700 20px Georgia,serif }
 .meadow__back { font-size:14px; border-bottom:1px solid currentColor; padding-bottom:2px }
-.meadow__main { max-width:1160px; margin:auto; padding:48px 24px 55px }
+.meadow__main { max-width:1200px; margin:auto; padding:30px 24px 55px }
 .meadow__eyebrow,.meadow__step { margin:0; color:#885d80; font-size:12px; font-weight:800; letter-spacing:.14em; text-transform:uppercase }
-.meadow__intro { max-width:760px; margin:0 auto 28px; text-align:center }
+.meadow__intro { max-width:800px; margin:0 auto 20px; text-align:center }
 .meadow__intro h1 { margin:12px 0 15px; font:700 clamp(43px,7vw,73px)/1 Georgia,serif; letter-spacing:-.055em }
 .meadow__intro h1 em { color:#8a6aa1; font-weight:500 }
 .meadow__intro>p:last-child,.meadow__game-intro p:last-child { margin:0; color:#596576; font-size:16px; line-height:1.55 }
 .meadow__welcome { overflow:hidden; background:#fffdf9; border:1px solid #d7d3da; border-radius:28px; box-shadow:0 18px 55px #625b781b }
-.meadow__sky { position:relative; height:200px; overflow:hidden; background:linear-gradient(#374365,#767ba3 66%,#d0abbc) }
+.meadow__sky { position:relative; height:125px; overflow:hidden; background:linear-gradient(#374365,#767ba3 66%,#d0abbc) }
 .meadow__moon { position:absolute; top:28px; right:17%; width:75px; aspect-ratio:1; border-radius:50%; background:#fff2d0; box-shadow:0 0 0 17px #fff1d21c,0 0 55px #fff1cb99 }
 .meadow__spark { position:absolute; color:#fff3ce; animation:twinkle 2.8s ease-in-out infinite alternate }
 .meadow__spark--one { left:22%; top:40px; font-size:24px }.meadow__spark--two { left:58%; top:32px; font-size:16px; animation-delay:.8s }.meadow__spark--three { right:28%; top:110px; font-size:21px; animation-delay:1.3s }
 .meadow__hill { position:absolute; width:125%; height:150px; bottom:-110px; border-radius:50% 50% 0 0 }.meadow__hill--back { left:-20%; background:#7a9c91; transform:rotate(-3deg) }.meadow__hill--front { right:-20%; bottom:-127px; background:#50786b; transform:rotate(3deg) }
-.meadow__choose { padding:32px clamp(22px,5vw,58px) 42px }
+.meadow__choose { padding:23px clamp(22px,5vw,58px) 32px }
 .meadow__choose h2,.meadow__victory h2 { margin:8px 0 10px; font:700 clamp(30px,3.5vw,43px)/1.08 Georgia,serif; letter-spacing:-.035em }
 .meadow__choose>p:not(.meadow__step),.meadow__victory p:not(.meadow__step) { color:#626a78; line-height:1.55; margin:0 0 25px }
 .meadow__friends { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:17px }
 .meadow__friend { display:flex; flex-direction:column; align-items:center; min-width:0; padding:12px 10px 19px; border:1px solid #e0dce3; border-radius:20px; background:#f7f4f8; color:#323b4d; transition:transform .17s,box-shadow .17s,border-color .17s }
 .meadow__friend:hover { transform:translateY(-4px); border-color:#aa88ad; box-shadow:0 10px 25px #5d517023 }
-.meadow__friend img { width:min(100%,185px); height:150px; object-fit:contain; filter:drop-shadow(0 7px 6px #45415d30) }
+.meadow__friend img { width:min(100%,190px); height:150px; object-fit:contain; filter:drop-shadow(0 7px 6px #45415d30) }
 .meadow__friend strong { margin-top:7px; font:700 23px Georgia,serif }.meadow__friend small { margin-top:4px; color:#666d79; font-size:12px; text-align:center }
-.meadow__main.is-playing { max-width:1230px; padding-top:35px }
-.meadow__game-intro { display:flex; justify-content:space-between; align-items:center; gap:22px; margin-bottom:22px }
+.meadow__resume { display:block; margin:25px auto 0; padding:10px 16px; border:1px solid #816594; border-radius:100px; color:#69517a; background:#fff; font-weight:700 }
+.meadow__game-intro { display:flex; justify-content:space-between; align-items:end; gap:22px; margin-bottom:22px }
 .meadow__game-intro h1 { margin:6px 0 9px; font:700 clamp(34px,5vw,55px)/1 Georgia,serif; letter-spacing:-.045em }
-.meadow__level-dots { display:flex; gap:10px; flex:none; color:#bbb4c5; font-size:25px }.meadow__level-dots .is-lit { color:#be8b66 }
-.meadow__play-area { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(245px,.55fr); gap:22px; align-items:start }
+.meadow__progress { display:flex; gap:5px; padding-bottom:8px; flex:none }.meadow__progress span { width:16px; height:9px; border-radius:20px; background:#d9d3df }.meadow__progress .is-lit { background:#ba86a9 }
+.meadow__play-area { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(260px,.5fr); gap:22px; align-items:start }
 .meadow__board-wrap { min-width:0 }
 .meadow__board { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); aspect-ratio:7/5; width:100%; overflow:hidden; border:9px solid #fffdf7; border-radius:25px; box-shadow:0 0 0 1px #d9d2dc,0 20px 48px #53635123; background:#8db998 }
 .meadow__tile { position:relative; display:grid; place-items:center; min-width:0; min-height:0; padding:0; border:1px solid #ffffff1b; background:#9bc5a1; overflow:hidden; transition:filter .15s }
 .meadow__tile:nth-child(2n) { background:#a9cda8 }.meadow__tile:nth-child(5n) { background:#96c1a4 }
+.meadow__board[data-theme='frost'] .meadow__tile:not(.is-blocked) { background:#c4dcd4 }.meadow__board[data-theme='moon'] .meadow__tile:not(.is-blocked) { background:#99a4ba }.meadow__board[data-theme='stars'] .meadow__tile:not(.is-blocked) { background:#a4b4b3 }.meadow__board[data-theme='velvet'] .meadow__tile:not(.is-blocked) { background:#baa9bb }.meadow__board[data-theme='rainbow'] .meadow__tile:not(.is-blocked) { background:#b8c7a8 }
 .meadow__tile.has-flower::before { content:'✿'; position:absolute; bottom:7%; right:8%; color:#f8e2ec; font-size:clamp(13px,2vw,24px); opacity:.75 }
-.meadow__tile:not(:disabled):hover { filter:brightness(1.12) }.meadow__tile:disabled { cursor:default }
-.meadow__tile.is-puddle,.meadow__tile.is-puddle:nth-child(2n) { background:#8bb9cf }
-.meadow__water { color:#e4f7f8; font:700 clamp(27px,5vw,51px) Georgia,serif; transform:rotate(-12deg); opacity:.83 }
-.meadow__light { z-index:1; color:#fff7c0; font-size:clamp(24px,5vw,47px); text-shadow:0 0 7px #fff7be,0 0 20px #fff1a5; animation:twinkle 1.7s ease-in-out infinite alternate }
+.meadow__tile:not(:disabled):hover { filter:brightness(1.1) }.meadow__tile:disabled { cursor:default }
+.meadow__tile.is-blocked,.meadow__board[data-theme] .meadow__tile.is-blocked { background:#8ba9c4 }
+.meadow__cloud { color:#eaf5ff; font-size:clamp(25px,5vw,50px); opacity:.95; text-shadow:0 3px 7px #61779370 }
+.meadow__gem { position:relative; z-index:1; color:#3a9ee9; font-size:clamp(30px,5vw,52px); text-shadow:0 0 5px white,0 0 18px #b6f2ff; animation:twinkle 1.6s ease-in-out infinite alternate }
+.meadow__chest { position:relative; z-index:1; display:grid; place-items:center; width:52%; height:46%; border:4px solid #714965; border-radius:8px; background:linear-gradient(#f3cb82 0 38%,#965c49 40%); color:#ffe39a; font-size:clamp(16px,2.4vw,29px); box-shadow:0 5px 0 #493d5b55 }
 .meadow__gate { position:absolute; width:68%; height:43%; bottom:9%; border:clamp(5px,.8vw,11px) solid #e9a6b2; border-bottom:0; border-radius:100px 100px 0 0; box-shadow:0 -8px 0 -3px #f7d489,0 -16px 0 -6px #a3cbae,0 -24px 0 -9px #b5a6d5 }
 .meadow__player { position:relative; z-index:2; width:110%; height:105%; object-fit:contain; filter:drop-shadow(0 5px 4px #324b5966); animation:arrive .2s ease-out }
+.meadow__tile.is-flying .meadow__player { transform:translateY(-12%); filter:drop-shadow(0 10px 10px #324b5966) drop-shadow(0 0 8px #87d9ff); animation:hover .7s ease-in-out infinite alternate }
 .meadow__feedback { min-height:25px; margin:17px 0 0; color:#665476; font-weight:650; font-size:14px }
-.meadow__sidebar { display:grid; gap:18px; padding:24px; border:1px solid #d9d2dc; border-radius:24px; background:#fffdf9; box-shadow:0 12px 33px #625b7812 }
-.meadow__score { display:flex; align-items:center; gap:13px; padding-bottom:17px; border-bottom:1px solid #e5dfe5 }.meadow__score>span { color:#c89464; font-size:37px }.meadow__score strong { display:block; font:700 26px Georgia,serif }.meadow__score small { display:block; color:#606d75; font-size:13px }
-.meadow__directions p { margin:0; line-height:1.45; font-size:15px }.meadow__directions .meadow__keyboard-hint { margin-top:11px; color:#687481; font-size:13px }
-.meadow__controls { display:grid; width:158px; grid-template-columns:repeat(3,46px); gap:9px; margin:0 auto }.meadow__control { display:grid; place-items:center; height:46px; padding:0; border:1px solid #b7a8c3; border-radius:13px; background:#eee4f1; color:#584b73; font-size:24px; font-weight:700 }.meadow__control:hover { background:#e3d4eb }.meadow__control--up { grid-column:2 }.meadow__control--left { grid-column:1; grid-row:2 }.meadow__control--down { grid-column:2; grid-row:2 }.meadow__control--right { grid-column:3; grid-row:2 }
-.meadow__victory { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1fr); overflow:hidden; min-height:350px; border:1px solid #d9d2dc; border-radius:27px; background:#fffdf9; box-shadow:0 18px 45px #625b781a }.meadow__victory>div:last-child { align-self:center; padding:35px }
-.meadow__victory-sky { position:relative; min-height:350px; overflow:hidden; background:linear-gradient(#7777a2,#b79db8 55%,#a8c9ae) }.meadow__victory-sky img { position:absolute; z-index:2; bottom:5%; left:30%; width:45%; height:52%; object-fit:contain; filter:drop-shadow(0 8px 8px #33445244) }.meadow__victory-rainbow { position:absolute; width:70%; aspect-ratio:2; left:15%; bottom:-7%; border:20px solid #e69dac; border-bottom:0; border-radius:200px 200px 0 0; box-shadow:0 -16px 0 -3px #f4c981,0 -32px 0 -7px #9ecaa8,0 -48px 0 -11px #a5a4cf }
+.meadow__sidebar { display:flex; flex-direction:column; align-items:center; padding:18px 20px 24px; border:1px solid #d9d2dc; border-radius:24px; background:#fffdf9; box-shadow:0 12px 33px #625b7812 }
+.meadow__sidebar h2 { font:700 25px Georgia,serif; margin:0 0 13px; text-align:center }
+.meadow__sidebar>p { margin:14px 0; color:#5d6573; font-size:14px; line-height:1.45; text-align:center }.meadow__sidebar>small { color:#687481; font-size:11px; text-align:center }
+.meadow__outfit { position:relative; width:min(100%,235px); aspect-ratio:1.12; margin:0 auto 5px }
+.meadow__outfit img { position:relative; z-index:1; width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 6px 6px #45415d30) }
+.meadow__outfit-cape,.meadow__outfit-coat,.meadow__outfit-neck,.meadow__outfit-head { position:absolute; z-index:2; display:none; pointer-events:none }
+.meadow__outfit-cape { left:42%; top:40%; width:23%; height:32%; border-radius:15% 42% 68% 20%; transform:rotate(12deg); box-shadow:inset 5px 0 0 #f7d696,inset -6px -5px 0 #fff5,0 4px 4px #59486844 }
+.meadow__outfit-cape::after { content:'✦'; position:absolute; top:12%; left:30%; color:#fff9; font-size:19px }
+.meadow__outfit[data-cape='rose-cape'] .meadow__outfit-cape { display:block; background:linear-gradient(120deg,#ec9baa,#b65585) }.meadow__outfit[data-cape='violet-cape'] .meadow__outfit-cape { display:block; background:linear-gradient(120deg,#ab9ded,#6651a4) }
+.meadow__outfit-coat { left:43%; top:48%; width:25%; height:20%; border:3px solid #fff9; border-radius:45% 20% 55% 30%; transform:rotate(4deg) }
+.meadow__outfit[data-coat='star-coat'] .meadow__outfit-coat { display:block; background:#5c6ca3 }.meadow__outfit[data-coat='star-coat'] .meadow__outfit-coat::after { content:'✦'; color:#ffe5a6; margin-left:35% }
+.meadow__outfit[data-coat='rainbow-coat'] .meadow__outfit-coat { display:block; background:linear-gradient(130deg,#e59cab 25%,#f2c687 25% 50%,#9dceb2 50% 75%,#a6a9d9 75%) }
+.meadow__outfit-neck { left:68%; top:47%; width:15%; height:7%; border-radius:80% 30%; transform:rotate(25deg); box-shadow:0 3px 0 #ffffff88 }
+.meadow__outfit-neck::after { content:''; position:absolute; width:35%; height:180%; top:45%; right:15%; background:inherit; border-radius:0 0 70% 70%; transform:rotate(-17deg) }
+.meadow__outfit[data-neck='sky-scarf'] .meadow__outfit-neck { display:block; background:#7bbfdb }.meadow__outfit[data-neck='sun-scarf'] .meadow__outfit-neck { display:block; background:#edbc62 }
+.meadow__outfit-head { left:75%; top:9%; width:17%; height:13%; border-radius:45%; transform:rotate(14deg); text-align:center; font-size:25px; line-height:1 }
+.meadow__outfit[data-head='flower-crown'] .meadow__outfit-head { display:block; color:#db7296 }.meadow__outfit[data-head='flower-crown'] .meadow__outfit-head::after { content:'✿✿' }.meadow__outfit[data-head='moon-crown'] .meadow__outfit-head { display:block; color:#edcf78 }.meadow__outfit[data-head='moon-crown'] .meadow__outfit-head::after { content:'♛' }
+.meadow__status { display:grid; gap:8px; width:100% }.meadow__status span { border:1px solid #e3dce9; border-radius:11px; padding:9px; color:#6b6877; background:#f6f3f7; font-size:13px }.meadow__status span.is-found { background:#e6f6ed; border-color:#bad6c3; color:#376750 }.meadow__status strong { margin-right:6px; color:#4c9dd9 }
+.meadow__controls { display:grid; width:158px; grid-template-columns:repeat(3,46px); gap:9px; margin:0 auto 10px }.meadow__control { display:grid; place-items:center; height:46px; padding:0; border:1px solid #b7a8c3; border-radius:13px; background:#eee4f1; color:#584b73; font-size:24px; font-weight:700 }.meadow__control:hover { background:#e3d4eb }.meadow__control--up { grid-column:2 }.meadow__control--left { grid-column:1; grid-row:2 }.meadow__control--down { grid-column:2; grid-row:2 }.meadow__control--right { grid-column:3; grid-row:2 }
+.meadow__victory { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1fr); overflow:hidden; min-height:330px; border:1px solid #d9d2dc; border-radius:27px; background:#fffdf9; box-shadow:0 18px 45px #625b781a }.meadow__victory-copy { align-self:center; padding:35px }
+.meadow__victory-sky { display:grid; place-items:center; position:relative; overflow:hidden; background:linear-gradient(#7777a2,#b79db8 55%,#a8c9ae) }.meadow__victory-sky .meadow__outfit { z-index:2; width:min(75%,300px); margin:0 }.meadow__victory-rainbow { position:absolute; width:70%; aspect-ratio:2; left:15%; bottom:-7%; border:20px solid #e69dac; border-bottom:0; border-radius:200px 200px 0 0; box-shadow:0 -16px 0 -3px #f4c981,0 -32px 0 -7px #9ecaa8,0 -48px 0 -11px #a5a4cf }
 .meadow__next { display:inline-flex; align-items:center; gap:15px; padding:12px 18px; border:0; border-radius:100px; background:#725782; color:#fff; font-weight:700 }.meadow__next:hover { background:#59416b }
+.meadow__wardrobe { margin-top:28px; padding:25px; border:1px solid #d9d2dc; border-radius:23px; background:#fffdf9 }.meadow__wardrobe h2 { margin:6px 0 16px; font:700 29px Georgia,serif }
+.meadow__clothes { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px }.meadow__clothing { display:flex; align-items:center; gap:7px; min-width:0; min-height:58px; border:1px solid #ddd3e1; border-radius:13px; padding:8px; background:#f7f3f7; color:#424456; text-align:left }.meadow__clothing span { display:grid; place-items:center; flex:none; width:33px; height:33px; border-radius:9px; background:#e7d5e7; color:#735978; font-size:20px }.meadow__clothing strong { font-size:12px; line-height:1.2 }.meadow__clothing small { margin-left:auto; color:#667364; font-size:10px }.meadow__clothing.is-worn { border-color:#8dbeaa; background:#edf7ef }
 .meadow__note { margin:22px 0 0; color:#6b7580; font-size:12px; text-align:center }
 :is(button,a):focus-visible { outline:3px solid #775c8a; outline-offset:3px }
-@keyframes twinkle { to { opacity:.5; transform:scale(.82) } } @keyframes arrive { from { transform:scale(.7); opacity:.5 } }
-@media(max-width:800px) { .meadow__play-area { grid-template-columns:1fr }.meadow__sidebar { grid-template-columns:1fr 1fr; align-items:center }.meadow__controls { grid-column:2; grid-row:1/3 }.meadow__score { border-bottom:0; padding:0 } }
-@media(max-width:600px) { .meadow__main,.meadow__main.is-playing { padding:27px 14px 42px }.meadow__bar { padding:15px }.meadow__brand { font-size:17px }.meadow__back { font-size:12px }.meadow__sky { height:125px }.meadow__moon { width:53px }.meadow__choose { padding:25px 15px 28px }.meadow__friends { gap:7px }.meadow__friend { padding:7px 3px 13px; border-radius:13px }.meadow__friend img { height:90px }.meadow__friend strong { font-size:18px }.meadow__friend small { font-size:10px; line-height:1.2 }.meadow__game-intro { align-items:end }.meadow__level-dots { font-size:18px }.meadow__board { border-width:5px; border-radius:16px }.meadow__sidebar { padding:16px; gap:8px }.meadow__directions p { font-size:13px }.meadow__directions .meadow__keyboard-hint { font-size:11px }.meadow__victory { grid-template-columns:1fr }.meadow__victory-sky { min-height:200px }.meadow__victory>div:last-child { padding:25px } }
-@media(max-width:380px) { .meadow__back { max-width:115px; text-align:right }.meadow__friend img { height:76px }.meadow__friend strong { font-size:16px } }
+@keyframes twinkle { to { opacity:.5; transform:scale(.82) } } @keyframes arrive { from { transform:scale(.7); opacity:.5 } } @keyframes hover { to { transform:translateY(-23%) } }
+@media(max-width:850px) { .meadow__play-area { grid-template-columns:1fr }.meadow__sidebar { display:grid; grid-template-columns:170px 1fr 170px; gap:10px 18px; align-items:center }.meadow__sidebar .meadow__outfit { grid-row:1/5; grid-column:1 }.meadow__sidebar h2,.meadow__sidebar .meadow__status,.meadow__sidebar>p { grid-column:2; text-align:left }.meadow__sidebar .meadow__controls { grid-column:3; grid-row:1/5 }.meadow__sidebar>small { grid-column:2/4 }.meadow__clothes { grid-template-columns:repeat(2,minmax(0,1fr)) } }
+@media(max-width:600px) { .meadow__main { padding:27px 14px 42px }.meadow__bar { padding:15px }.meadow__brand { font-size:17px }.meadow__back { font-size:12px }.meadow__sky { height:125px }.meadow__moon { width:53px }.meadow__choose { padding:25px 15px 28px }.meadow__friends { gap:7px }.meadow__friend { padding:7px 3px 13px; border-radius:13px }.meadow__friend img { height:90px }.meadow__friend strong { font-size:18px }.meadow__friend small { font-size:10px }.meadow__game-intro { display:block }.meadow__progress { padding-top:12px }.meadow__board { border-width:5px; border-radius:16px }.meadow__sidebar { grid-template-columns:105px 1fr; padding:12px; gap:3px 12px }.meadow__sidebar .meadow__outfit { grid-row:1/4; grid-column:1 }.meadow__sidebar h2 { font-size:19px }.meadow__sidebar .meadow__status { grid-column:2 }.meadow__sidebar .meadow__status span { font-size:11px; padding:5px }.meadow__sidebar>p { grid-column:1/3; text-align:center; margin:8px 0 }.meadow__sidebar .meadow__controls { grid-column:1/3; grid-row:auto }.meadow__sidebar>small { grid-column:1/3 }.meadow__victory { grid-template-columns:1fr }.meadow__victory-sky { min-height:220px }.meadow__victory-copy { padding:25px }.meadow__wardrobe { padding:16px }.meadow__clothes { grid-template-columns:repeat(2,minmax(0,1fr)) } }
+@media(max-width:380px) { .meadow__back { max-width:115px; text-align:right }.meadow__friend img { height:76px }.meadow__friend strong { font-size:16px }.meadow__clothes { grid-template-columns:1fr } }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important } }

@@ -4,12 +4,12 @@
     <a class="meadow__back" routerLink="/">← Back to Shwetha</a>
   </header>
 
-  <main class="meadow__main" [class.is-playing]="stage() !== 'choose'">
+  <main class="meadow__main">
     @if (stage() === 'choose') {
       <div class="meadow__intro">
-        <p class="meadow__eyebrow">Everyone is welcome to play</p>
+        <p class="meadow__eyebrow">An adventure for everyone</p>
         <h1>Moonbeam <em>Meadow</em></h1>
-        <p>The meadow has lost its moonlights. Choose a pony friend, explore three places, and bring the rainbow home.</p>
+        <p>Eight places to explore. Eight clothing treasures to find. A blue gem gives your pony the power to fly!</p>
       </div>
       <section class="meadow__welcome" aria-labelledby="choose-title">
         <div class="meadow__sky" aria-hidden="true">
@@ -20,27 +20,30 @@
         <div class="meadow__choose">
           <p class="meadow__step">Your adventure starts here</p>
           <h2 id="choose-title">Who will explore with you?</h2>
-          <p>Move around the meadow, collect glowing moonlights, and find the rainbow gate. Pick your companion to begin.</p>
+          <p>They all have wings and horns. Find a blue gem to wake the wings, then search for clothes to wear.</p>
           <div class="meadow__friends">
             @for (friend of ponies; track friend.name) {
               <button type="button" class="meadow__friend" (click)="choosePony(friend)" [attr.aria-label]="'Play with ' + friend.name">
                 <img [src]="friend.image" alt="" width="180" height="150" />
-                <strong>{{ friend.name }}</strong><small>{{ friend.gift }}</small>
+                <strong>{{ friend.name }}</strong><small>Wings + horn</small>
               </button>
             }
           </div>
+          @if (saved()) {
+            <button type="button" class="meadow__resume" (click)="continueGame()">Continue your saved adventure →</button>
+          }
         </div>
       </section>
     } @else {
       <div class="meadow__game-intro">
         <div>
-          <p class="meadow__eyebrow">Moonbeam Meadow · Level {{ levelIndex() + 1 }} of 3</p>
-          <h1>{{ stage() === 'finished' ? 'The rainbow is home!' : level().name }}</h1>
-          <p>{{ stage() === 'playing' ? level().hint : 'You found every moonlight and reached the rainbow gate.' }}</p>
+          <p class="meadow__eyebrow">Level {{ levelIndex() + 1 }} of {{ levelCount }}</p>
+          <h1>{{ stage() === 'finished' ? 'A wardrobe full of magic!' : level().name }}</h1>
+          <p>{{ stage() === 'playing' ? level().hint : 'Your new treasure is ready to wear.' }}</p>
         </div>
-        <div class="meadow__level-dots" aria-label="Adventure progress">
-          @for (number of [1, 2, 3]; track number) {
-            <span [class.is-lit]="levelIndex() + 1 >= number" [attr.aria-label]="'Level ' + number">✦</span>
+        <div class="meadow__progress" [attr.aria-label]="'Level ' + (levelIndex() + 1) + ' of ' + levelCount">
+          @for (number of [1, 2, 3, 4, 5, 6, 7, 8]; track number) {
+            <span [class.is-lit]="levelIndex() + 1 >= number" aria-hidden="true"></span>
           }
         </div>
       </div>
@@ -48,18 +51,19 @@
       @if (stage() === 'playing') {
         <section class="meadow__play-area" aria-label="Moonbeam Meadow play area">
           <div class="meadow__board-wrap">
-            <div class="meadow__board" [attr.data-level]="levelIndex() + 1" role="grid" [attr.aria-label]="level().name">
+            <div class="meadow__board" [attr.data-level]="levelIndex() + 1" [attr.data-theme]="level().theme" role="grid" [attr.aria-label]="level().name">
               @for (cell of cells; track cell) {
                 <button type="button" class="meadow__tile" role="gridcell"
-                  [class.is-puddle]="isPuddle(cell)" [class.is-light]="isLight(cell)"
-                  [class.is-gate]="isGate(cell)" [class.is-player]="isPlayer(cell)"
-                  [class.has-flower]="cell % 6 === 2 && !isPuddle(cell)"
+                  [class.is-blocked]="isBlocked(cell)" [class.is-gem]="isGem(cell)"
+                  [class.is-chest]="isChest(cell)" [class.is-gate]="isGate(cell)"
+                  [class.is-player]="isPlayer(cell)" [class.is-flying]="isPlayer(cell) && flying()"
+                  [class.has-flower]="cell % 6 === 2 && !isBlocked(cell)"
                   [attr.data-cell]="cell" [disabled]="!canStepTo(cell)"
-                  [attr.aria-label]="cellLabel(cell)"
-                  (click)="tapCell(cell)">
+                  [attr.aria-label]="cellLabel(cell)" (click)="tapCell(cell)">
                   @if (isGate(cell)) { <span class="meadow__gate" aria-hidden="true"></span> }
-                  @if (isLight(cell)) { <span class="meadow__light" aria-hidden="true">✦</span> }
-                  @if (isPuddle(cell)) { <span class="meadow__water" aria-hidden="true">≈</span> }
+                  @if (isGem(cell)) { <span class="meadow__gem" aria-hidden="true">◆</span> }
+                  @if (isChest(cell)) { <span class="meadow__chest" aria-hidden="true">▣</span> }
+                  @if (isBlocked(cell)) { <span class="meadow__cloud" aria-hidden="true">☁</span> }
                   @if (isPlayer(cell)) { <img class="meadow__player" [src]="pony()?.image" alt="" /> }
                 </button>
               }
@@ -67,29 +71,46 @@
             <p class="meadow__feedback" role="status" aria-live="polite">{{ feedback() }}</p>
           </div>
           <aside class="meadow__sidebar">
-            <div class="meadow__score">
-              <span aria-hidden="true">✦</span>
-              <div><strong>{{ gathered() }} / {{ level().lightCount }}</strong><small>moonlights found</small></div>
+            <div class="meadow__outfit" [attr.data-head]="worn('head')" [attr.data-neck]="worn('neck')"
+              [attr.data-cape]="worn('cape')" [attr.data-coat]="worn('coat')">
+              <span class="meadow__outfit-cape" aria-hidden="true"></span>
+              <img [src]="pony()?.image" alt="" />
+              <span class="meadow__outfit-coat" aria-hidden="true"></span>
+              <span class="meadow__outfit-neck" aria-hidden="true"></span>
+              <span class="meadow__outfit-head" aria-hidden="true"></span>
             </div>
-            <div class="meadow__directions">
-              <p>Guide {{ pony()?.name }} around the puddles. Gather every moonlight, then reach the rainbow gate.</p>
-              <p class="meadow__keyboard-hint">Use the arrow keys, tap a nearby square, or use these buttons.</p>
+            <h2>{{ pony()?.name }}'s adventure</h2>
+            <div class="meadow__status">
+              <span [class.is-found]="flying()"><strong>◆</strong> {{ flying() ? 'Flying!' : 'Find the blue gem' }}</span>
+              <span [class.is-found]="foundTreasure()"><strong>▣</strong> {{ foundTreasure() ? level().garment.name + ' found!' : 'Find the clothing chest' }}</span>
             </div>
+            <p>Find the gem to fly over clouds. Open the chest, then go to the rainbow gate.</p>
             <div class="meadow__controls" aria-label="Move your pony">
               <button type="button" class="meadow__control meadow__control--up" aria-label="Move up" (click)="move('up')">↑</button>
               <button type="button" class="meadow__control meadow__control--left" aria-label="Move left" (click)="move('left')">←</button>
               <button type="button" class="meadow__control meadow__control--down" aria-label="Move down" (click)="move('down')">↓</button>
               <button type="button" class="meadow__control meadow__control--right" aria-label="Move right" (click)="move('right')">→</button>
             </div>
+            <small>Use arrow keys, tap a nearby square, or use these buttons.</small>
           </aside>
         </section>
       } @else {
         <section class="meadow__victory" aria-label="Level completed">
-          <div class="meadow__victory-sky" aria-hidden="true"><span class="meadow__victory-rainbow"></span><img [src]="pony()?.image" alt="" /></div>
-          <div>
-            <p class="meadow__step">{{ stage() === 'finished' ? 'Meadow keeper' : 'Rainbow gate lit' }}</p>
-            <h2>{{ stage() === 'finished' ? 'You brought the colour back.' : 'A new path is opening.' }}</h2>
-            <p>{{ stage() === 'finished' ? 'You and ' + pony()?.name + ' explored every meadow. The moonlights are shining again!' : 'Lovely exploring! There are more moonlights waiting in the next part of the meadow.' }}</p>
+          <div class="meadow__victory-sky">
+            <span class="meadow__victory-rainbow" aria-hidden="true"></span>
+            <div class="meadow__outfit" [attr.data-head]="worn('head')" [attr.data-neck]="worn('neck')"
+              [attr.data-cape]="worn('cape')" [attr.data-coat]="worn('coat')">
+              <span class="meadow__outfit-cape" aria-hidden="true"></span>
+              <img [src]="pony()?.image" [alt]="pony()?.name + ' wearing collected clothes'" />
+              <span class="meadow__outfit-coat" aria-hidden="true"></span>
+              <span class="meadow__outfit-neck" aria-hidden="true"></span>
+              <span class="meadow__outfit-head" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="meadow__victory-copy">
+            <p class="meadow__step">{{ stage() === 'finished' ? 'All eight treasures found' : 'New clothing treasure' }}</p>
+            <h2>{{ stage() === 'finished' ? 'Your pony has a magical wardrobe!' : level().garment.name + ' unlocked!' }}</h2>
+            <p>Try on your treasures below. You can change what {{ pony()?.name }} wears whenever you like.</p>
             @if (stage() === 'finished') {
               <button type="button" class="meadow__next" (click)="playAgain()">Play a new adventure <span aria-hidden="true">↻</span></button>
             } @else {
@@ -98,7 +119,22 @@
           </div>
         </section>
       }
+
+      @if (wardrobe().length) {
+        <section class="meadow__wardrobe" aria-label="Your pony's clothing treasures">
+          <div><p class="meadow__step">Your treasures</p><h2>Dress up {{ pony()?.name }}</h2></div>
+          <div class="meadow__clothes">
+            @for (item of wardrobe(); track item.id) {
+              <button type="button" class="meadow__clothing" [class.is-worn]="isEquipped(item)"
+                [attr.aria-pressed]="isEquipped(item)" (click)="equip(item)">
+                <span aria-hidden="true">{{ item.icon }}</span><strong>{{ item.name }}</strong>
+                @if (isEquipped(item)) { <small>Wearing</small> }
+              </button>
+            }
+          </div>
+        </section>
+      }
     }
-    <p class="meadow__note">An original game by Shwetha. No account, scorekeeping, or personal details needed.</p>
+    <p class="meadow__note">An original game by Shwetha. Your adventure stays in this browser; no account needed.</p>
   </main>
 </div>

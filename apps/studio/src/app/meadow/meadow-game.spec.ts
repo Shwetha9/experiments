@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { MeadowGamePage } from './meadow-game';
 
-const pathTo = (start: number, goal: number, puddles: Set<number>): number[] => {
+const pathTo = (start: number, goal: number, blocked: Set<number>): number[] => {
   const queue: number[][] = [[start]];
   const visited = new Set([start]);
   for (const path of queue) {
@@ -17,7 +17,7 @@ const pathTo = (start: number, goal: number, puddles: Set<number>): number[] => 
       ...(col < 6 ? [cell + 1] : []),
     ];
     for (const neighbour of next) {
-      if (visited.has(neighbour) || puddles.has(neighbour)) continue;
+      if (visited.has(neighbour) || blocked.has(neighbour)) continue;
       visited.add(neighbour);
       queue.push([...path, neighbour]);
     }
@@ -27,13 +27,14 @@ const pathTo = (start: number, goal: number, puddles: Set<number>): number[] => 
 
 describe('Moonbeam Meadow', () => {
   beforeEach(async () => {
+    localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [MeadowGamePage],
       providers: [provideRouter([])],
     }).compileComponents();
   });
 
-  it('lets a player explore, collect lights, open each gate, and replay', () => {
+  it('requires a gem to fly, unlocks clothing in eight levels, and saves progress', () => {
     const fixture = TestBed.createComponent(MeadowGamePage);
     fixture.detectChanges();
     const page = fixture.nativeElement as HTMLElement;
@@ -41,35 +42,57 @@ describe('Moonbeam Meadow', () => {
     page.querySelector<HTMLButtonElement>('.meadow__friend')!.click();
     fixture.detectChanges();
 
-    for (let level = 1; level <= 3; level++) {
+    for (let level = 1; level <= 8; level++) {
       expect(page.querySelector('.meadow__board')?.getAttribute('data-level')).toBe(String(level));
-      const puddles = new Set([...page.querySelectorAll<HTMLElement>('.meadow__tile.is-puddle')]
+      const blocked = new Set([...page.querySelectorAll<HTMLElement>('.meadow__tile.is-blocked')]
         .map((tile) => Number(tile.dataset['cell'])));
-      const moveTo = (goal: number) => {
+      const moveTo = (goal: number, obstacles: Set<number>) => {
         const start = Number(page.querySelector<HTMLElement>('.meadow__tile.is-player')!.dataset['cell']);
-        for (const cell of pathTo(start, goal, puddles)) {
+        for (const cell of pathTo(start, goal, obstacles)) {
           const tile = page.querySelector<HTMLButtonElement>(`.meadow__tile[data-cell="${cell}"]`)!;
           expect(tile.disabled).toBeFalse();
           tile.click();
           fixture.detectChanges();
         }
       };
-      while (page.querySelector('.meadow__tile.is-light')) {
-        const target = Number(page.querySelector<HTMLElement>('.meadow__tile.is-light')!.dataset['cell']);
-        moveTo(target);
+      const gem = Number(page.querySelector<HTMLElement>('.meadow__tile.is-gem')!.dataset['cell']);
+      const chest = Number(page.querySelector<HTMLElement>('.meadow__tile.is-chest')!.dataset['cell']);
+      if (level === 2) {
+        expect([...page.querySelectorAll<HTMLButtonElement>('.meadow__tile.is-blocked')]
+          .every((tile) => tile.disabled)).toBeTrue();
       }
-      expect(page.querySelector('.meadow__score')?.textContent).toContain(`${level + 2} / ${level + 2}`);
-      moveTo(6);
+      moveTo(gem, blocked);
+      expect(page.textContent).toContain('Flying!');
+      if (level === 2) {
+        moveTo(21, new Set());
+        expect(page.querySelector<HTMLButtonElement>('.meadow__tile[data-cell="14"]')!.disabled).toBeFalse();
+      }
+      moveTo(chest, new Set());
+      expect(page.querySelectorAll('.meadow__clothing')).toHaveSize(level);
+      expect(page.querySelector('.meadow__clothing.is-worn')).not.toBeNull();
+      moveTo(6, new Set());
       expect(page.querySelector('.meadow__victory')).not.toBeNull();
-      if (level < 3) {
+      if (level < 8) {
         page.querySelector<HTMLButtonElement>('.meadow__next')!.click();
         fixture.detectChanges();
       }
     }
+    expect(page.textContent).toContain('All eight treasures found');
+    expect(page.querySelectorAll('.meadow__clothing')).toHaveSize(8);
+    expect(localStorage.getItem('moonbeam-meadow-v2')).toContain('"finished":true');
+  });
 
-    expect(page.textContent).toContain('You brought the colour back.');
-    page.querySelector<HTMLButtonElement>('.meadow__next')!.click();
+  it('lets the player return to their saved pony and level', () => {
+    localStorage.setItem('moonbeam-meadow-v2', JSON.stringify({
+      pony: 'Clover', levelIndex: 3, unlocked: ['rose-cape'], equipped: { cape: 'rose-cape' },
+    }));
+    const fixture = TestBed.createComponent(MeadowGamePage);
     fixture.detectChanges();
-    expect(page.querySelectorAll('.meadow__friend')).toHaveSize(3);
+    const page = fixture.nativeElement as HTMLElement;
+    page.querySelector<HTMLButtonElement>('.meadow__resume')!.click();
+    fixture.detectChanges();
+    expect(page.querySelector('.meadow__board')?.getAttribute('data-level')).toBe('4');
+    expect(page.textContent).toContain("Clover's adventure");
+    expect(page.querySelector('.meadow__outfit')?.getAttribute('data-cape')).toBe('rose-cape');
   });
 });
