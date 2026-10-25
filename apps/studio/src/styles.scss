@@ -293,7 +293,7 @@ app-landing {
   .work__paths {
     border-top: 1px solid var(--line);
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     margin-top: clamp(42px, 6vw, 76px);
   }
   .work__path {
@@ -306,9 +306,7 @@ app-landing {
     transition: background-color 180ms ease;
   }
   .work__path:first-child { padding-left: 0; }
-  .work__path:nth-child(even) { border-left: 1px solid var(--line); }
-  .work__path:nth-child(n + 3) { border-top: 1px solid var(--line); padding-top: 34px; }
-  .work__path:nth-child(3) { padding-left: 0; }
+  .work__path + .work__path { border-left: 1px solid var(--line); }
   .work__path:hover,
   .work__path:focus-visible { background: color-mix(in srgb, var(--tone-sage) 7%, transparent); }
   .work__path-top {
@@ -343,13 +341,67 @@ app-landing {
   }
 }
 
+app-landing .moonbeam-feature {
+  align-items: center;
+  background: linear-gradient(120deg, #efe7ef, #edf0df);
+  color: #273344;
+  display: grid;
+  gap: clamp(28px, 5vw, 70px);
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+  min-height: 460px;
+  padding-bottom: clamp(58px, 6vw, 90px);
+  padding-top: clamp(58px, 6vw, 90px);
+}
+app-landing .moonbeam-feature .eyebrow { color: #725782; }
+app-landing .moonbeam-feature h2 {
+  font: 600 clamp(38px, 5vw, 68px)/1.04 Georgia, serif;
+  letter-spacing: -.05em;
+  margin: 15px 0 18px;
+}
+app-landing .moonbeam-feature__copy > p:not(.eyebrow) {
+  color: #52606b;
+  font-size: 17px;
+  line-height: 1.7;
+  max-width: 48ch;
+}
+app-landing .moonbeam-feature__copy a {
+  align-items: center;
+  background: #725782;
+  border-radius: 999px;
+  color: #fff;
+  display: inline-flex;
+  font-weight: 700;
+  gap: 14px;
+  margin-top: 13px;
+  padding: 13px 18px;
+  text-decoration: none;
+}
+app-landing .moonbeam-feature__copy a:hover { background: #59416b; }
+app-landing .moonbeam-feature__friends {
+  align-items: end;
+  display: flex;
+  justify-content: center;
+  min-height: 270px;
+}
+app-landing .moonbeam-feature__friends img {
+  filter: drop-shadow(0 12px 9px #655b6e33);
+  margin-left: -8%;
+  object-fit: contain;
+  width: 42%;
+}
+app-landing .moonbeam-feature__friends img:first-child { margin-left: 0; }
+app-landing .moonbeam-feature__friends img:nth-child(2) { transform: translateY(-25px); }
+@media (max-width: 850px) {
+  app-landing .moonbeam-feature { grid-template-columns: 1fr; }
+  app-landing .moonbeam-feature__friends { min-height: 0; }
+  app-landing .moonbeam-feature__friends img { max-width: 220px; }
+}
+
 @media (max-width: 1000px) {
   app-landing {
     .work__paths { grid-template-columns: 1fr; }
     .work__path,
     .work__path:first-child { padding: 24px 0; }
-    .work__path:nth-child(even),
-    .work__path:nth-child(3) { border-left: 0; }
     .work__path + .work__path {
       border-left: 0;
       border-top: 1px solid var(--line);

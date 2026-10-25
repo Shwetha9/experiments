@@ -1,0 +1,104 @@
+<div class="meadow">
+  <header class="meadow__bar">
+    <a class="meadow__brand" routerLink="/moonbeam-meadow">Moonbeam Meadow</a>
+    <a class="meadow__back" routerLink="/">← Back to Shwetha</a>
+  </header>
+
+  <main class="meadow__main" [class.is-playing]="stage() !== 'choose'">
+    @if (stage() === 'choose') {
+      <div class="meadow__intro">
+        <p class="meadow__eyebrow">Everyone is welcome to play</p>
+        <h1>Moonbeam <em>Meadow</em></h1>
+        <p>The meadow has lost its moonlights. Choose a pony friend, explore three places, and bring the rainbow home.</p>
+      </div>
+      <section class="meadow__welcome" aria-labelledby="choose-title">
+        <div class="meadow__sky" aria-hidden="true">
+          <span class="meadow__moon"></span><span class="meadow__spark meadow__spark--one">✦</span>
+          <span class="meadow__spark meadow__spark--two">✧</span><span class="meadow__spark meadow__spark--three">✦</span>
+          <span class="meadow__hill meadow__hill--back"></span><span class="meadow__hill meadow__hill--front"></span>
+        </div>
+        <div class="meadow__choose">
+          <p class="meadow__step">Your adventure starts here</p>
+          <h2 id="choose-title">Who will explore with you?</h2>
+          <p>Move around the meadow, collect glowing moonlights, and find the rainbow gate. Pick your companion to begin.</p>
+          <div class="meadow__friends">
+            @for (friend of ponies; track friend.name) {
+              <button type="button" class="meadow__friend" (click)="choosePony(friend)" [attr.aria-label]="'Play with ' + friend.name">
+                <img [src]="friend.image" alt="" width="180" height="150" />
+                <strong>{{ friend.name }}</strong><small>{{ friend.gift }}</small>
+              </button>
+            }
+          </div>
+        </div>
+      </section>
+    } @else {
+      <div class="meadow__game-intro">
+        <div>
+          <p class="meadow__eyebrow">Moonbeam Meadow · Level {{ levelIndex() + 1 }} of 3</p>
+          <h1>{{ stage() === 'finished' ? 'The rainbow is home!' : level().name }}</h1>
+          <p>{{ stage() === 'playing' ? level().hint : 'You found every moonlight and reached the rainbow gate.' }}</p>
+        </div>
+        <div class="meadow__level-dots" aria-label="Adventure progress">
+          @for (number of [1, 2, 3]; track number) {
+            <span [class.is-lit]="levelIndex() + 1 >= number" [attr.aria-label]="'Level ' + number">✦</span>
+          }
+        </div>
+      </div>
+
+      @if (stage() === 'playing') {
+        <section class="meadow__play-area" aria-label="Moonbeam Meadow play area">
+          <div class="meadow__board-wrap">
+            <div class="meadow__board" [attr.data-level]="levelIndex() + 1" role="grid" [attr.aria-label]="level().name">
+              @for (cell of cells; track cell) {
+                <button type="button" class="meadow__tile" role="gridcell"
+                  [class.is-puddle]="isPuddle(cell)" [class.is-light]="isLight(cell)"
+                  [class.is-gate]="isGate(cell)" [class.is-player]="isPlayer(cell)"
+                  [class.has-flower]="cell % 6 === 2 && !isPuddle(cell)"
+                  [attr.data-cell]="cell" [disabled]="!canStepTo(cell)"
+                  [attr.aria-label]="cellLabel(cell)"
+                  (click)="tapCell(cell)">
+                  @if (isGate(cell)) { <span class="meadow__gate" aria-hidden="true"></span> }
+                  @if (isLight(cell)) { <span class="meadow__light" aria-hidden="true">✦</span> }
+                  @if (isPuddle(cell)) { <span class="meadow__water" aria-hidden="true">≈</span> }
+                  @if (isPlayer(cell)) { <img class="meadow__player" [src]="pony()?.image" alt="" /> }
+                </button>
+              }
+            </div>
+            <p class="meadow__feedback" role="status" aria-live="polite">{{ feedback() }}</p>
+          </div>
+          <aside class="meadow__sidebar">
+            <div class="meadow__score">
+              <span aria-hidden="true">✦</span>
+              <div><strong>{{ gathered() }} / {{ level().lightCount }}</strong><small>moonlights found</small></div>
+            </div>
+            <div class="meadow__directions">
+              <p>Guide {{ pony()?.name }} around the puddles. Gather every moonlight, then reach the rainbow gate.</p>
+              <p class="meadow__keyboard-hint">Use the arrow keys, tap a nearby square, or use these buttons.</p>
+            </div>
+            <div class="meadow__controls" aria-label="Move your pony">
+              <button type="button" class="meadow__control meadow__control--up" aria-label="Move up" (click)="move('up')">↑</button>
+              <button type="button" class="meadow__control meadow__control--left" aria-label="Move left" (click)="move('left')">←</button>
+              <button type="button" class="meadow__control meadow__control--down" aria-label="Move down" (click)="move('down')">↓</button>
+              <button type="button" class="meadow__control meadow__control--right" aria-label="Move right" (click)="move('right')">→</button>
+            </div>
+          </aside>
+        </section>
+      } @else {
+        <section class="meadow__victory" aria-label="Level completed">
+          <div class="meadow__victory-sky" aria-hidden="true"><span class="meadow__victory-rainbow"></span><img [src]="pony()?.image" alt="" /></div>
+          <div>
+            <p class="meadow__step">{{ stage() === 'finished' ? 'Meadow keeper' : 'Rainbow gate lit' }}</p>
+            <h2>{{ stage() === 'finished' ? 'You brought the colour back.' : 'A new path is opening.' }}</h2>
+            <p>{{ stage() === 'finished' ? 'You and ' + pony()?.name + ' explored every meadow. The moonlights are shining again!' : 'Lovely exploring! There are more moonlights waiting in the next part of the meadow.' }}</p>
+            @if (stage() === 'finished') {
+              <button type="button" class="meadow__next" (click)="playAgain()">Play a new adventure <span aria-hidden="true">↻</span></button>
+            } @else {
+              <button type="button" class="meadow__next" (click)="nextLevel()">Explore the next place <span aria-hidden="true">→</span></button>
+            }
+          </div>
+        </section>
+      }
+    }
+    <p class="meadow__note">An original game by Shwetha. No account, scorekeeping, or personal details needed.</p>
+  </main>
+</div>

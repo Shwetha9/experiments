@@ -1,0 +1,59 @@
+:host { display:block; min-height:100vh; color:#29364b; background:#f8f3e9 }
+* { box-sizing:border-box }
+button { font:inherit; cursor:pointer }
+.meadow { min-height:100vh; background:radial-gradient(circle at 15% 0,#eee2f0,transparent 30%),#f8f3e9 }
+.meadow__bar { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:17px clamp(20px,5vw,74px); border-bottom:1px solid #dcd6d1 }
+.meadow__bar a { color:#344059; text-decoration:none }
+.meadow__brand { font:700 20px Georgia,serif }
+.meadow__back { font-size:14px; border-bottom:1px solid currentColor; padding-bottom:2px }
+.meadow__main { max-width:1160px; margin:auto; padding:48px 24px 55px }
+.meadow__eyebrow,.meadow__step { margin:0; color:#885d80; font-size:12px; font-weight:800; letter-spacing:.14em; text-transform:uppercase }
+.meadow__intro { max-width:760px; margin:0 auto 28px; text-align:center }
+.meadow__intro h1 { margin:12px 0 15px; font:700 clamp(43px,7vw,73px)/1 Georgia,serif; letter-spacing:-.055em }
+.meadow__intro h1 em { color:#8a6aa1; font-weight:500 }
+.meadow__intro>p:last-child,.meadow__game-intro p:last-child { margin:0; color:#596576; font-size:16px; line-height:1.55 }
+.meadow__welcome { overflow:hidden; background:#fffdf9; border:1px solid #d7d3da; border-radius:28px; box-shadow:0 18px 55px #625b781b }
+.meadow__sky { position:relative; height:200px; overflow:hidden; background:linear-gradient(#374365,#767ba3 66%,#d0abbc) }
+.meadow__moon { position:absolute; top:28px; right:17%; width:75px; aspect-ratio:1; border-radius:50%; background:#fff2d0; box-shadow:0 0 0 17px #fff1d21c,0 0 55px #fff1cb99 }
+.meadow__spark { position:absolute; color:#fff3ce; animation:twinkle 2.8s ease-in-out infinite alternate }
+.meadow__spark--one { left:22%; top:40px; font-size:24px }.meadow__spark--two { left:58%; top:32px; font-size:16px; animation-delay:.8s }.meadow__spark--three { right:28%; top:110px; font-size:21px; animation-delay:1.3s }
+.meadow__hill { position:absolute; width:125%; height:150px; bottom:-110px; border-radius:50% 50% 0 0 }.meadow__hill--back { left:-20%; background:#7a9c91; transform:rotate(-3deg) }.meadow__hill--front { right:-20%; bottom:-127px; background:#50786b; transform:rotate(3deg) }
+.meadow__choose { padding:32px clamp(22px,5vw,58px) 42px }
+.meadow__choose h2,.meadow__victory h2 { margin:8px 0 10px; font:700 clamp(30px,3.5vw,43px)/1.08 Georgia,serif; letter-spacing:-.035em }
+.meadow__choose>p:not(.meadow__step),.meadow__victory p:not(.meadow__step) { color:#626a78; line-height:1.55; margin:0 0 25px }
+.meadow__friends { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:17px }
+.meadow__friend { display:flex; flex-direction:column; align-items:center; min-width:0; padding:12px 10px 19px; border:1px solid #e0dce3; border-radius:20px; background:#f7f4f8; color:#323b4d; transition:transform .17s,box-shadow .17s,border-color .17s }
+.meadow__friend:hover { transform:translateY(-4px); border-color:#aa88ad; box-shadow:0 10px 25px #5d517023 }
+.meadow__friend img { width:min(100%,185px); height:150px; object-fit:contain; filter:drop-shadow(0 7px 6px #45415d30) }
+.meadow__friend strong { margin-top:7px; font:700 23px Georgia,serif }.meadow__friend small { margin-top:4px; color:#666d79; font-size:12px; text-align:center }
+.meadow__main.is-playing { max-width:1230px; padding-top:35px }
+.meadow__game-intro { display:flex; justify-content:space-between; align-items:center; gap:22px; margin-bottom:22px }
+.meadow__game-intro h1 { margin:6px 0 9px; font:700 clamp(34px,5vw,55px)/1 Georgia,serif; letter-spacing:-.045em }
+.meadow__level-dots { display:flex; gap:10px; flex:none; color:#bbb4c5; font-size:25px }.meadow__level-dots .is-lit { color:#be8b66 }
+.meadow__play-area { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(245px,.55fr); gap:22px; align-items:start }
+.meadow__board-wrap { min-width:0 }
+.meadow__board { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); aspect-ratio:7/5; width:100%; overflow:hidden; border:9px solid #fffdf7; border-radius:25px; box-shadow:0 0 0 1px #d9d2dc,0 20px 48px #53635123; background:#8db998 }
+.meadow__tile { position:relative; display:grid; place-items:center; min-width:0; min-height:0; padding:0; border:1px solid #ffffff1b; background:#9bc5a1; overflow:hidden; transition:filter .15s }
+.meadow__tile:nth-child(2n) { background:#a9cda8 }.meadow__tile:nth-child(5n) { background:#96c1a4 }
+.meadow__tile.has-flower::before { content:'✿'; position:absolute; bottom:7%; right:8%; color:#f8e2ec; font-size:clamp(13px,2vw,24px); opacity:.75 }
+.meadow__tile:not(:disabled):hover { filter:brightness(1.12) }.meadow__tile:disabled { cursor:default }
+.meadow__tile.is-puddle,.meadow__tile.is-puddle:nth-child(2n) { background:#8bb9cf }
+.meadow__water { color:#e4f7f8; font:700 clamp(27px,5vw,51px) Georgia,serif; transform:rotate(-12deg); opacity:.83 }
+.meadow__light { z-index:1; color:#fff7c0; font-size:clamp(24px,5vw,47px); text-shadow:0 0 7px #fff7be,0 0 20px #fff1a5; animation:twinkle 1.7s ease-in-out infinite alternate }
+.meadow__gate { position:absolute; width:68%; height:43%; bottom:9%; border:clamp(5px,.8vw,11px) solid #e9a6b2; border-bottom:0; border-radius:100px 100px 0 0; box-shadow:0 -8px 0 -3px #f7d489,0 -16px 0 -6px #a3cbae,0 -24px 0 -9px #b5a6d5 }
+.meadow__player { position:relative; z-index:2; width:110%; height:105%; object-fit:contain; filter:drop-shadow(0 5px 4px #324b5966); animation:arrive .2s ease-out }
+.meadow__feedback { min-height:25px; margin:17px 0 0; color:#665476; font-weight:650; font-size:14px }
+.meadow__sidebar { display:grid; gap:18px; padding:24px; border:1px solid #d9d2dc; border-radius:24px; background:#fffdf9; box-shadow:0 12px 33px #625b7812 }
+.meadow__score { display:flex; align-items:center; gap:13px; padding-bottom:17px; border-bottom:1px solid #e5dfe5 }.meadow__score>span { color:#c89464; font-size:37px }.meadow__score strong { display:block; font:700 26px Georgia,serif }.meadow__score small { display:block; color:#606d75; font-size:13px }
+.meadow__directions p { margin:0; line-height:1.45; font-size:15px }.meadow__directions .meadow__keyboard-hint { margin-top:11px; color:#687481; font-size:13px }
+.meadow__controls { display:grid; width:158px; grid-template-columns:repeat(3,46px); gap:9px; margin:0 auto }.meadow__control { display:grid; place-items:center; height:46px; padding:0; border:1px solid #b7a8c3; border-radius:13px; background:#eee4f1; color:#584b73; font-size:24px; font-weight:700 }.meadow__control:hover { background:#e3d4eb }.meadow__control--up { grid-column:2 }.meadow__control--left { grid-column:1; grid-row:2 }.meadow__control--down { grid-column:2; grid-row:2 }.meadow__control--right { grid-column:3; grid-row:2 }
+.meadow__victory { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1fr); overflow:hidden; min-height:350px; border:1px solid #d9d2dc; border-radius:27px; background:#fffdf9; box-shadow:0 18px 45px #625b781a }.meadow__victory>div:last-child { align-self:center; padding:35px }
+.meadow__victory-sky { position:relative; min-height:350px; overflow:hidden; background:linear-gradient(#7777a2,#b79db8 55%,#a8c9ae) }.meadow__victory-sky img { position:absolute; z-index:2; bottom:5%; left:30%; width:45%; height:52%; object-fit:contain; filter:drop-shadow(0 8px 8px #33445244) }.meadow__victory-rainbow { position:absolute; width:70%; aspect-ratio:2; left:15%; bottom:-7%; border:20px solid #e69dac; border-bottom:0; border-radius:200px 200px 0 0; box-shadow:0 -16px 0 -3px #f4c981,0 -32px 0 -7px #9ecaa8,0 -48px 0 -11px #a5a4cf }
+.meadow__next { display:inline-flex; align-items:center; gap:15px; padding:12px 18px; border:0; border-radius:100px; background:#725782; color:#fff; font-weight:700 }.meadow__next:hover { background:#59416b }
+.meadow__note { margin:22px 0 0; color:#6b7580; font-size:12px; text-align:center }
+:is(button,a):focus-visible { outline:3px solid #775c8a; outline-offset:3px }
+@keyframes twinkle { to { opacity:.5; transform:scale(.82) } } @keyframes arrive { from { transform:scale(.7); opacity:.5 } }
+@media(max-width:800px) { .meadow__play-area { grid-template-columns:1fr }.meadow__sidebar { grid-template-columns:1fr 1fr; align-items:center }.meadow__controls { grid-column:2; grid-row:1/3 }.meadow__score { border-bottom:0; padding:0 } }
+@media(max-width:600px) { .meadow__main,.meadow__main.is-playing { padding:27px 14px 42px }.meadow__bar { padding:15px }.meadow__brand { font-size:17px }.meadow__back { font-size:12px }.meadow__sky { height:125px }.meadow__moon { width:53px }.meadow__choose { padding:25px 15px 28px }.meadow__friends { gap:7px }.meadow__friend { padding:7px 3px 13px; border-radius:13px }.meadow__friend img { height:90px }.meadow__friend strong { font-size:18px }.meadow__friend small { font-size:10px; line-height:1.2 }.meadow__game-intro { align-items:end }.meadow__level-dots { font-size:18px }.meadow__board { border-width:5px; border-radius:16px }.meadow__sidebar { padding:16px; gap:8px }.meadow__directions p { font-size:13px }.meadow__directions .meadow__keyboard-hint { font-size:11px }.meadow__victory { grid-template-columns:1fr }.meadow__victory-sky { min-height:200px }.meadow__victory>div:last-child { padding:25px } }
+@media(max-width:380px) { .meadow__back { max-width:115px; text-align:right }.meadow__friend img { height:76px }.meadow__friend strong { font-size:16px } }
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important } }

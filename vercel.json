@@ -10,6 +10,13 @@
       "includeFiles": "dist/apps/api/**"
     }
   },
+  "redirects": [
+    {
+      "source": "/growing-human/meadow",
+      "destination": "/moonbeam-meadow",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/:path*",

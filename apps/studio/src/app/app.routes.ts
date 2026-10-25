@@ -11,5 +11,10 @@ export const routes: Routes = [
     title: 'Quotes · Shwetha',
     loadComponent: () => import('./quotes/quotes').then((m) => m.QuotesPage),
   },
+  {
+    path: 'moonbeam-meadow',
+    title: 'Moonbeam Meadow · Play',
+    loadComponent: () => import('./meadow/meadow-game').then((m) => m.MeadowGamePage),
+  },
   { path: '**', redirectTo: '' },
 ];

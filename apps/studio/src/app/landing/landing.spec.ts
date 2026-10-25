@@ -21,7 +21,7 @@ describe('LandingPage', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain('I build ambitious web systems');
-    expect(compiled.querySelectorAll('section')).toHaveSize(7);
+    expect(compiled.querySelectorAll('section')).toHaveSize(8);
     expect(compiled.querySelector('a[href="mailto:hello@shwetha.studio"]')).not.toBeNull();
   });
 
@@ -71,15 +71,15 @@ describe('LandingPage', () => {
 
     expect(compiled.querySelectorAll('a[href="/growing-human/"]')).toHaveSize(2);
     expect(compiled.querySelector('header a[href="/growing-human/"]')?.textContent).toContain('Growing Humans');
-    expect(compiled.querySelectorAll('#work .work__path')).toHaveSize(4);
+    expect(compiled.querySelectorAll('#work .work__path')).toHaveSize(3);
     expect(compiled.querySelector('#work a[href="/growing-human/?activity=guide"]')?.textContent)
       .toContain('Ask & reflect');
     expect(compiled.querySelector('#work a[href="/growing-human/?activity=discover"]')?.textContent)
       .toContain('Discover & quiz');
     expect(compiled.querySelector('#work a[href="/growing-human/?activity=steam"]')?.textContent)
       .toContain('Explore STEAM');
-    expect(compiled.querySelector('#work a[href="/growing-human/meadow"]')?.textContent)
-      .toContain('Play together');
+    expect(compiled.querySelector('.moonbeam-feature a[href="/moonbeam-meadow"]')?.textContent)
+      .toContain('Play Moonbeam Meadow');
     expect(compiled.querySelector('header a[href="/quotes"]')).toBeNull();
     expect(compiled.querySelector('#beyond a[href="/quotes"]')?.textContent).toContain('quotes');
   });
