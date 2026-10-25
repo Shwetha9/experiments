@@ -3,14 +3,14 @@ import { LandingContent } from './portfolio-content';
 export const landingContent: LandingContent = {
   hero: {
     eyebrow: 'Principal Engineer · Product thinker · AI systems builder',
-    title: 'I build ambitious web systems—and help teams grow into them.',
+    title: 'I build ambitious web systems—and help teams realise their potential.',
     body: 'Product thinking, AI architecture, security guardrails, and engineering teams belong in the same conversation. That is how ambitious ideas become dependable systems.',
   },
   possibility: {
     eyebrow: 'What changed',
     title: 'Some ideas stopped being impossible while we were busy planning them.',
     paragraphs: [
-      'The brief changed. Engineering discipline did not. AI has moved the edge of what teams can attempt. The interesting work is no longer adding a model to a product; it is deciding where intelligence belongs, what it must never be allowed to do, and how people stay in control.',
+      'It is an extraordinary time to build software. Ideas that once needed entire organisations—or seemed impossible—can now be explored by small, thoughtful teams. The opportunity is not to automate imagination away, but to be more ambitious together: pairing new capability with judgment, responsibility, and care for the people who will live with what we make.',
       'A product-owner past keeps the work anchored in usefulness. A frontend-engineering instinct keeps complexity legible. Principal engineering connects those decisions across architecture, delivery, observability, and the people responsible for all of it.',
     ],
   },
@@ -35,7 +35,7 @@ export const landingContent: LandingContent = {
   beyond: {
     eyebrow: 'Beyond the stack',
     title: 'Three ideas I return to.',
-    body: 'It is an extraordinary time to build software. Ideas that once needed entire organisations—or seemed impossible—can now be explored by small, thoughtful teams. The opportunity is not to automate imagination away, but to be more ambitious together: pairing new capability with judgment, responsibility, and care for the people who will live with what we make.',
+    body: 'Some books change the way I think about work, and some change the way I think about life. These three have done both. If you are wondering who am I and what guides my thinking, these are the ideas I return to.',
     influences: [
       {
         source: 'John Donne · Meditation XVII',
@@ -50,7 +50,7 @@ export const landingContent: LandingContent = {
         quote: 'Human nature will not flourish, any more than a potato, if it be planted and replanted, for too long a series of generations, in the same worn-out soil.',
         fullQuote: 'Human nature will not flourish, any more than a potato, if it be planted and replanted, for too long a series of generations, in the same worn-out soil. My children have had other birthplaces, and, so far as their fortunes may be within my control, shall strike their roots into unaccustomed earth.',
         title: 'Growth needs unfamiliar ground.',
-        reflection: 'A product career became an engineering one, and engineering is now being reshaped by AI. Growth has repeatedly arrived by leaving familiar ground before certainty did.',
+        reflection: 'I am a proud first generation immigrant. My experiences have taught me that growth often comes from stepping into the unknown. A product career became an engineering one, and engineering is now being reshaped by AI. Growth has repeatedly arrived by leaving familiar ground before certainty did.',
         tone: 'butter',
       },
       {
