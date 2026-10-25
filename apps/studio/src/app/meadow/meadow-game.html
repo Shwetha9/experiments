@@ -60,7 +60,14 @@
                   [class.has-flower]="cell % 6 === 2 && !isBlocked(cell)"
                   [attr.data-cell]="cell" [disabled]="!canStepTo(cell)"
                   [attr.aria-label]="cellLabel(cell)" (click)="tapCell(cell)">
-                  @if (isGate(cell)) { <span class="meadow__gate" aria-hidden="true"></span> }
+                  @if (isGate(cell)) {
+                    <svg class="meadow__gate" viewBox="0 0 100 60" aria-hidden="true" focusable="false">
+                      <path d="M5 57 A45 45 0 0 1 95 57" stroke="#e99aaa" />
+                      <path d="M15 57 A35 35 0 0 1 85 57" stroke="#f4c979" />
+                      <path d="M25 57 A25 25 0 0 1 75 57" stroke="#9dc9aa" />
+                      <path d="M35 57 A15 15 0 0 1 65 57" stroke="#aca8d8" />
+                    </svg>
+                  }
                   @if (isGem(cell)) { <span class="meadow__gem" aria-hidden="true">◆</span> }
                   @if (isChest(cell)) { <span class="meadow__chest" aria-hidden="true">▣</span> }
                   @if (isBlocked(cell)) { <span class="meadow__cloud" aria-hidden="true">☁</span> }
@@ -97,7 +104,12 @@
       } @else {
         <section class="meadow__victory" aria-label="Level completed">
           <div class="meadow__victory-sky">
-            <span class="meadow__victory-rainbow" aria-hidden="true"></span>
+            <svg class="meadow__victory-rainbow" viewBox="0 0 100 60" aria-hidden="true" focusable="false">
+              <path d="M5 57 A45 45 0 0 1 95 57" stroke="#e99aaa" />
+              <path d="M15 57 A35 35 0 0 1 85 57" stroke="#f4c979" />
+              <path d="M25 57 A25 25 0 0 1 75 57" stroke="#9dc9aa" />
+              <path d="M35 57 A15 15 0 0 1 65 57" stroke="#aca8d8" />
+            </svg>
             <div class="meadow__outfit" [attr.data-head]="worn('head')" [attr.data-neck]="worn('neck')"
               [attr.data-cape]="worn('cape')" [attr.data-coat]="worn('coat')">
               <span class="meadow__outfit-cape" aria-hidden="true"></span>

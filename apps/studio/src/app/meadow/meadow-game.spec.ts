@@ -95,4 +95,25 @@ describe('Moonbeam Meadow', () => {
     expect(page.textContent).toContain("Clover's adventure");
     expect(page.querySelector('.meadow__outfit')?.getAttribute('data-cape')).toBe('rose-cape');
   });
+
+  it('keeps board cells square and the pony inside its cell', () => {
+    const fixture = TestBed.createComponent(MeadowGamePage);
+    document.body.appendChild(fixture.nativeElement);
+    try {
+      fixture.detectChanges();
+      const page = fixture.nativeElement as HTMLElement;
+      page.querySelector<HTMLButtonElement>('.meadow__friend')!.click();
+      fixture.detectChanges();
+      const tile = page.querySelector<HTMLElement>('.meadow__tile')!.getBoundingClientRect();
+      const pony = page.querySelector<HTMLElement>('.meadow__player')!.getBoundingClientRect();
+      const rainbow = page.querySelector<HTMLElement>('.meadow__gate')!.getBoundingClientRect();
+      expect(tile.width).toBeGreaterThan(0);
+      expect(Math.abs(tile.width - tile.height)).toBeLessThan(2);
+      expect(pony.width).toBeLessThan(tile.width);
+      expect(pony.height).toBeLessThan(tile.height);
+      expect(rainbow.width).toBeGreaterThan(rainbow.height);
+    } finally {
+      fixture.destroy();
+    }
+  });
 });
