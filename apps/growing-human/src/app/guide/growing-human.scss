@@ -87,13 +87,15 @@ textarea {
   gap: 8px;
   margin: -25px 0 38px;
 }
-.growing-human__activities button {
+.growing-human__activities button,
+.growing-human__activities a {
   background: transparent;
   border: 1px solid var(--ink-line);
   border-radius: 999px;
   color: var(--muted);
   cursor: pointer;
   padding: 10px 16px;
+  text-decoration: none;
 }
 .growing-human__activities button[aria-current='page'] {
   background: #302331;

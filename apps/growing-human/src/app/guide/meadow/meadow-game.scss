@@ -1,0 +1,53 @@
+:host { display: block; min-height: 100vh; color: #28344a; background: #f8f3e9; }
+* { box-sizing: border-box; }
+button { font: inherit; cursor: pointer; }
+button:disabled { cursor: default; }
+.meadow { min-height: 100vh; background: radial-gradient(circle at 15% 0, #e9dff0, transparent 28%), #f8f3e9; }
+.meadow__bar { align-items: center; display: flex; justify-content: space-between; gap: 20px; padding: 17px clamp(20px, 5vw, 74px); border-bottom: 1px solid #ddd7d2; }
+.meadow__bar a { color: #344059; text-decoration: none; }
+.meadow__brand { font: 700 20px Georgia, serif; }
+.meadow__back { font-size: 14px; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+.meadow__main { max-width: 1150px; margin: auto; padding: 50px 24px 60px; }
+.meadow__intro { max-width: 700px; margin: 0 auto 28px; text-align: center; }
+.meadow__eyebrow, .meadow__step { color: #8a5f80; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.meadow__intro h1 { font: 700 clamp(42px, 7vw, 74px)/.98 Georgia, serif; letter-spacing: -.055em; margin: 13px 0 16px; }
+.meadow__intro h1 em { color: #8a6aa1; font-weight: 500; }
+.meadow__intro > p:last-child { color: #5a6372; line-height: 1.6; margin: 0; font-size: 16px; }
+.meadow__game { overflow: hidden; background: #fffdf8; border: 1px solid #d8d7d8; border-radius: 28px; box-shadow: 0 20px 55px #62617a1c; }
+.meadow__sky { position: relative; height: 210px; overflow: hidden; background: linear-gradient(180deg, #3c496b 0%, #72769f 60%, #d7b5bd 100%); }
+.meadow__moon { position: absolute; top: 26px; right: 15%; width: 77px; height: 77px; border-radius: 50%; background: #fbf2d4; box-shadow: 0 0 0 17px #faf0d51a, 0 0 55px #fff1cb99; }
+.meadow__cloud { position: absolute; width: 145px; height: 36px; border-radius: 50%; background: #e9e6ef66; filter: blur(2px); }
+.meadow__cloud--one { left: 12%; top: 70px; }.meadow__cloud--two { right: 31%; top: 108px; width: 110px; }
+.meadow__spark { position: absolute; color: #f7e8c0; opacity: .8; animation: twinkle 2.8s ease-in-out infinite alternate; }
+.meadow__spark--one { left: 27%; top: 34px; font-size: 23px; }.meadow__spark--two { right: 34%; top: 30px; font-size: 15px; animation-delay: .9s; }.meadow__spark--three { left: 57%; top: 83px; font-size: 28px; animation-delay: 1.4s; }
+.meadow__hill { position: absolute; width: 120%; height: 150px; border-radius: 50% 50% 0 0; bottom: -110px; }
+.meadow__hill--back { left: -20%; background: #769c91; transform: rotate(-3deg); }.meadow__hill--front { right: -20%; bottom: -125px; background: #416c63; transform: rotate(4deg); }
+.meadow__grass { position: absolute; bottom: 7px; z-index: 2; color: #f6d4bb; font-size: 20px; }.meadow__grass--one { left: 11%; }.meadow__grass--two { right: 25%; bottom: 2px; color: #e6c5df; }.meadow__grass--three { right: 10%; }
+.meadow__traveller { position: absolute; left: 6%; bottom: -13px; z-index: 4; width: 135px; transition: left 650ms ease; }.meadow__traveller img { display: block; width: 100%; height: auto; filter: drop-shadow(0 5px 5px #28344955); }.meadow__traveller.is-one { left: 28%; }.meadow__traveller.is-two { left: 53%; }.meadow__traveller.is-three { left: 74%; }
+.meadow__rainbow { position: absolute; width: 320px; height: 160px; left: calc(50% - 160px); bottom: -66px; border-radius: 180px 180px 0 0; border: 20px solid #e5899a; box-shadow: 0 -18px 0 -3px #f7c87d, 0 -35px 0 -6px #9fcbab, 0 -52px 0 -10px #a1afd4; opacity: .85; animation: rainbow-rise 600ms ease-out both; }
+.meadow__panel { min-height: 420px; padding: clamp(24px, 4vw, 44px) clamp(22px, 5vw, 65px) 42px; }
+.meadow__panel h2 { font: 700 clamp(28px, 3.5vw, 40px)/1.08 Georgia, serif; letter-spacing: -.035em; margin: 9px 0 9px; }
+.meadow__help { font-size: 15px; color: #5e6470; line-height: 1.55; margin: 0 0 25px; }
+.meadow__friends { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.meadow__friend { display: flex; flex-direction: column; align-items: center; border: 1px solid #dedbe2; border-radius: 20px; background: #f7f4f8; padding: 16px 10px 19px; color: #343c4e; transition: transform 160ms, box-shadow 160ms, border-color 160ms; }
+.meadow__friend:hover { transform: translateY(-4px); border-color: #aa8aaa; box-shadow: 0 10px 25px #5d517020; }
+.meadow__friend strong { font: 700 22px Georgia, serif; margin-top: 9px; }.meadow__friend small { color: #696d78; font-size: 12px; margin-top: 5px; }
+.meadow__pony-image { display: block; width: min(100%, 180px); height: 148px; object-fit: contain; filter: drop-shadow(0 8px 5px #45415d26); }
+.meadow__gamehead { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 24px; }
+.meadow__companion { display: flex; align-items: center; gap: 8px; color: #576070; font-size: 13px; margin: 0; }.meadow__companion-dot { width: 12px; height: 12px; border-radius: 50%; }
+.meadow__progress { display: flex; gap: 7px; list-style: none; margin: 0; padding: 0; }.meadow__progress li { display: grid; place-items: center; width: 31px; height: 31px; border-radius: 50%; background: #eeeaf0; color: #a9a1af; font-size: 17px; }.meadow__progress li.is-lit { color: #7a5381; background: #f7dfb0; }
+.meadow__sequence, .meadow__flower-buttons, .meadow__paint-row, .meadow__stream { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.meadow__sequence { margin: 24px 0 18px; }.meadow__sequence-flower { display: grid; place-items: center; width: 62px; height: 62px; border-radius: 18px; border: 2px solid color-mix(in srgb, var(--flower) 65%, white); background: color-mix(in srgb, var(--flower) 18%, white); color: var(--flower); font-size: 35px; }.meadow__sequence-flower.is-hidden { color: #838796; background: #f0eef2; border-color: #dddbe2; font-size: 25px; }
+.meadow__flower-buttons button { width: 58px; height: 58px; border-radius: 50%; border: 2px solid var(--flower); background: #fff; color: var(--flower); font-size: 31px; }.meadow__flower-buttons button:hover:not(:disabled) { background: color-mix(in srgb, var(--flower) 17%, white); transform: translateY(-2px); }.meadow__flower-buttons button:disabled { opacity: .55; }
+.meadow__paint-row { margin: 26px 0 18px; }.meadow__paint { min-width: 125px; border: 1px solid #dddce2; border-radius: 15px; padding: 12px; background: #fff; color: #3d4656; display: flex; align-items: center; gap: 9px; }.meadow__paint span { display: block; width: 28px; height: 28px; border-radius: 50% 50% 55% 55%; background: var(--paint); }.meadow__paint.is-picked { border-color: #7d638d; box-shadow: 0 0 0 3px #b899c633; }
+.meadow__mix-result { display: flex; align-items: center; gap: 12px; min-height: 56px; color: #565e6b; }.meadow__mix-result span { width: 36px; height: 36px; background: var(--result); border: 1px solid #d2ced5; border-radius: 50%; transition: background 220ms; }
+.meadow__stream { position: relative; justify-content: space-between; max-width: 570px; min-height: 170px; padding: 18px 16px; border-radius: 26px; margin: 20px 0; background: repeating-linear-gradient(165deg, #add4da, #add4da 25px, #bfdee0 25px, #bfdee0 49px); }.meadow__stone { z-index: 1; width: 72px; height: 65px; border: 2px solid #899aa2; border-radius: 50% 43% 53% 44%; color: #3f5261; background: #eee9dc; font: 700 24px Georgia, serif; box-shadow: 0 5px 0 #789ba4; transform: rotate(-7deg); }.meadow__stone:nth-child(even) { transform: translateY(26px) rotate(9deg); }.meadow__stone:hover:not(:disabled) { background: #fff8e4; }.meadow__stone.is-crossed { background: #d9e9c0; border-color: #769970; }
+.meadow__feedback { color: #6e5678; font-weight: 650; min-height: 23px; margin: 20px 0 0; }.meadow__quiet { border: 0; background: none; color: #715b82; padding: 5px 0; text-decoration: underline; text-underline-offset: 4px; font-size: 14px; margin-top: 15px; }.meadow__next { display: inline-flex; align-items: center; gap: 15px; border: 0; border-radius: 999px; background: #725782; color: #fff; font-weight: 700; padding: 12px 18px; margin-top: 18px; }.meadow__next:hover { background: #59416b; }
+.meadow__medal { display: inline-flex; gap: 12px; align-items: center; background: #f9e8bc; color: #6a4b74; border: 1px solid #d8b994; padding: 12px 18px; border-radius: 999px; font: 700 18px Georgia, serif; margin: 12px 0 8px; }
+.meadow__note { text-align: center; color: #6f7480; font-size: 12px; margin: 18px 0 0; }
+:is(button, a):focus-visible { outline: 3px solid #765c87; outline-offset: 4px; }
+@keyframes twinkle { to { opacity: .25; transform: scale(.7); } }
+@keyframes rainbow-rise { from { transform: translateY(110px); opacity: 0; } }
+@media (max-width: 700px) { .meadow__main { padding: 26px 15px 45px; }.meadow__intro { margin-bottom: 20px; }.meadow__sky { height: 135px; }.meadow__moon { width: 56px; height: 56px; }.meadow__friends { gap: 8px; }.meadow__friend { padding: 10px 3px 13px; }.meadow__pony-image { height: 95px; }.meadow__traveller { width: 95px; bottom: -8px; }.meadow__friend strong { font-size: 17px; }.meadow__friend small { max-width: 100px; line-height: 1.3; }.meadow__stone { width: 51px; height: 52px; font-size: 20px; }.meadow__stream { padding: 15px 5px; gap: 2px; }.meadow__panel { min-height: 470px; } }
+@media (max-width: 390px) { .meadow__back { font-size: 12px; }.meadow__paint { min-width: 105px; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }

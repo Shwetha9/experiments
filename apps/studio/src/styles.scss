@@ -293,7 +293,7 @@ app-landing {
   .work__paths {
     border-top: 1px solid var(--line);
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     margin-top: clamp(42px, 6vw, 76px);
   }
   .work__path {
@@ -306,7 +306,9 @@ app-landing {
     transition: background-color 180ms ease;
   }
   .work__path:first-child { padding-left: 0; }
-  .work__path + .work__path { border-left: 1px solid var(--line); }
+  .work__path:nth-child(even) { border-left: 1px solid var(--line); }
+  .work__path:nth-child(n + 3) { border-top: 1px solid var(--line); padding-top: 34px; }
+  .work__path:nth-child(3) { padding-left: 0; }
   .work__path:hover,
   .work__path:focus-visible { background: color-mix(in srgb, var(--tone-sage) 7%, transparent); }
   .work__path-top {
@@ -346,6 +348,8 @@ app-landing {
     .work__paths { grid-template-columns: 1fr; }
     .work__path,
     .work__path:first-child { padding: 24px 0; }
+    .work__path:nth-child(even),
+    .work__path:nth-child(3) { border-left: 0; }
     .work__path + .work__path {
       border-left: 0;
       border-top: 1px solid var(--line);
