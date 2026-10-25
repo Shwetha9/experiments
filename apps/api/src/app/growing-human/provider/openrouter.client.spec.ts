@@ -37,3 +37,28 @@ describe('OpenRouterClient STEAM review', () => {
       .resolves.toEqual({ decision: 'release', confident: false });
   });
 });
+
+describe('OpenRouterClient guide answer', () => {
+  const originalFetch = global.fetch;
+  afterEach(() => { global.fetch = originalFetch; });
+
+  it('requires a structured answer from the chat model', async () => {
+    const config = { get: (key: string) => ({
+      OPENROUTER_API_KEY: 'test-key', OPENROUTER_CHAT_MODEL: 'test-chat',
+    } as Record<string, string>)[key] } as ConfigService;
+    global.fetch = jest.fn().mockResolvedValue(new Response(JSON.stringify({
+      choices: [{ message: { content: '{"answer":"A","question":"Why?","action":""}' } }],
+    }), { status: 200 })) as typeof fetch;
+
+    await expect(new OpenRouterClient(config).completeGuide('system', 'user'))
+      .resolves.toContain('"answer"');
+    const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body);
+    expect(body.response_format).toMatchObject({
+      type: 'json_schema',
+      json_schema: {
+        strict: true,
+        schema: { required: ['answer', 'question', 'action'], additionalProperties: false },
+      },
+    });
+  });
+});

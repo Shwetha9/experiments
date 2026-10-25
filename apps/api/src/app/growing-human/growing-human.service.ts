@@ -28,6 +28,9 @@ export class GrowingHumanService {
   ) {}
 
   async reply(request: ChatRequest): Promise<ChatReply> {
+    // Leave room for the platform's 30-second function limit. A transient empty
+    // provider result may be retried once, but never by bypassing a safety gate.
+    const retryDeadline = Date.now() + 26_000;
     const latestMessage = request.messages[request.messages.length - 1];
     if (!latestMessage) return PROVIDER_FAILURE_REPLY;
 
@@ -39,7 +42,9 @@ export class GrowingHumanService {
     // Classify only redacted data. An unclear, low-confidence, failed, or timed-out
     // decision never proceeds to the guide model.
     const classifierText = redactPersonalData(latestMessage.text).text;
-    const classified = await this.provider.classifyInput(classifierText);
+    const classified = await retryEmptyProviderResult(
+      () => this.provider.classifyInput(classifierText), retryDeadline,
+    );
     if (!classified) return PROVIDER_FAILURE_REPLY;
     if (classified.category === 'crisis') return CRISIS_REPLY;
     if (classified.category === 'disallowed') return REFUSAL_REPLY;
@@ -50,7 +55,7 @@ export class GrowingHumanService {
     const classifierRisk = classified.confident ? classified.category : 'sensitive';
     const risk = stricterNormalRisk(localDecision, classifierRisk);
     const prompt = this.prompts.compose(request, risk);
-    const first = await this.generateAndCheck(prompt, request, risk);
+    const first = await this.generateAndCheck(prompt, request, risk, retryDeadline);
     if (first.reply) return first.reply;
     if (!first.candidate || first.blocked) return PROVIDER_FAILURE_REPLY;
 
@@ -60,6 +65,7 @@ export class GrowingHumanService {
       this.prompts.rewritePrompt(first.candidate, request, risk),
       request,
       risk,
+      retryDeadline,
     );
     return rewrite.reply ?? PROVIDER_FAILURE_REPLY;
   }
@@ -68,8 +74,11 @@ export class GrowingHumanService {
     prompt: GuidePrompt,
     request: ChatRequest,
     risk: InputSafetyCategory,
+    retryDeadline: number,
   ): Promise<CheckedGeneration> {
-    const candidate = await this.provider.completeGuide(prompt.system, prompt.user);
+    const candidate = await retryEmptyProviderResult(
+      () => this.provider.completeGuide(prompt.system, prompt.user), retryDeadline,
+    );
     if (!candidate) return { candidate: null, blocked: true };
 
     const draft = parseGuideReply(candidate);
@@ -77,7 +86,9 @@ export class GrowingHumanService {
     const structuralIssue = validateDraft(draft, request, risk, prompt.removedPersonalData);
     if (structuralIssue) return { candidate, blocked: false };
 
-    const outputDecision = await this.provider.classifyOutput(formatReply(draft));
+    const outputDecision = await retryEmptyProviderResult(
+      () => this.provider.classifyOutput(formatReply(draft)), retryDeadline,
+    );
     if (!outputDecision || !outputDecision.confident) return { candidate, blocked: true };
     if (outputDecision.decision === 'block') return { candidate, blocked: true };
     if (outputDecision.decision === 'rewrite') return { candidate, blocked: false };
@@ -96,6 +107,18 @@ interface CheckedGeneration {
   readonly candidate: string | null;
   readonly blocked: boolean;
 }
+
+const retryEmptyProviderResult = async <T>(
+  operation: () => Promise<T | null>,
+  deadline: number,
+): Promise<T | null> => {
+  // The default provider timeout is eight seconds. Do not start a call unless
+  // there is enough time for it to finish before the serverless deadline.
+  if (Date.now() > deadline - 8_500) return null;
+  const first = await operation();
+  if (first !== null || Date.now() > deadline - 8_500) return first;
+  return operation();
+};
 
 const stricterNormalRisk = (
   local: InputSafetyCategory,

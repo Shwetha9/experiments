@@ -112,6 +112,54 @@ describe('GrowingHumanService', () => {
     });
   });
 
+  it('answers a public founder question after a transient empty guide response', async () => {
+    const founderDraft = JSON.stringify({
+      answer: 'Jujiro Matsuda founded Mazda in Japan.',
+      question: 'Would you like to explore how the company began?',
+      action: '',
+    });
+    const provider = providerStub({
+      completeGuide: jest.fn().mockResolvedValueOnce(null).mockResolvedValueOnce(founderDraft),
+    });
+
+    await expect(createService(provider).reply(request('Who created Mazda?', '11-13')))
+      .resolves.toMatchObject({ kind: 'answer', text: expect.stringContaining('Jujiro Matsuda') });
+    expect(provider.completeGuide).toHaveBeenCalledTimes(2);
+    expect(provider.classifyOutput).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries one empty safety decision but still fails closed if it stays unavailable', async () => {
+    const recovered = providerStub({
+      classifyInput: jest.fn()
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce({ category: 'ordinary', confident: true }),
+    });
+    const unavailable = providerStub({ classifyInput: jest.fn().mockResolvedValue(null) });
+
+    await expect(createService(recovered).reply(request('Who created Mazda?')))
+      .resolves.toMatchObject({ kind: 'answer' });
+    await expect(createService(unavailable).reply(request('Who created Mazda?')))
+      .resolves.toEqual(PROVIDER_FAILURE_REPLY);
+    expect(recovered.classifyInput).toHaveBeenCalledTimes(2);
+    expect(unavailable.classifyInput).toHaveBeenCalledTimes(2);
+    expect(unavailable.completeGuide).not.toHaveBeenCalled();
+  });
+
+  it('retries an empty output review without releasing an unreviewed answer', async () => {
+    const recovered = providerStub({
+      classifyOutput: jest.fn().mockResolvedValueOnce(null)
+        .mockResolvedValueOnce({ decision: 'release', confident: true }),
+    });
+    const unavailable = providerStub({ classifyOutput: jest.fn().mockResolvedValue(null) });
+
+    await expect(createService(recovered).reply(request('Who created Mazda?')))
+      .resolves.toMatchObject({ kind: 'answer' });
+    await expect(createService(unavailable).reply(request('Who created Mazda?')))
+      .resolves.toEqual(PROVIDER_FAILURE_REPLY);
+    expect(recovered.classifyOutput).toHaveBeenCalledTimes(2);
+    expect(unavailable.classifyOutput).toHaveBeenCalledTimes(2);
+  });
+
   it('allows exactly one controlled rewrite', async () => {
     const provider = providerStub({
       completeGuide: jest.fn().mockResolvedValue(validDraft),

@@ -174,7 +174,25 @@ export class OpenRouterClient {
     return this.complete(this.config.get<string>('OPENROUTER_CHAT_MODEL'), [
       { role: 'system', content: system },
       { role: 'user', content: user },
-    ]);
+    ], {
+      response_format: {
+        type: 'json_schema',
+        json_schema: {
+          name: 'growing_humans_guide_reply',
+          strict: true,
+          schema: {
+            type: 'object',
+            properties: {
+              answer: { type: 'string' },
+              question: { type: 'string' },
+              action: { type: 'string' },
+            },
+            required: ['answer', 'question', 'action'],
+            additionalProperties: false,
+          },
+        },
+      },
+    });
   }
 
   completeSteamMission(system: string, user: string): Promise<string | null> {
