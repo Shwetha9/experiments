@@ -34,13 +34,18 @@ describe('Moonbeam Meadow', () => {
     }).compileComponents();
   });
 
-  it('requires a gem to fly, unlocks clothing in eight levels, and saves progress', () => {
+  it('plays four story episodes, requires a gem and clue, unlocks clothing, and saves choices', () => {
     const fixture = TestBed.createComponent(MeadowGamePage);
     fixture.detectChanges();
     const page = fixture.nativeElement as HTMLElement;
     expect(page.querySelectorAll('.meadow__friend')).toHaveSize(3);
     page.querySelector<HTMLButtonElement>('.meadow__friend')!.click();
     fixture.detectChanges();
+    expect(page.textContent).toContain('The Map That Vanished');
+    for (let scene = 0; scene < 2; scene++) {
+      page.querySelector<HTMLButtonElement>('.meadow__story-actions .meadow__next')!.click();
+      fixture.detectChanges();
+    }
 
     for (let level = 1; level <= 8; level++) {
       expect(page.querySelector('.meadow__board')?.getAttribute('data-level')).toBe(String(level));
@@ -67,19 +72,32 @@ describe('Moonbeam Meadow', () => {
         moveTo(21, new Set());
         expect(page.querySelector<HTMLButtonElement>('.meadow__tile[data-cell="14"]')!.disabled).toBeFalse();
       }
+      const clue = Number(page.querySelector<HTMLElement>('.meadow__tile.is-clue')!.dataset['cell']);
+      moveTo(clue, new Set());
+      expect(page.textContent).toContain('Story clue found!');
       moveTo(chest, new Set());
       expect(page.querySelectorAll('.meadow__clothing')).toHaveSize(level);
       expect(page.querySelector('.meadow__clothing.is-worn')).not.toBeNull();
       moveTo(6, new Set());
-      expect(page.querySelector('.meadow__victory')).not.toBeNull();
+      expect(page.querySelector(level % 2 === 0 ? '.meadow__decision' : '.meadow__victory')).not.toBeNull();
       if (level < 8) {
-        page.querySelector<HTMLButtonElement>('.meadow__next')!.click();
+        page.querySelector<HTMLButtonElement>(level % 2 === 0 ? '.meadow__decision-options button' : '.meadow__next')!.click();
         fixture.detectChanges();
+        if (level % 2 === 0) {
+          expect(page.querySelector('.meadow__story')).not.toBeNull();
+          for (let scene = 0; scene < 2; scene++) {
+            page.querySelector<HTMLButtonElement>('.meadow__story-actions .meadow__next')!.click();
+            fixture.detectChanges();
+          }
+        }
       }
     }
+    page.querySelector<HTMLButtonElement>('.meadow__decision-options button')!.click();
+    fixture.detectChanges();
     expect(page.textContent).toContain('All eight treasures found');
     expect(page.querySelectorAll('.meadow__clothing')).toHaveSize(8);
     expect(localStorage.getItem('moonbeam-meadow-v2')).toContain('"finished":true');
+    expect(localStorage.getItem('moonbeam-meadow-v2')).toContain('"choices":[0,0,0,0]');
   });
 
   it('lets the player return to their saved pony and level', () => {
@@ -96,6 +114,21 @@ describe('Moonbeam Meadow', () => {
     expect(page.querySelector('.meadow__outfit')?.getAttribute('data-cape')).toBe('rose-cape');
   });
 
+  it('resumes an episode at its saved story scene', () => {
+    localStorage.setItem('moonbeam-meadow-v2', JSON.stringify({
+      pony: 'Miso', levelIndex: 4, stage: 'story', storyBeat: 1,
+      unlocked: ['rose-cape'], equipped: { cape: 'rose-cape' }, choices: [1, 0],
+    }));
+    const fixture = TestBed.createComponent(MeadowGamePage);
+    fixture.detectChanges();
+    const page = fixture.nativeElement as HTMLElement;
+    page.querySelector<HTMLButtonElement>('.meadow__resume')!.click();
+    fixture.detectChanges();
+    expect(page.textContent).toContain('The Tower of Borrowed Stars');
+    expect(page.textContent).toContain('A winged pony can cross the clouds');
+    expect(page.querySelector('.meadow__story-art img')?.getAttribute('src')).toContain('miso-winged.png');
+  });
+
   it('keeps board cells square and the pony inside its cell', () => {
     const fixture = TestBed.createComponent(MeadowGamePage);
     document.body.appendChild(fixture.nativeElement);
@@ -104,6 +137,10 @@ describe('Moonbeam Meadow', () => {
       const page = fixture.nativeElement as HTMLElement;
       page.querySelector<HTMLButtonElement>('.meadow__friend')!.click();
       fixture.detectChanges();
+      for (let scene = 0; scene < 2; scene++) {
+        page.querySelector<HTMLButtonElement>('.meadow__story-actions .meadow__next')!.click();
+        fixture.detectChanges();
+      }
       const tile = page.querySelector<HTMLElement>('.meadow__tile')!.getBoundingClientRect();
       const pony = page.querySelector<HTMLElement>('.meadow__player')!.getBoundingClientRect();
       const rainbow = page.querySelector<HTMLElement>('.meadow__gate')!.getBoundingClientRect();

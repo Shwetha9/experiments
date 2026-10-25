@@ -1,7 +1,10 @@
 <div class="meadow">
   <header class="meadow__bar">
     <a class="meadow__brand" routerLink="/moonbeam-meadow">Moonbeam Meadow</a>
-    <a class="meadow__back" routerLink="/">← Back to Shwetha</a>
+    <div class="meadow__bar-actions">
+      <button type="button" class="meadow__audio" [attr.aria-label]="audioEnabled() ? 'Turn sound off' : 'Turn sound on'" [attr.aria-pressed]="audioEnabled()" (click)="toggleAudio()">♪ <span>{{ audioEnabled() ? 'Sound on' : 'Sound off' }}</span></button>
+      <a class="meadow__back" routerLink="/">← Back<span> to Shwetha</span></a>
+    </div>
   </header>
 
   <main class="meadow__main">
@@ -9,7 +12,7 @@
       <div class="meadow__intro">
         <p class="meadow__eyebrow">An adventure for everyone</p>
         <h1>Moonbeam <em>Meadow</em></h1>
-        <p>Eight places to explore. Eight clothing treasures to find. A blue gem gives your pony the power to fly!</p>
+        <p>Four story episodes. Eight places to explore. Eight clothing treasures to wear. Find a blue gem to fly!</p>
       </div>
       <section class="meadow__welcome" aria-labelledby="choose-title">
         <div class="meadow__sky" aria-hidden="true">
@@ -34,12 +37,43 @@
           }
         </div>
       </section>
+      <section class="meadow__season" aria-label="Season one story map">
+        <p class="meadow__step">Season one · The missing map</p>
+        <ol>
+          @for (chapter of episodes; track chapter.title; let index = $index) {
+            <li [class.is-reached]="saved() && saved()!.levelIndex >= index * 2">
+              <span>0{{ index + 1 }}</span><strong>{{ chapter.title }}</strong><small>{{ chapter.place }}</small>
+            </li>
+          }
+        </ol>
+      </section>
+    } @else if (stage() === 'story') {
+      <section class="meadow__story" [attr.data-theme]="level().theme" aria-label="Episode story">
+        <div class="meadow__story-top">
+          <span>Episode {{ episodeNumber() }} of 4</span>
+          <span>Scene {{ storyBeat() + 1 }} of {{ episode().opening.length }}</span>
+        </div>
+        <div class="meadow__story-art" aria-hidden="true">
+          <span class="meadow__story-moon"></span><span class="meadow__story-island"></span>
+          <img [src]="storyBeat() === 0 ? pony()?.surprised : pony()?.image" alt="" />
+        </div>
+        <div class="meadow__story-copy">
+          <p class="meadow__step">{{ episode().place }}</p>
+          <h1>{{ episode().title }}</h1>
+          @if (storyBeat() === 0 && previousChoice()) { <p class="meadow__memory">Last time: {{ previousChoice() }}</p> }
+          <p class="meadow__dialogue">{{ storyLine() }}</p>
+          <div class="meadow__story-actions">
+            <button type="button" class="meadow__next" (click)="advanceStory()">{{ storyBeat() === episode().opening.length - 1 ? 'Begin exploring' : 'Continue the story' }} →</button>
+            <button type="button" class="meadow__replay" (click)="playNarration()" [disabled]="!audioEnabled()">↻ Hear again</button>
+          </div>
+        </div>
+      </section>
     } @else {
       <div class="meadow__game-intro">
         <div>
-          <p class="meadow__eyebrow">Level {{ levelIndex() + 1 }} of {{ levelCount }}</p>
-          <h1>{{ stage() === 'finished' ? 'A wardrobe full of magic!' : level().name }}</h1>
-          <p>{{ stage() === 'playing' ? level().hint : 'Your new treasure is ready to wear.' }}</p>
+          <p class="meadow__eyebrow">Episode {{ episodeNumber() }} · Chapter {{ levelIndex() + 1 }} of {{ levelCount }}</p>
+          <h1>{{ stage() === 'finished' ? 'The sky is whole again!' : level().name }}</h1>
+          <p>{{ stage() === 'playing' ? level().hint : stage() === 'choice' ? episode().ending : 'Your new treasure is ready to wear.' }}</p>
         </div>
         <div class="meadow__progress" [attr.aria-label]="'Level ' + (levelIndex() + 1) + ' of ' + levelCount">
           @for (number of [1, 2, 3, 4, 5, 6, 7, 8]; track number) {
@@ -56,6 +90,7 @@
                 <button type="button" class="meadow__tile" role="gridcell"
                   [class.is-blocked]="isBlocked(cell)" [class.is-gem]="isGem(cell)"
                   [class.is-chest]="isChest(cell)" [class.is-gate]="isGate(cell)"
+                  [class.is-clue]="isClue(cell)"
                   [class.is-player]="isPlayer(cell)" [class.is-flying]="isPlayer(cell) && flying()"
                   [class.has-flower]="cell % 6 === 2 && !isBlocked(cell)"
                   [attr.data-cell]="cell" [disabled]="!canStepTo(cell)"
@@ -70,6 +105,7 @@
                   }
                   @if (isGem(cell)) { <span class="meadow__gem" aria-hidden="true">◆</span> }
                   @if (isChest(cell)) { <span class="meadow__chest" aria-hidden="true">▣</span> }
+                  @if (isClue(cell)) { <span class="meadow__clue" aria-hidden="true">✧</span> }
                   @if (isBlocked(cell)) { <span class="meadow__cloud" aria-hidden="true">☁</span> }
                   @if (isPlayer(cell)) { <img class="meadow__player" [src]="pony()?.image" alt="" /> }
                 </button>
@@ -90,8 +126,9 @@
             <div class="meadow__status">
               <span [class.is-found]="flying()"><strong>◆</strong> {{ flying() ? 'Flying!' : 'Find the blue gem' }}</span>
               <span [class.is-found]="foundTreasure()"><strong>▣</strong> {{ foundTreasure() ? level().garment.name + ' found!' : 'Find the clothing chest' }}</span>
+              <span [class.is-found]="foundClue()"><strong>✧</strong> {{ foundClue() ? 'Story clue found!' : 'Find the story clue' }}</span>
             </div>
-            <p>Find the gem to fly over clouds. Open the chest, then go to the rainbow gate.</p>
+            <p>Find the gem to fly over clouds. Discover the clue and clothing chest, then reach the rainbow gate.</p>
             <div class="meadow__controls" aria-label="Move your pony">
               <button type="button" class="meadow__control meadow__control--up" aria-label="Move up" (click)="move('up')">↑</button>
               <button type="button" class="meadow__control meadow__control--left" aria-label="Move left" (click)="move('left')">←</button>
@@ -100,6 +137,20 @@
             </div>
             <small>Use arrow keys, tap a nearby square, or use these buttons.</small>
           </aside>
+        </section>
+      } @else if (stage() === 'choice') {
+        <section class="meadow__decision" aria-label="Episode choice">
+          <div class="meadow__decision-art"><img [src]="pony()?.surprised" [alt]="pony()?.name + ' looking surprised'" /></div>
+          <div class="meadow__decision-copy">
+            <p class="meadow__step">End of episode {{ episodeNumber() }}</p>
+            <h2>What happens next?</h2>
+            <p>{{ episode().ending }}</p>
+            <div class="meadow__decision-options">
+              @for (choice of episode().choices; track choice.label; let index = $index) {
+                <button type="button" (click)="chooseEnding(index)">{{ choice.label }} →</button>
+              }
+            </div>
+          </div>
         </section>
       } @else {
         <section class="meadow__victory" aria-label="Level completed">
@@ -120,7 +171,7 @@
             </div>
           </div>
           <div class="meadow__victory-copy">
-            <p class="meadow__step">{{ stage() === 'finished' ? 'All eight treasures found' : 'New clothing treasure' }}</p>
+            <p class="meadow__step">{{ stage() === 'finished' ? 'Season one complete · All eight treasures found' : 'New clothing treasure' }}</p>
             <h2>{{ stage() === 'finished' ? 'Your pony has a magical wardrobe!' : level().garment.name + ' unlocked!' }}</h2>
             <p>Try on your treasures below. You can change what {{ pony()?.name }} wears whenever you like.</p>
             @if (stage() === 'finished') {
@@ -147,6 +198,6 @@
         </section>
       }
     }
-    <p class="meadow__note">An original game by Shwetha. Your adventure stays in this browser; no account needed.</p>
+    <p class="meadow__note">An original game by Shwetha. Your adventure stays in this browser; no account needed. Story narration made with <a href="https://elevenlabs.io/" target="_blank" rel="noopener noreferrer">ElevenLabs</a>.</p>
   </main>
 </div>
