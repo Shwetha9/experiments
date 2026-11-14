@@ -190,7 +190,12 @@ export function readWorldSave(raw: string | null): WorldSave | null {
         typeof v.cameraDistance === 'number' && Number.isFinite(v.cameraDistance)
           ? Math.max(14, Math.min(26, v.cameraDistance))
           : 17,
-      friend: ['Pippa', 'Clover', 'Miso'].includes(v.friend) ? v.friend : 'Pippa',
+      friend:
+        v.friend === 'Miso'
+          ? 'Violete'
+          : ['Pippa', 'Clover', 'Violete'].includes(v.friend)
+            ? v.friend
+            : 'Pippa',
       gem: !!v.gem,
       claimedRewards: ids(Array.isArray(v.claimedRewards) ? v.claimedRewards : [], 4).filter((n) =>
         beacons.includes(n),

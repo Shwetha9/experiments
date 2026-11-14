@@ -10,6 +10,7 @@ import {
   inject,
   output,
   signal,
+  computed,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MeadowScene } from './meadow-scene';
@@ -59,12 +60,15 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
       image: 'images/meadow/clover-winged.png',
     },
     {
-      name: 'Miso',
+      name: 'Violete',
       description: 'Always chasing the next star.',
       image: 'images/meadow/miso-winged.png',
     },
   ];
   protected readonly friend = signal(this.load()?.friend ?? 'Pippa');
+  protected readonly friendImage = computed(
+    () => this.friends.find((p) => p.name === this.friend())?.image ?? this.friends[0].image,
+  );
   protected readonly cameraDistance = signal(
     this.load()?.cameraDistance ?? DEFAULT_CAMERA_DISTANCE,
   );

@@ -16,15 +16,15 @@ export class MeadowPony {
     const colors =
       name === 'Clover'
         ? ['#c5dfb1', '#267e86', '#50afb0', '#82ccd3']
-        : name === 'Miso'
+        : name === 'Violete'
           ? ['#d6cef3', '#5e55a5', '#9388d1', '#b7ace4']
           : ['#f3c5ad', '#a45563', '#d1808b', '#e8a3a8'];
     this.skin = this.material(colors[0]);
     const muzzle = this.material(
-      name === 'Clover' ? '#e6edcd' : name === 'Miso' ? '#ece4fa' : '#ffe0cd',
+      name === 'Clover' ? '#e6edcd' : name === 'Violete' ? '#ece4fa' : '#ffe0cd',
     );
     const hoof = this.material(
-      name === 'Clover' ? '#4d7872' : name === 'Miso' ? '#73729d' : '#906d77',
+      name === 'Clover' ? '#4d7872' : name === 'Violete' ? '#73729d' : '#906d77',
       0.4,
     );
     const hair = this.material(colors[1], 0.38),
@@ -56,7 +56,7 @@ export class MeadowPony {
       white.rotation.y = side * 0.25;
       this.ellipsoid(
         this.root,
-        this.material(name === 'Clover' ? '#438c86' : name === 'Miso' ? '#6f73ae' : '#8d6557'),
+        this.material(name === 'Clover' ? '#438c86' : name === 'Violete' ? '#6f73ae' : '#8d6557'),
         [side * 0.49, 2.53, -1.128],
         [0.034, 0.14, 0.115],
       );

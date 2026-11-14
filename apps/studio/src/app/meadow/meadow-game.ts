@@ -12,7 +12,7 @@ const KEY='moonbeam-meadow-v3';
 const PONIES:Pony[]=[
   {name:'Pippa',image:'images/meadow/pippa-winged.png',surprised:'images/meadow/pippa-surprised.png'},
   {name:'Clover',image:'images/meadow/clover-winged.png',surprised:'images/meadow/clover-surprised.png'},
-  {name:'Miso',image:'images/meadow/miso-winged.png',surprised:'images/meadow/miso-surprised.png'},
+  {name:'Violete',image:'images/meadow/miso-winged.png',surprised:'images/meadow/miso-surprised.png'},
 ];
 const GARMENTS:Garment[]=[
   {id:'rose-cape',name:'Rose cape',slot:'cape',icon:'✦'},{id:'flower-crown',name:'Flower crown',slot:'head',icon:'✿'},
@@ -45,7 +45,7 @@ export class MeadowGamePage implements OnDestroy {
   private frame=0; private lastFrame=0; private audio:HTMLAudioElement|null=null;
   private ponyImage=new Image(); private pressed=new Set<string>(); private mazeRepeat=0; private soundContext:AudioContext|null=null;
   protected selectPony(p:Pony):void {this.pony.set(p);this.ponyImage.src=p.image;this.stage.set('episodes');this.persist();}
-  protected resume():void {const s=this.saved();if(!s)return;const p=PONIES.find(x=>x.name===s.pony)??PONIES[0];this.pony.set(p);this.ponyImage.src=p.image;this.unlockedEpisode.set(Math.min(3,Math.max(0,s.unlockedEpisode)));this.won.set(s.won??[]);this.garments.set(s.garments??[]);this.equipped.set(s.equipped??{});this.stage.set('episodes');this.persist();}
+  protected resume():void {const s=this.saved();if(!s)return;const p=PONIES.find(x=>x.name===(s.pony==='Miso'?'Violete':s.pony))??PONIES[0];this.pony.set(p);this.ponyImage.src=p.image;this.unlockedEpisode.set(Math.min(3,Math.max(0,s.unlockedEpisode)));this.won.set(s.won??[]);this.garments.set(s.garments??[]);this.equipped.set(s.equipped??{});this.stage.set('episodes');this.persist();}
   protected openEpisode(index:number):void {if(index>this.unlockedEpisode())return;this.episode.set(index);this.stage.set('routes');}
   protected start(mode:Mode):void {this.stopAudio();this.pressed.clear();this.mode.set(mode);this.game=createGame(this.episode(),mode);this.gameView.set(this.snapshot());this.stage.set('playing');this.lastFrame=0;this.mazeRepeat=0;cancelAnimationFrame(this.frame);this.frame=requestAnimationFrame(t=>this.tick(t));}
   protected backToSky():void {this.stopGame();this.stage.set('sky');}

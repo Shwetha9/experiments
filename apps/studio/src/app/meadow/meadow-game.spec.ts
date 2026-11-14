@@ -74,10 +74,11 @@ describe('Moonbeam Meadow episode routes',()=>{
     expect(localStorage.getItem('moonbeam-meadow-v3')).toContain('0-chase');
     fixture.destroy();
   });
-  it('restores pony and unlocked episodes from browser storage',()=>{
+  it('restores the renamed Violete and unlocked episodes from an older save',()=>{
     localStorage.setItem('moonbeam-meadow-v3',JSON.stringify({pony:'Miso',unlockedEpisode:2,won:['0-chase','1-platform'],garments:[],equipped:{}}));
     const fixture=TestBed.createComponent(MeadowGamePage);fixture.detectChanges();const page=fixture.nativeElement as HTMLElement;page.querySelector<HTMLButtonElement>('.arcade-link')!.click();fixture.detectChanges();
     page.querySelector<HTMLButtonElement>('.resume')!.click();fixture.detectChanges();
+    expect(page.querySelector('h1')?.textContent).toContain("Violete's adventure");
     const episodes=page.querySelectorAll<HTMLButtonElement>('.episode');expect(episodes[2].disabled).toBeFalse();expect(episodes[3].disabled).toBeTrue();
   });
   it('carries an earlier adventure into the new episode map',()=>{
