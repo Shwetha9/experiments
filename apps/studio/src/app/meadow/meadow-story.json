@@ -1,0 +1,146 @@
+{
+  "episodes": [
+    {
+      "title": "The Map That Vanished",
+      "place": "The observatory · The cloud bridge",
+      "scenes": [
+        {
+          "caption": "The map is gone.",
+          "lineId": "episode-1-1",
+          "effect": "map",
+          "expression": "surprised"
+        },
+        {
+          "caption": "One paper star knows where to look.",
+          "lineId": "episode-1-2",
+          "effect": "star",
+          "expression": "ready"
+        }
+      ],
+      "endingCaption": "A torn map points to a silent bell.",
+      "endingLineId": "episode-1-end",
+      "choices": [
+        {
+          "label": "Follow the river",
+          "result": "You follow the silver current to the brook."
+        },
+        {
+          "label": "Question the cloud keeper",
+          "result": "The keeper tells you where the bell last rang."
+        }
+      ]
+    },
+    {
+      "title": "The Bell Beneath the Brook",
+      "place": "Glitter Brook · Velvet Valley",
+      "scenes": [
+        {
+          "caption": "The brook has lost its voice.",
+          "lineId": "episode-2-1",
+          "effect": "water",
+          "expression": "surprised"
+        },
+        {
+          "caption": "Listen below the surface.",
+          "lineId": "episode-2-2",
+          "effect": "bell",
+          "expression": "ready"
+        }
+      ],
+      "endingCaption": "The bell's echo reveals a tower in the snow.",
+      "endingLineId": "episode-2-end",
+      "choices": [
+        {
+          "label": "Guide the fish home",
+          "result": "The fish reveal a secret current to Frosted Sky."
+        },
+        {
+          "label": "Track the silver echo",
+          "result": "The bell's echo leads you toward the snowy tower."
+        }
+      ]
+    },
+    {
+      "title": "The Tower of Borrowed Stars",
+      "place": "Frosted Sky · Starlight Ridge",
+      "scenes": [
+        {
+          "caption": "Snow is falling upward.",
+          "lineId": "episode-3-1",
+          "effect": "snow",
+          "expression": "surprised"
+        },
+        {
+          "caption": "Someone inside the tower is afraid of the dark.",
+          "lineId": "episode-3-2",
+          "effect": "tower",
+          "expression": "ready"
+        }
+      ],
+      "endingCaption": "The star thief is a lonely sky fox.",
+      "endingLineId": "episode-3-end",
+      "choices": [
+        {
+          "label": "Invite the fox along",
+          "result": "The fox becomes your guide to Rainbow Hollow."
+        },
+        {
+          "label": "Build the fox a lantern",
+          "result": "The fox shares the path after you light its room."
+        }
+      ]
+    },
+    {
+      "title": "The Moon Castle Promise",
+      "place": "Rainbow Hollow · Moon Castle",
+      "scenes": [
+        {
+          "caption": "The castle waits beyond the sky bridge.",
+          "lineId": "episode-4-1",
+          "effect": "bridge",
+          "expression": "surprised"
+        },
+        {
+          "caption": "Every friend helped build this path.",
+          "lineId": "episode-4-2",
+          "effect": "beacons",
+          "expression": "ready"
+        }
+      ],
+      "endingCaption": "The sky is whole again. Where will the map go?",
+      "endingLineId": "episode-4-end",
+      "choices": [
+        {
+          "label": "Share the map with the village",
+          "result": "Every traveler can find their way home."
+        },
+        {
+          "label": "Carry it toward a new horizon",
+          "result": "A fresh route appears under the moonlight."
+        }
+      ]
+    }
+  ],
+  "lines": {
+    "episode-1-1": "At midnight, the observatory clock shuddered to a stop. The Moonbeam Map had vanished from its frame. Beyond the window, one torn paper star spun wildly in the wind.",
+    "episode-1-2": "The little star was heading for the cloud bridge. It might be the only clue to where the map had gone. There was still time to catch it, if you were brave enough to follow.",
+    "episode-1-end": "The last map star settled into place. Its silver edge drew a line toward a river, where someone had marked the shape of a bell. That was where the next clue waited.",
+    "episode-2-1": "Glitter Brook was moving, yet somehow it made no sound. Even the fish had gone quiet. Beneath the surface, a silver bell pulsed with a light that did not belong there.",
+    "episode-2-2": "The bell was trying to ring. Its notes were scattered all through the valley, guarded by things that moved with the current. Bring those notes together, and perhaps the brook will sing again.",
+    "episode-2-end": "At last the bell rang. Its echo crossed the valley and climbed toward a tower where snow fell upward. For an instant, a small shadow appeared in the window.",
+    "episode-3-1": "Snow drifted upward around the tower. In its highest window, three stolen stars flickered like tiny lanterns. Something was watching from behind the glass.",
+    "episode-3-2": "The shadow was a sky fox. She had taken the stars because she was frightened of the dark. Could you bring their light home, and still find a way to help her?",
+    "episode-3-end": "The stars returned to the sky, and the fox stepped out into their light. She knew a hidden path to Moon Castle. This time, she wanted to travel with a friend.",
+    "episode-4-1": "Moon Castle stood beyond a broken bridge. Three beacons along the path had fallen dark, and shapes moved between the stones. The map could not be made whole while the bridge slept.",
+    "episode-4-2": "The fox had found the first beacon. The fish knew where the second lay. And the cloud keeper remembered the third. This last crossing would take all of them.",
+    "episode-4-end": "One by one, the beacons woke. The castle bridge held steady, the fox found a home, and the Moonbeam Map drew paths between the islands once more.",
+    "clue-1": "The star was no ordinary scrap of paper. Its edge was silver, just like the missing map. It pointed past the cloud bridge.",
+    "clue-2": "The cloud keeper remembered a bell ringing three times before the river went quiet. The sound had come from Glitter Brook.",
+    "clue-3": "A fish tapped a curious rhythm against the stones: low, high, middle, high. The silver bell seemed to answer.",
+    "clue-4": "The final note reached the bell. Its echo slipped between the valley walls and rose toward snow that fell the wrong way.",
+    "clue-5": "The tracks by the tower were tiny. Whoever had borrowed the stars was much smaller than the shadow in the window.",
+    "clue-6": "The fox held the stars close to keep the darkness away. Maybe their light could shine for her and everyone else.",
+    "clue-7": "Beneath a rainbow stone lay the last piece of the map. It showed three dark beacons along the castle bridge.",
+    "clue-8": "The final beacon woke to a message carved in stone: a road grows brighter when its travellers share the light."
+  }
+}

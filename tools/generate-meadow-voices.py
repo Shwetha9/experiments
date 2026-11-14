@@ -1,4 +1,4 @@
-"""Regenerate the eight fixed Moonbeam Meadow story clips with ElevenLabs.
+"""Regenerate Moonbeam Meadow's fixed narration with one consistent voice.
 
 Reads the local .env key without putting it in a command line or client bundle.
 The committed MP3s let every visitor hear the story without consuming API credits.
@@ -7,21 +7,13 @@ The committed MP3s let every visitor hear the story without consuming API credit
 from pathlib import Path
 import json
 import os
+import tempfile
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / 'apps/studio/public/audio/meadow'
-VOICE_ID = 'cgSgspJ2msm6clMCkdW9'  # Jessica, a premade playful voice
-LINES = (
-    'At dawn, the Moonbeam Map disappeared from the village observatory. Without it, the paths between the sky islands are fading.',
-    'A tiny paper star flutters out of the window. It points toward Blossom Field. Find the blue gem to wake your wings, then follow the trail!',
-    'The brook is unusually quiet. Its silver bell is trapped under a spell, and the fish have forgotten the way home.',
-    'The torn map corner glows. Search the bank, gather a flying gem, and discover what the bell is trying to tell you.',
-    'Snow is falling upward around the tower. Inside, someone has borrowed the stars to light a lonely room.',
-    'A winged pony can cross the clouds, but only after finding the blue gem. Look for clues before you decide what to do.',
-    'The last piece of the Moonbeam Map waits beyond Rainbow Hollow. The castle gate opens only for someone who brings a friend.',
-    'Your clothes, your courage, and the friends you helped brought you here. Find the gem, claim the final treasures, and make the sky whole.',
-)
+VOICE_ID = 'XEQBC9sleaE3f5ff82UR'  # Charlotte, a warm Australian female voice
+SCRIPT = ROOT / 'apps/studio/src/app/meadow/meadow-story.json'
 
 
 def read_key():
@@ -38,26 +30,31 @@ def read_key():
 def main():
     key = read_key()
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    for index, line in enumerate(LINES):
-        episode, scene = divmod(index, 2)
-        destination = OUTPUT / f'episode-{episode + 1}-{scene + 1}.mp3'
-        if destination.exists():
-            print(f'Keeping {destination.name}')
-            continue
-        body = json.dumps({
-            'text': line,
-            'model_id': 'eleven_flash_v2_5',
-            'voice_settings': {'stability': 0.55, 'similarity_boost': 0.75},
-        }).encode()
-        request = urllib.request.Request(
-            f'https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}?output_format=mp3_22050_32',
-            data=body,
-            headers={'xi-api-key': key, 'Content-Type': 'application/json'},
-            method='POST',
-        )
-        with urllib.request.urlopen(request, timeout=45) as response:
-            destination.write_bytes(response.read())
-        print(f'Created {destination.name}')
+    lines = json.loads(SCRIPT.read_text())['lines']
+    with tempfile.TemporaryDirectory(prefix='meadow-narration-') as temporary:
+        staged = Path(temporary)
+        for line_id, line in lines.items():
+            destination = staged / f'{line_id}.mp3'
+            body = json.dumps({
+                'text': line,
+                'model_id': 'eleven_flash_v2_5',
+                'voice_settings': {'stability': 0.48, 'similarity_boost': 0.78},
+            }).encode()
+            request = urllib.request.Request(
+                f'https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}?output_format=mp3_22050_32',
+                data=body,
+                headers={'xi-api-key': key, 'Content-Type': 'application/json'},
+                method='POST',
+            )
+            with urllib.request.urlopen(request, timeout=45) as response:
+                audio = response.read()
+            if len(audio) < 1000:
+                raise RuntimeError(f'Unexpectedly short audio for {line_id}')
+            destination.write_bytes(audio)
+            print(f'Staged {destination.name}', flush=True)
+        for file in staged.glob('*.mp3'):
+            file.replace(OUTPUT / file.name)
+    print(f'Published {len(lines)} clips with one female Australian narrator.')
 
 
 if __name__ == '__main__':

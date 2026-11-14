@@ -1,156 +1,92 @@
+import { Component, output } from '@angular/core';
+import { MeadowExpedition } from './meadow-expedition';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { MeadowGamePage } from './meadow-game';
+import { createGame, MISSIONS, moveMaze, passable, stepGame } from './meadow-engine';
 
-const pathTo = (start: number, goal: number, blocked: Set<number>): number[] => {
-  const queue: number[][] = [[start]];
-  const visited = new Set([start]);
-  for (const path of queue) {
-    const cell = path[path.length - 1];
-    if (cell === goal) return path.slice(1);
-    const row = Math.floor(cell / 7);
-    const col = cell % 7;
-    const next = [
-      ...(row > 0 ? [cell - 7] : []),
-      ...(row < 4 ? [cell + 7] : []),
-      ...(col > 0 ? [cell - 1] : []),
-      ...(col < 6 ? [cell + 1] : []),
-    ];
-    for (const neighbour of next) {
-      if (visited.has(neighbour) || blocked.has(neighbour)) continue;
-      visited.add(neighbour);
-      queue.push([...path, neighbour]);
+@Component({selector:'app-meadow-expedition',template:'<button class="arcade-link" (click)="arcade.emit()">Arcade trials</button>'})
+class ExpeditionStub {readonly arcade=output<void>();}
+
+function reachable(episode:number):Set<string>{
+  const g=createGame(episode,'chase'),queue=[[1,1]],seen=new Set(['1,1']);
+  for(const [x,y] of queue){for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+    const nx=x+dx,ny=y+dy,key=`${nx},${ny}`;
+    if(passable(g,nx,ny)&&!seen.has(key)){seen.add(key);queue.push([nx,ny]);}
+  }}return seen;
+}
+
+describe('Moonbeam Meadow episode routes',()=>{
+  it('keeps all story pieces, gems, treasures and exits reachable in every chase maze',()=>{
+    expect(MISSIONS.length).toBe(4);
+    for(let episode=0;episode<4;episode++){
+      const visited=reachable(episode);
+      for(const point of ['3,1','9,5','17,11','5,7','15,3','19,11'])expect(visited.has(point)).withContext(`episode ${episode+1}: ${point}`).toBeTrue();
     }
-  }
-  throw new Error(`No path from ${start} to ${goal}`);
-};
-
-describe('Moonbeam Meadow', () => {
-  beforeEach(async () => {
-    localStorage.clear();
-    await TestBed.configureTestingModule({
-      imports: [MeadowGamePage],
-      providers: [provideRouter([])],
-    }).compileComponents();
   });
-
-  it('plays four story episodes, requires a gem and clue, unlocks clothing, and saves choices', () => {
-    const fixture = TestBed.createComponent(MeadowGamePage);
-    fixture.detectChanges();
-    const page = fixture.nativeElement as HTMLElement;
-    expect(page.querySelectorAll('.meadow__friend')).toHaveSize(3);
-    page.querySelector<HTMLButtonElement>('.meadow__friend')!.click();
-    fixture.detectChanges();
-    expect(page.textContent).toContain('The Map That Vanished');
-    for (let scene = 0; scene < 2; scene++) {
-      page.querySelector<HTMLButtonElement>('.meadow__story-actions .meadow__next')!.click();
-      fixture.detectChanges();
+  it('requires three story pieces, then accepts either route as a win',()=>{
+    for(let episode=0;episode<4;episode++){
+      const maze=createGame(episode,'chase');maze.enemies=[];maze.x=18;maze.y=11;moveMaze(maze,'right');expect(maze.status).toBe('playing');
+      maze.found=[true,true,true];maze.x=18;maze.y=11;moveMaze(maze,'right');expect(maze.status).toBe('won');
+      const platform=createGame(episode,'platform');platform.x=2230;stepGame(platform,.04);expect(platform.status).toBe('playing');
+      platform.found=[true,true,true];platform.x=2241;stepGame(platform,.04);expect(platform.status).toBe('won');
     }
-
-    for (let level = 1; level <= 8; level++) {
-      expect(page.querySelector('.meadow__board')?.getAttribute('data-level')).toBe(String(level));
-      const blocked = new Set([...page.querySelectorAll<HTMLElement>('.meadow__tile.is-blocked')]
-        .map((tile) => Number(tile.dataset['cell'])));
-      const moveTo = (goal: number, obstacles: Set<number>) => {
-        const start = Number(page.querySelector<HTMLElement>('.meadow__tile.is-player')!.dataset['cell']);
-        for (const cell of pathTo(start, goal, obstacles)) {
-          const tile = page.querySelector<HTMLButtonElement>(`.meadow__tile[data-cell="${cell}"]`)!;
-          expect(tile.disabled).toBeFalse();
-          tile.click();
-          fixture.detectChanges();
-        }
-      };
-      const gem = Number(page.querySelector<HTMLElement>('.meadow__tile.is-gem')!.dataset['cell']);
-      const chest = Number(page.querySelector<HTMLElement>('.meadow__tile.is-chest')!.dataset['cell']);
-      if (level === 2) {
-        expect([...page.querySelectorAll<HTMLButtonElement>('.meadow__tile.is-blocked')]
-          .every((tile) => tile.disabled)).toBeTrue();
-      }
-      moveTo(gem, blocked);
-      expect(page.textContent).toContain('Flying!');
-      if (level === 2) {
-        moveTo(21, new Set());
-        expect(page.querySelector<HTMLButtonElement>('.meadow__tile[data-cell="14"]')!.disabled).toBeFalse();
-      }
-      const clue = Number(page.querySelector<HTMLElement>('.meadow__tile.is-clue')!.dataset['cell']);
-      moveTo(clue, new Set());
-      expect(page.textContent).toContain('Story clue found!');
-      moveTo(chest, new Set());
-      expect(page.querySelectorAll('.meadow__clothing')).toHaveSize(level);
-      expect(page.querySelector('.meadow__clothing.is-worn')).not.toBeNull();
-      moveTo(6, new Set());
-      expect(page.querySelector(level % 2 === 0 ? '.meadow__decision' : '.meadow__victory')).not.toBeNull();
-      if (level < 8) {
-        page.querySelector<HTMLButtonElement>(level % 2 === 0 ? '.meadow__decision-options button' : '.meadow__next')!.click();
-        fixture.detectChanges();
-        if (level % 2 === 0) {
-          expect(page.querySelector('.meadow__story')).not.toBeNull();
-          for (let scene = 0; scene < 2; scene++) {
-            page.querySelector<HTMLButtonElement>('.meadow__story-actions .meadow__next')!.click();
-            fixture.detectChanges();
-          }
-        }
-      }
-    }
-    page.querySelector<HTMLButtonElement>('.meadow__decision-options button')!.click();
-    fixture.detectChanges();
-    expect(page.textContent).toContain('All eight treasures found');
-    expect(page.querySelectorAll('.meadow__clothing')).toHaveSize(8);
-    expect(localStorage.getItem('moonbeam-meadow-v2')).toContain('"finished":true');
-    expect(localStorage.getItem('moonbeam-meadow-v2')).toContain('"choices":[0,0,0,0]');
   });
-
-  it('lets the player return to their saved pony and level', () => {
-    localStorage.setItem('moonbeam-meadow-v2', JSON.stringify({
-      pony: 'Clover', levelIndex: 3, unlocked: ['rose-cape'], equipped: { cape: 'rose-cape' },
-    }));
-    const fixture = TestBed.createComponent(MeadowGamePage);
-    fixture.detectChanges();
-    const page = fixture.nativeElement as HTMLElement;
-    page.querySelector<HTMLButtonElement>('.meadow__resume')!.click();
-    fixture.detectChanges();
-    expect(page.querySelector('.meadow__board')?.getAttribute('data-level')).toBe('4');
+  it('does not allow flight before collecting the blue gem',()=>{
+    const g=createGame(0,'platform');g.x=330;g.y=380;stepGame(g,.016);expect(g.gem).toBeTrue();
+    g.y=200;g.vy=0;g.held.add('action');const before=g.flight;stepGame(g,.04);expect(g.flight).toBeLessThan(before);
+  });
+  beforeEach(async()=>{localStorage.clear();await TestBed.configureTestingModule({imports:[MeadowGamePage],providers:[provideRouter([])]}).overrideComponent(MeadowGamePage,{remove:{imports:[MeadowExpedition]},add:{imports:[ExpeditionStub]}}).compileComponents();});
+  it('shows two routes per unlocked episode and keeps later episodes locked',()=>{
+    const fixture=TestBed.createComponent(MeadowGamePage);fixture.detectChanges();const page=fixture.nativeElement as HTMLElement;page.querySelector<HTMLButtonElement>('.arcade-link')!.click();fixture.detectChanges();
+    expect(page.querySelectorAll('.friends button')).toHaveSize(3);
+    page.querySelector<HTMLButtonElement>('.friends button')!.click();fixture.detectChanges();
+    const episodes=page.querySelectorAll<HTMLButtonElement>('.episode');expect(episodes).toHaveSize(4);expect(episodes[0].disabled).toBeFalse();expect(episodes[1].disabled).toBeTrue();
+    episodes[0].click();fixture.detectChanges();expect(page.querySelectorAll('.route-grid button')).toHaveSize(2);
+  });
+  it('plays the opening scene before the route and supports Up plus Right to jump forward',()=>{
+    const fixture=TestBed.createComponent(MeadowGamePage);fixture.detectChanges();const page=fixture.nativeElement as HTMLElement;page.querySelector<HTMLButtonElement>('.arcade-link')!.click();fixture.detectChanges();
+    page.querySelector<HTMLButtonElement>('.sound')!.click();
+    page.querySelector<HTMLButtonElement>('.friends button')!.click();fixture.detectChanges();
+    page.querySelector<HTMLButtonElement>('.episode')!.click();fixture.detectChanges();
+    page.querySelector<HTMLButtonElement>('.route-grid button')!.click();fixture.detectChanges();
+    expect(page.querySelector('.cinema')).not.toBeNull();
+    page.querySelector<HTMLButtonElement>('.cinema__actions .primary')!.click();fixture.detectChanges();
+    const component=fixture.componentInstance;
+    const game=(component as unknown as {game:ReturnType<typeof createGame>}).game;
+    game.y=406;game.x=100;
+    component.onKeyDown(new KeyboardEvent('keydown',{key:'ArrowUp'}));
+    component.onKeyDown(new KeyboardEvent('keydown',{key:'ArrowRight'}));
+    stepGame(game,.04);
+    expect(game.vy).toBeLessThan(0);expect(game.x).toBeGreaterThan(100);
+    fixture.destroy();
+  });
+  it('unlocks the next episode after either route wins',()=>{
+    const fixture=TestBed.createComponent(MeadowGamePage);fixture.detectChanges();const page=fixture.nativeElement as HTMLElement;page.querySelector<HTMLButtonElement>('.arcade-link')!.click();fixture.detectChanges();
+    page.querySelector<HTMLButtonElement>('.sound')!.click();page.querySelector<HTMLButtonElement>('.friends button')!.click();fixture.detectChanges();
+    page.querySelector<HTMLButtonElement>('.episode')!.click();fixture.detectChanges();
+    page.querySelectorAll<HTMLButtonElement>('.route-grid button')[1].click();fixture.detectChanges();
+    page.querySelector<HTMLButtonElement>('.cinema__actions .primary')!.click();fixture.detectChanges();
+    const component=fixture.componentInstance as unknown as {game:ReturnType<typeof createGame>;finishWin:()=>void};
+    component.game.status='won';component.finishWin();fixture.detectChanges();
+    page.querySelector<HTMLButtonElement>('.result .primary')!.click();fixture.detectChanges();
+    expect(page.querySelectorAll<HTMLButtonElement>('.episode')[1].disabled).toBeFalse();
+    expect(localStorage.getItem('moonbeam-meadow-v3')).toContain('0-chase');
+    fixture.destroy();
+  });
+  it('restores pony and unlocked episodes from browser storage',()=>{
+    localStorage.setItem('moonbeam-meadow-v3',JSON.stringify({pony:'Miso',unlockedEpisode:2,won:['0-chase','1-platform'],garments:[],equipped:{}}));
+    const fixture=TestBed.createComponent(MeadowGamePage);fixture.detectChanges();const page=fixture.nativeElement as HTMLElement;page.querySelector<HTMLButtonElement>('.arcade-link')!.click();fixture.detectChanges();
+    page.querySelector<HTMLButtonElement>('.resume')!.click();fixture.detectChanges();
+    const episodes=page.querySelectorAll<HTMLButtonElement>('.episode');expect(episodes[2].disabled).toBeFalse();expect(episodes[3].disabled).toBeTrue();
+  });
+  it('carries an earlier adventure into the new episode map',()=>{
+    localStorage.setItem('moonbeam-meadow-v2',JSON.stringify({pony:'Clover',levelIndex:4,unlocked:['rose-cape'],equipped:{cape:'rose-cape'}}));
+    const fixture=TestBed.createComponent(MeadowGamePage);fixture.detectChanges();const page=fixture.nativeElement as HTMLElement;page.querySelector<HTMLButtonElement>('.arcade-link')!.click();fixture.detectChanges();
+    page.querySelector<HTMLButtonElement>('.resume')!.click();fixture.detectChanges();
     expect(page.textContent).toContain("Clover's adventure");
-    expect(page.querySelector('.meadow__outfit')?.getAttribute('data-cape')).toBe('rose-cape');
-  });
-
-  it('resumes an episode at its saved story scene', () => {
-    localStorage.setItem('moonbeam-meadow-v2', JSON.stringify({
-      pony: 'Miso', levelIndex: 4, stage: 'story', storyBeat: 1,
-      unlocked: ['rose-cape'], equipped: { cape: 'rose-cape' }, choices: [1, 0],
-    }));
-    const fixture = TestBed.createComponent(MeadowGamePage);
-    fixture.detectChanges();
-    const page = fixture.nativeElement as HTMLElement;
-    page.querySelector<HTMLButtonElement>('.meadow__resume')!.click();
-    fixture.detectChanges();
-    expect(page.textContent).toContain('The Tower of Borrowed Stars');
-    expect(page.textContent).toContain('A winged pony can cross the clouds');
-    expect(page.querySelector('.meadow__story-art img')?.getAttribute('src')).toContain('miso-winged.png');
-  });
-
-  it('keeps board cells square and the pony inside its cell', () => {
-    const fixture = TestBed.createComponent(MeadowGamePage);
-    document.body.appendChild(fixture.nativeElement);
-    try {
-      fixture.detectChanges();
-      const page = fixture.nativeElement as HTMLElement;
-      page.querySelector<HTMLButtonElement>('.meadow__friend')!.click();
-      fixture.detectChanges();
-      for (let scene = 0; scene < 2; scene++) {
-        page.querySelector<HTMLButtonElement>('.meadow__story-actions .meadow__next')!.click();
-        fixture.detectChanges();
-      }
-      const tile = page.querySelector<HTMLElement>('.meadow__tile')!.getBoundingClientRect();
-      const pony = page.querySelector<HTMLElement>('.meadow__player')!.getBoundingClientRect();
-      const rainbow = page.querySelector<HTMLElement>('.meadow__gate')!.getBoundingClientRect();
-      expect(tile.width).toBeGreaterThan(0);
-      expect(Math.abs(tile.width - tile.height)).toBeLessThan(2);
-      expect(pony.width).toBeLessThan(tile.width);
-      expect(pony.height).toBeLessThan(tile.height);
-      expect(rainbow.width).toBeGreaterThan(rainbow.height);
-    } finally {
-      fixture.destroy();
-    }
+    expect(page.querySelectorAll<HTMLButtonElement>('.episode')[2].disabled).toBeFalse();
+    expect(page.querySelector('.dressed-pony')?.getAttribute('data-cape')).toBe('rose-cape');
+    fixture.destroy();
   });
 });

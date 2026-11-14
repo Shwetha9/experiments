@@ -21,7 +21,7 @@ describe('LandingPage', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('h1')?.textContent).toContain('I build ambitious web systems');
-    expect(compiled.querySelectorAll('section')).toHaveSize(8);
+    expect(compiled.querySelectorAll('section')).toHaveSize(7);
     expect(compiled.querySelector('a[href="mailto:hello@shwetha.studio"]')).not.toBeNull();
   });
 
@@ -78,8 +78,8 @@ describe('LandingPage', () => {
       .toContain('Discover & quiz');
     expect(compiled.querySelector('#work a[href="/growing-human/?activity=steam"]')?.textContent)
       .toContain('Explore STEAM');
-    expect(compiled.querySelector('.moonbeam-feature a[href="/moonbeam-meadow"]')?.textContent)
-      .toContain('Play Moonbeam Meadow');
+    expect(compiled.querySelector('#work .work__play a[href="/moonbeam-meadow"]')?.textContent)
+      .toContain('Play the game');
     expect(compiled.querySelector('header a[href="/quotes"]')).toBeNull();
     expect(compiled.querySelector('#beyond a[href="/quotes"]')?.textContent).toContain('quotes');
   });

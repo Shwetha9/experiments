@@ -1,0 +1,403 @@
+<div class="sky-game" [class.is-playing]="started()">
+  <canvas
+    #skyCanvas
+    tabindex="0"
+    aria-label="Moonbeam Meadow 3D world. Move with W A S D or arrows, hold Space to fly, drag to look. H shows controls."
+    (pointerdown)="dragStart($event)"
+    (pointermove)="dragMove($event)"
+    (pointerup)="dragEnd()"
+    (pointercancel)="dragEnd()"
+    (webglcontextlost)="contextLost($event)"
+  ></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <header class="sky-header">
+    <a routerLink="/" class="back-link" aria-label="Back to Shwetha’s portfolio"
+      >↖ <span>Shwetha</span></a
+    >
+    <span class="wordmark">Moonbeam <em>Meadow</em></span>
+    <div class="toolbar">
+      <button
+        type="button"
+        (click)="toggleSound()"
+        [attr.aria-pressed]="sound()"
+        aria-label="Toggle sound"
+      >
+        {{ sound() ? '♪ Sound on' : '♪ Sound off' }}
+      </button>
+      @if (started()) {
+        <button
+          type="button"
+          (click)="togglePause()"
+          [attr.aria-label]="paused() ? 'Resume game' : 'Pause game'"
+        >
+          {{ paused() ? '▷' : 'Ⅱ' }}
+        </button>
+      }
+    </div>
+  </header>
+  @if (!started()) {
+    <main class="sky-intro">
+      <p class="overline"><span></span> A small world. A grand adventure.</p>
+      <h1>The sky is calling.<br /><em>Bring your wings.</em></h1>
+      <p class="invitation">
+        Somewhere beyond the clouds, a castle has lost its light.<br class="desktop-break" />
+        Wander eight floating islands. Follow the starlight. Find your way home.
+      </p>
+      <fieldset class="friend-picker">
+        <legend>Every adventure starts with a friend</legend>
+        <div class="friends-3d">
+          @for (p of friends; track p.name) {
+            <button
+              type="button"
+              [class.selected]="friend() === p.name"
+              [attr.aria-pressed]="friend() === p.name"
+              (click)="choose(p.name)"
+            >
+              <img [src]="p.image" alt="" /><span>{{ p.name }}</span
+              ><i>{{ friend() === p.name ? '✓' : '+' }}</i>
+            </button>
+          }
+        </div>
+      </fieldset>
+      <div class="begin-actions">
+        <button type="button" class="begin" (click)="begin(!!saved())" [disabled]="!!error()">
+          {{ saved() ? 'Continue exploring' : 'Let’s take flight' }} <span>↗</span>
+        </button>
+        @if (saved()) {
+          <button type="button" class="quiet" (click)="begin(false)" [disabled]="!!error()">
+            New journey
+          </button>
+        }
+      </div>
+      <p class="little-note">Free to wander · Made for wonder · Progress saved here</p>
+      <button type="button" class="arcade-link" (click)="arcade.emit()">
+        Looking for the story chapters? Play the arcade trials ↗
+      </button>
+    </main>
+    <div class="world-caption" aria-hidden="true">
+      <span>01 / 08</span><strong>Moonbeam Meadow</strong
+      ><small>Somewhere between a dream and the stars.</small>
+    </div>
+    <p class="edition">THE SKYBOUND EXPEDITION <span>✦</span> AN ORIGINAL GAME BY SHWETHA</p>
+  } @else {
+    <div class="world-hud">
+      <div class="quest-progress">
+        <span class="overline">The skybound expedition</span>
+        <div>
+          <span
+            >♧ <b>{{ view().beacons }}</b
+            ><small> / 4 lanterns</small></span
+          ><span
+            >✦ <b>{{ view().relics }}</b
+            ><small> / 12 starlight</small></span
+          >
+        </div>
+      </div>
+      <div class="compass">
+        <span class="compass-arrow" [style.transform]="'rotate(' + view().bearing + 'deg)'">↑</span>
+        <div>
+          <span>{{ view().objective }}</span
+          ><small>{{ view().distance }} m away · {{ view().location }}</small>
+        </div>
+      </div>
+    </div>
+    @if (view().raceIndex >= 0) {
+      <div class="race">
+        <span>SKY RIBBON</span><b>{{ view().raceTime.toFixed(1) }}s</b
+        ><small>Ring {{ view().raceIndex }} / 9 · Follow the gold</small>
+      </div>
+    }
+    @if (helpOpen()) {
+      <aside class="controls-card">
+        <button
+          type="button"
+          class="close"
+          (click)="helpOpen.set(false)"
+          aria-label="Hide controls"
+        >
+          ×</button
+        ><span class="overline">A little field guide</span>
+        <h2>{{ view().gem ? 'You have wings. Use them.' : 'First, find your wings.' }}</h2>
+        <p>
+          {{
+            view().gem
+              ? 'Hold Space to climb. Let go to glide. Land or ride a turquoise wind current to refill your wings.'
+              : 'Walk down the pale stones to the blue crystal. It will teach your friend to fly.'
+          }}
+        </p>
+        <dl>
+          <div>
+            <dt><kbd>W A S D</kbd> / <kbd>↑ ← ↓ →</kbd></dt>
+            <dd>Move</dd>
+          </div>
+          <div>
+            <dt><kbd>Space</kbd> / <kbd>C</kbd></dt>
+            <dd>Rise / descend</dd>
+          </div>
+          <div>
+            <dt><kbd>Shift</kbd></dt>
+            <dd>Dash</dd>
+          </div>
+          <div>
+            <dt>Drag / <kbd>Q R</kbd></dt>
+            <dd>Look around</dd>
+          </div>
+          <div>
+            <dt><kbd>E</kbd></dt>
+            <dd>Restore a lantern</dd>
+          </div>
+          <div>
+            <dt><kbd>M</kbd> / <kbd>H</kbd></dt>
+            <dd>Map / this guide</dd>
+          </div>
+        </dl>
+        <p class="guide-tip">
+          Gather three stars on each lantern island, then land at its arch. Golden rings are an
+          optional race.
+        </p>
+      </aside>
+    }
+    <div class="pilot">
+      <img [src]="'images/meadow/' + friend().toLowerCase() + '-winged.png'" alt="" />
+      <div>
+        <strong
+          >{{ friend() }}
+          <span>· {{ view().grounded ? 'On the ground' : 'In the wind' }}</span></strong
+        >
+        <div
+          class="wing-meter"
+          role="progressbar"
+          aria-label="Wing energy"
+          [attr.aria-valuenow]="view().stamina"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          <i [style.width.%]="view().stamina"></i>
+        </div>
+        <small>{{
+          view().gem ? 'Wing energy · ' + view().stamina + '%' : 'Find the crystal to unlock flight'
+        }}</small>
+      </div>
+    </div>
+    @if (view().message) {
+      <p class="discovery" role="status">{{ view().message }}</p>
+    }
+    @if (view().restorable) {
+      <button
+        type="button"
+        class="restore-button"
+        (pointerdown)="control($event, 'KeyE', true)"
+        (pointerup)="control($event, 'KeyE', false)"
+        (pointercancel)="control($event, 'KeyE', false)"
+      >
+        E · Restore this lantern ✦
+      </button>
+    }
+    <div class="map-buttons">
+      <button type="button" (click)="toggleHelp()" aria-label="Show controls">?</button
+      ><button type="button" (click)="toggleMap()">✧ <span>Sky atlas</span></button>
+    </div>
+    <div class="touch-input" aria-label="Touch flight controls">
+      <div class="dpad">
+        <button
+          type="button"
+          aria-label="Move forward"
+          (pointerdown)="control($event, 'KeyW', true)"
+          (pointerup)="control($event, 'KeyW', false)"
+          (pointercancel)="control($event, 'KeyW', false)"
+        >
+          ↑</button
+        ><button
+          type="button"
+          aria-label="Move left"
+          (pointerdown)="control($event, 'KeyA', true)"
+          (pointerup)="control($event, 'KeyA', false)"
+          (pointercancel)="control($event, 'KeyA', false)"
+        >
+          ←</button
+        ><button
+          type="button"
+          aria-label="Move backward"
+          (pointerdown)="control($event, 'KeyS', true)"
+          (pointerup)="control($event, 'KeyS', false)"
+          (pointercancel)="control($event, 'KeyS', false)"
+        >
+          ↓</button
+        ><button
+          type="button"
+          aria-label="Move right"
+          (pointerdown)="control($event, 'KeyD', true)"
+          (pointerup)="control($event, 'KeyD', false)"
+          (pointercancel)="control($event, 'KeyD', false)"
+        >
+          →
+        </button>
+      </div>
+      <div class="flight-buttons">
+        <button
+          type="button"
+          (pointerdown)="control($event, 'KeyC', true)"
+          (pointerup)="control($event, 'KeyC', false)"
+          (pointercancel)="control($event, 'KeyC', false)"
+          aria-label="Descend"
+        >
+          ↓</button
+        ><button
+          type="button"
+          class="fly"
+          (pointerdown)="control($event, 'Space', true)"
+          (pointerup)="control($event, 'Space', false)"
+          (pointercancel)="control($event, 'Space', false)"
+        >
+          Fly ↑</button
+        ><button
+          type="button"
+          (pointerdown)="control($event, 'ShiftLeft', true)"
+          (pointerup)="control($event, 'ShiftLeft', false)"
+          (pointercancel)="control($event, 'ShiftLeft', false)"
+          aria-label="Dash"
+        >
+          ↗
+        </button>
+      </div>
+    </div>
+    @if (mapOpen()) {
+      <div class="modal-scrim">
+        <section #modal class="atlas" role="dialog" aria-modal="true" aria-labelledby="atlas-title">
+          <button type="button" class="close" (click)="toggleMap()" aria-label="Close atlas">
+            ×
+          </button>
+          <p class="overline">A constellation of places</p>
+          <h2 id="atlas-title">The sky atlas</h2>
+          <p>
+            {{ view().visited }} of 8 islands discovered. Restore the four lanterns to open Moon
+            Castle.
+          </p>
+          <div class="atlas-content">
+            <svg
+              viewBox="0 0 220 210"
+              role="img"
+              aria-label="Map of eight sky islands and your current location"
+            >
+              <path
+                d="M110 176 L68 141 L75 92 L110 44 L148 92 L151 144"
+                fill="none"
+                stroke="#dfc8aa55"
+                stroke-dasharray="2 4"
+              />
+              @for (i of islands; track i.name; let index = $index) {
+                <circle
+                  [attr.cx]="mapX(i.x)"
+                  [attr.cy]="mapY(i.z)"
+                  [attr.r]="i.radius * 0.7"
+                  [attr.fill]="i.color"
+                  opacity=".7"
+                />
+                <text
+                  [attr.x]="mapX(i.x)"
+                  [attr.y]="mapY(i.z) + 3"
+                  text-anchor="middle"
+                  fill="#182534"
+                  font-size="8"
+                >
+                  {{ index + 1 }}
+                </text>
+              }
+              <circle
+                class="you"
+                [attr.cx]="mapX(view().x)"
+                [attr.cy]="mapY(view().z)"
+                r="3"
+                fill="#fff0c9"
+                stroke="#fff"
+              />
+              <text
+                [attr.x]="mapX(view().x) + 6"
+                [attr.y]="mapY(view().z) + 2"
+                fill="#fff0c9"
+                font-size="6"
+              >
+                You
+              </text>
+            </svg>
+            <ol class="island-list">
+              @for (i of islands; track i.name; let index = $index) {
+                <li>
+                  <span>0{{ index + 1 }}</span
+                  >{{ i.name }}
+                </li>
+              }
+            </ol>
+          </div>
+          <div class="quest-list">
+            @for (s of shrines; track s.title; let i = $index) {
+              <div>
+                <span>{{ view().restored.includes(i) ? '✓' : s.icon }}</span>
+                <p>
+                  {{ s.title
+                  }}<small>{{
+                    view().restored.includes(i)
+                      ? 'Lantern restored'
+                      : piecesFor(i) + ' / 3 starlight found'
+                  }}</small>
+                </p>
+              </div>
+            }
+          </div>
+          <p class="atlas-note">
+            Turquoise spirals refill your wings. Golden rings begin the Sky Ribbon race.
+            @if (view().bestRace) {
+              Best ribbon: {{ view().bestRace!.toFixed(1) }}s.
+            }
+          </p>
+          <button type="button" class="begin" (click)="toggleMap()">Back to the sky ↗</button>
+        </section>
+      </div>
+    }
+    @if (paused() && !mapOpen() && !ending()) {
+      <div class="modal-scrim">
+        <section
+          #modal
+          class="pause-card"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="pause-title"
+        >
+          <p class="overline">Take a breath</p>
+          <h2 id="pause-title">The sky can wait.</h2>
+          <p>Your discoveries are saved in this browser.</p>
+          <button type="button" class="begin" (click)="togglePause()">Keep exploring ↗</button
+          ><button type="button" class="quiet" (click)="returnHome()">
+            Return to your last island</button
+          ><button type="button" class="quiet" (click)="menu()">Back to the beginning</button>
+        </section>
+      </div>
+    }
+    @if (ending()) {
+      <div class="modal-scrim">
+        <section
+          #modal
+          class="pause-card ending"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="ending-title"
+        >
+          <span class="ending-star">✦</span>
+          <p class="overline">All roads lead to a little light</p>
+          <h2 id="ending-title">You brought the sky home.</h2>
+          <p>The brook has its song. The fox has a lantern. The Moonbeam Map is whole again.</p>
+          <p>{{ view().visited }} islands found · 12 stars returned · 4 lanterns shining</p>
+          <button type="button" class="begin" (click)="ending.set(false)">
+            Stay a little longer ↗</button
+          ><button type="button" class="quiet" (click)="menu()">Back to the beginning</button>
+        </section>
+      </div>
+    }
+  }
+  @if (error()) {
+    <div class="graphics-error" role="alert">
+      <p>{{ error() }}</p>
+      <button type="button" (click)="arcade.emit()">Play the story trials →</button>
+    </div>
+  }
+</div>
