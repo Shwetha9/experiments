@@ -207,6 +207,8 @@ describe('Skybound expedition', () => {
     expect(restored.position.y).toBe(ISLANDS[3].y);
     expect(restored.beacons.has(0)).toBeTrue();
     expect(readWorldSave('{broken')).toBeNull();
+    expect(readWorldSave(JSON.stringify({ ...worldSave(g), friend: 'Pippa' }))?.friend).toBe('Mia');
+    expect(readWorldSave(JSON.stringify({ ...worldSave(g), friend: 'Mia' }))?.friend).toBe('Mia');
     expect(readWorldSave(JSON.stringify({ ...worldSave(g), friend: 'Miso' }))?.friend).toBe(
       'Violete',
     );

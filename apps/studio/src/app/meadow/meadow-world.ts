@@ -193,9 +193,11 @@ export function readWorldSave(raw: string | null): WorldSave | null {
       friend:
         v.friend === 'Miso'
           ? 'Violete'
-          : ['Pippa', 'Clover', 'Violete'].includes(v.friend)
-            ? v.friend
-            : 'Pippa',
+          : v.friend === 'Pippa'
+            ? 'Mia'
+            : ['Mia', 'Clover', 'Violete'].includes(v.friend)
+              ? v.friend
+              : 'Mia',
       gem: !!v.gem,
       claimedRewards: ids(Array.isArray(v.claimedRewards) ? v.claimedRewards : [], 4).filter((n) =>
         beacons.includes(n),

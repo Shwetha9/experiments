@@ -50,7 +50,7 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
   readonly arcade = output<void>();
   protected readonly friends = [
     {
-      name: 'Pippa',
+      name: 'Mia',
       description: 'A little courage. A lot of heart.',
       image: 'images/meadow/pippa-winged.png',
     },
@@ -65,7 +65,7 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
       image: 'images/meadow/miso-winged.png',
     },
   ];
-  protected readonly friend = signal(this.load()?.friend ?? 'Pippa');
+  protected readonly friend = signal(this.load()?.friend ?? 'Mia');
   protected readonly friendImage = computed(
     () => this.friends.find((p) => p.name === this.friend())?.image ?? this.friends[0].image,
   );
