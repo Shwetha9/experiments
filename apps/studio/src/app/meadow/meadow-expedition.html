@@ -80,6 +80,10 @@
     </div>
     <p class="edition">THE SKYBOUND EXPEDITION <span>✦</span> AN ORIGINAL GAME BY SHWETHA</p>
   } @else {
+    <div class="points-display" aria-label="Total points">
+      <strong>{{ view().score }}</strong
+      ><span>POINTS</span>
+    </div>
     <div class="world-hud">
       <div class="quest-progress">
         <span class="overline">The skybound expedition</span>
@@ -97,7 +101,8 @@
         <span class="compass-arrow" [style.transform]="'rotate(' + view().bearing + 'deg)'">↑</span>
         <div>
           <span>{{ view().objective }}</span
-          ><small>{{ view().distance }} m away · {{ view().location }}</small>
+          ><small>{{ view().distance }} m away · {{ view().location }}</small
+          ><small class="altitude-hint">{{ view().altitudeHint }}</small>
         </div>
       </div>
     </div>
@@ -152,8 +157,9 @@
           </div>
         </dl>
         <p class="guide-tip">
-          Gather three stars on each lantern island, then land at its arch. Golden rings are an
-          optional race.
+          Fly through gold diamonds to collect +50 points each. Gather three on an island, then land
+          beside its framed lantern and press E for +250 points. Open Rewards to claim and equip
+          your prize. Trees and stonework are solid; fly above them or use the openings.
         </p>
       </aside>
     }
@@ -182,18 +188,26 @@
     @if (view().message) {
       <p class="discovery" role="status">{{ view().message }}</p>
     }
+    @if (view().feedback; as feedback) {
+      <div class="collection-toast" role="status" [attr.data-feedback]="feedback.id">
+        <strong>+{{ feedback.points }} <small>points</small></strong
+        ><span>{{ feedback.text }}</span>
+      </div>
+    }
     @if (view().restorable) {
-      <button
-        type="button"
-        class="restore-button"
-        (pointerdown)="control($event, 'KeyE', true)"
-        (pointerup)="control($event, 'KeyE', false)"
-        (pointercancel)="control($event, 'KeyE', false)"
-      >
-        E · Restore this lantern ✦
+      <button type="button" class="restore-button" (click)="restore()">
+        E · Restore lantern · +250 ✦
       </button>
     }
     <div class="map-buttons">
+      <button type="button" class="rewards-toggle" (click)="toggleRewards()">
+        ♛ <span>Rewards</span>
+        {{
+          view().restored.length - view().claimed.length > 0
+            ? '· ' + (view().restored.length - view().claimed.length) + ' to claim'
+            : ''
+        }}
+      </button>
       <button type="button" (click)="toggleHelp()" aria-label="Show controls">?</button
       ><button type="button" (click)="toggleMap()">✧ <span>Sky atlas</span></button>
     </div>
@@ -261,6 +275,51 @@
         </button>
       </div>
     </div>
+    @if (rewardsOpen()) {
+      <div class="modal-scrim">
+        <section
+          #modal
+          class="rewards-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="rewards-title"
+        >
+          <button type="button" class="close" (click)="toggleRewards()" aria-label="Close rewards">
+            ×
+          </button>
+          <p class="overline">A little treasure for your travels</p>
+          <h2 id="rewards-title">Your rewards</h2>
+          <p class="rewards-score">{{ view().score }} points earned</p>
+          <p>Diamonds +50 · Lanterns +250 · Claiming a reward +100</p>
+          <div class="reward-grid">
+            @for (reward of rewards; track reward.name; let i = $index) {
+              <article [attr.data-reward]="i" [class.reward-locked]="!view().restored.includes(i)">
+                <span class="reward-icon" [style.color]="reward.color">{{ reward.icon }}</span>
+                <h3>{{ reward.name }}</h3>
+                <p>{{ reward.description }}</p>
+                @if (!view().restored.includes(i)) {
+                  <small>Restore the {{ islands[shrines[i].island].name }} lantern to unlock</small>
+                } @else if (!view().claimed.includes(i)) {
+                  <button type="button" class="begin" (click)="claim(i)">
+                    Claim & equip · +100
+                  </button>
+                } @else {
+                  <button
+                    type="button"
+                    class="reward-equip"
+                    [attr.aria-pressed]="view().equipped === i"
+                    (click)="equip(i)"
+                  >
+                    {{ view().equipped === i ? 'Equipped ✓ · remove' : 'Equip reward' }}
+                  </button>
+                }
+              </article>
+            }
+          </div>
+          <button type="button" class="begin" (click)="toggleRewards()">Back to the sky ↗</button>
+        </section>
+      </div>
+    }
     @if (mapOpen()) {
       <div class="modal-scrim">
         <section #modal class="atlas" role="dialog" aria-modal="true" aria-labelledby="atlas-title">
@@ -354,7 +413,7 @@
         </section>
       </div>
     }
-    @if (paused() && !mapOpen() && !ending()) {
+    @if (paused() && !mapOpen() && !rewardsOpen() && !ending()) {
       <div class="modal-scrim">
         <section
           #modal
@@ -366,6 +425,17 @@
           <p class="overline">Take a breath</p>
           <h2 id="pause-title">The sky can wait.</h2>
           <p>Your discoveries are saved in this browser.</p>
+          <label class="camera-setting" for="view-distance"
+            >Camera distance <span>{{ cameraDistance() }} m</span
+            ><input
+              id="view-distance"
+              type="range"
+              min="14"
+              max="26"
+              step="1"
+              [value]="cameraDistance()"
+              (input)="setCameraDistance($event)"
+          /></label>
           <button type="button" class="begin" (click)="togglePause()">Keep exploring ↗</button
           ><button type="button" class="quiet" (click)="returnHome()">
             Return to your last island</button
@@ -386,7 +456,10 @@
           <p class="overline">All roads lead to a little light</p>
           <h2 id="ending-title">You brought the sky home.</h2>
           <p>The brook has its song. The fox has a lantern. The Moonbeam Map is whole again.</p>
-          <p>{{ view().visited }} islands found · 12 stars returned · 4 lanterns shining</p>
+          <p>
+            {{ view().score }} points earned · {{ view().visited }} islands found · 12 stars
+            returned · 4 lanterns shining
+          </p>
           <button type="button" class="begin" (click)="ending.set(false)">
             Stay a little longer ↗</button
           ><button type="button" class="quiet" (click)="menu()">Back to the beginning</button>

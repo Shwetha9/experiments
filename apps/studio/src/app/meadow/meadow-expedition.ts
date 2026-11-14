@@ -1,3 +1,4 @@
+import { DEFAULT_CAMERA_DISTANCE } from './meadow-camera';
 import {
   AfterViewInit,
   Component,
@@ -14,6 +15,10 @@ import { RouterLink } from '@angular/router';
 import { MeadowScene } from './meadow-scene';
 import {
   createWorld,
+  claimReward,
+  equipReward,
+  score,
+  LANTERN_REWARDS,
   distance,
   ISLANDS,
   nextObjective,
@@ -38,7 +43,7 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
   @ViewChild('modal') set modal(ref: ElementRef<HTMLElement> | undefined) {
     this.overlay = ref?.nativeElement;
     if (ref)
-      queueMicrotask(() => ref.nativeElement.querySelector<HTMLButtonElement>('button')?.focus());
+      queueMicrotask(() => ref.nativeElement.querySelector<HTMLElement>('button, input')?.focus());
     else if (this.started()) queueMicrotask(() => this.canvas.nativeElement.focus());
   }
   readonly arcade = output<void>();
@@ -60,10 +65,15 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
     },
   ];
   protected readonly friend = signal(this.load()?.friend ?? 'Pippa');
+  protected readonly cameraDistance = signal(
+    this.load()?.cameraDistance ?? DEFAULT_CAMERA_DISTANCE,
+  );
   protected readonly started = signal(false);
   protected readonly paused = signal(false);
   protected readonly mapOpen = signal(false);
   protected readonly helpOpen = signal(false);
+  protected readonly rewardsOpen = signal(false);
+  protected readonly rewards = LANTERN_REWARDS;
   protected readonly sound = signal(false);
   protected readonly error = signal('');
   protected readonly ending = signal(false);
@@ -72,6 +82,11 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
   protected readonly saved = signal(this.load());
   protected readonly view = signal({
     stamina: 100,
+    score: 0,
+    feedback: null as { text: string; points: number; until: number; id: number } | null,
+    claimed: [] as number[],
+    equipped: null as number | null,
+    altitudeHint: '',
     relics: 0,
     beacons: 0,
     gem: false,
@@ -157,6 +172,7 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
     this.paused.set(false);
     this.helpOpen.set(!saved);
     this.ending.set(false);
+    this.rewardsOpen.set(false);
     this.persist();
     this.publish();
     this.canvas.nativeElement.focus();
@@ -166,6 +182,7 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
     this.started.set(false);
     this.paused.set(false);
     this.mapOpen.set(false);
+    this.rewardsOpen.set(false);
     this.helpOpen.set(false);
     this.ending.set(false);
     this.held.clear();
@@ -180,8 +197,52 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
     this.helpOpen.update((v) => !v);
   }
   protected toggleMap(): void {
+    this.rewardsOpen.set(false);
     this.mapOpen.update((v) => !v);
     this.held.clear();
+  }
+  protected setCameraDistance(event: Event): void {
+    this.cameraDistance.set(Number((event.target as HTMLInputElement).value));
+    this.persist();
+  }
+  protected toggleRewards(): void {
+    this.rewardsOpen.update((v) => !v);
+    this.mapOpen.set(false);
+    this.held.clear();
+  }
+  protected claim(index: number): void {
+    if (claimReward(this.world, index)) {
+      this.chime('beacon');
+      this.persist();
+      this.publish();
+      requestAnimationFrame(() =>
+        this.overlay?.querySelector<HTMLElement>(`[data-reward="${index}"] .reward-equip`)?.focus(),
+      );
+    }
+  }
+  protected equip(index: number): void {
+    equipReward(this.world, index);
+    this.persist();
+    this.publish();
+  }
+  protected restore(): void {
+    // A semantic click works for mouse, touch, Enter and Space; it need not be held for a frame.
+    stepWorld(
+      this.world,
+      {
+        forward: 0,
+        strafe: 0,
+        lift: false,
+        descend: false,
+        dash: false,
+        interact: true,
+        yaw: this.yaw,
+      },
+      0.008,
+    );
+    if (this.world.event === 'beacon') this.chime('beacon');
+    this.persist();
+    this.publish();
   }
   protected toggleSound(): void {
     this.sound.update((v) => !v);
@@ -234,7 +295,8 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
     if (this.disposed) return;
     const dt = this.lastTime ? Math.min(0.04, (time - this.lastTime) / 1000) : 0.016;
     this.lastTime = time;
-    const active = this.started() && !this.paused() && !this.mapOpen() && !this.ending();
+    const active =
+      this.started() && !this.paused() && !this.mapOpen() && !this.rewardsOpen() && !this.ending();
     if (active) {
       const key = (...codes: string[]): number => (codes.some((c) => this.held.has(c)) ? 1 : 0);
       this.yaw += (key('KeyR') - key('KeyQ')) * dt * 1.5;
@@ -267,7 +329,14 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
         this.persist();
       }
     }
-    this.scene?.render(this.world, dt, this.yaw, this.pitch, !this.started());
+    this.scene?.render(
+      this.world,
+      dt,
+      this.yaw,
+      this.pitch,
+      !this.started(),
+      this.cameraDistance(),
+    );
     this.frame = requestAnimationFrame((t) => this.tick(t));
   }
   private publish(): void {
@@ -284,6 +353,20 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
     );
     this.view.set({
       stamina: Math.round(g.stamina),
+      score: score(g),
+      feedback: g.feedback && g.feedback.until > g.elapsed ? g.feedback : null,
+      claimed: [...g.claimedRewards],
+      equipped: g.equippedReward,
+      altitudeHint:
+        objective.kind === 'diamond' || objective.kind === 'crystal'
+          ? objective.point.y - g.position.y > 3
+            ? `Fly ${Math.round(objective.point.y - g.position.y - 2)} m higher`
+            : objective.point.y - g.position.y < -0.5
+              ? `Descend ${Math.round(g.position.y - objective.point.y + 1)} m`
+              : 'Touch it to collect automatically'
+          : objective.kind === 'lantern'
+            ? 'Collect 3 diamonds, then land beside the lantern'
+            : 'Follow the compass',
       relics: g.relics.size,
       beacons: g.beacons.size,
       gem: g.gem,
@@ -316,7 +399,11 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
   private persist(): void {
     if (!this.started()) return;
     try {
-      const save = { ...worldSave(this.world), friend: this.friend() },
+      const save = {
+          ...worldSave(this.world),
+          friend: this.friend(),
+          cameraDistance: this.cameraDistance(),
+        },
         raw = JSON.stringify(save);
       if (raw === this.lastSave) return;
       localStorage.setItem(WORLD_SAVE_KEY, raw);
@@ -369,7 +456,7 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
     if (!this.started() || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.code === 'Tab' && this.overlay) {
       const buttons = Array.from(
-        this.overlay.querySelectorAll<HTMLButtonElement>('button:not(:disabled)'),
+        this.overlay.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled)'),
       );
       const first = buttons[0],
         last = buttons[buttons.length - 1];
@@ -386,6 +473,7 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
       e.preventDefault();
       if (this.ending()) this.ending.set(false);
       else if (this.mapOpen()) this.mapOpen.set(false);
+      else if (this.rewardsOpen()) this.rewardsOpen.set(false);
       else this.togglePause();
       return;
     }
@@ -398,7 +486,13 @@ export class MeadowExpedition implements AfterViewInit, OnDestroy {
       this.helpOpen.update((v) => !v);
       return;
     }
-    if (this.movement.has(e.code) && !this.paused() && !this.mapOpen() && !this.ending()) {
+    if (
+      this.movement.has(e.code) &&
+      !this.paused() &&
+      !this.mapOpen() &&
+      !this.rewardsOpen() &&
+      !this.ending()
+    ) {
       e.preventDefault();
       this.held.add(e.code);
     }

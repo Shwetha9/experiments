@@ -1,6 +1,20 @@
+import {
+  CHARACTER_SCALE,
+  DEFAULT_CAMERA_DISTANCE,
+  CAMERA_FOV,
+  followRig,
+  safeFollowCamera,
+  clipCamera,
+} from './meadow-camera';
+import { MeadowPony } from './meadow-pony';
+import { rockHeight } from './meadow-collisions';
 import * as T from 'three';
 import {
   CURRENTS,
+  SCENERY,
+  SOLIDS,
+  pickupPosition,
+  LANTERN_REWARDS,
   FLIGHT_GEM,
   guardianPosition,
   ISLANDS,
@@ -14,10 +28,14 @@ import {
 export class MeadowScene {
   readonly renderer: T.WebGLRenderer;
   private readonly scene = new T.Scene();
-  private readonly camera = new T.PerspectiveCamera(57, 16 / 9, 0.1, 650);
-  private readonly pony = new T.Group();
-  private readonly wings: T.Group[] = [];
-  private readonly legs: T.Group[] = [];
+  private readonly camera = new T.PerspectiveCamera(CAMERA_FOV, 16 / 9, 0.1, 650);
+  private readonly pony: T.Group;
+  private readonly character: MeadowPony;
+  private readonly burst = new T.Group();
+  private wasAttract = true;
+  private feedbackId = 0;
+  private burstAt = -100;
+  private readonly pickupLabels: T.Sprite[] = [];
   private readonly relics: T.Mesh[] = [];
   private readonly rings: T.Mesh[] = [];
   private readonly beacons: T.Group[] = [];
@@ -58,8 +76,14 @@ export class MeadowScene {
     this.scene.add(rim);
     this.makeSky();
     ISLANDS.forEach((island, j) => this.makeIsland(j));
-    this.makePony(name);
+    this.character = new MeadowPony(name);
+    this.pony = this.character.root;
+    this.pony.scale.setScalar(CHARACTER_SCALE);
     this.scene.add(this.pony);
+    for (let j = 0; j < 16; j++)
+      this.mesh(this.burst, new T.OctahedronGeometry(0.09), '#ffe7a8', 0, 0, 0).material =
+        new T.MeshBasicMaterial({ color: '#ffe7a8' });
+    this.scene.add(this.burst);
     this.shadow = new T.Mesh(
       new T.CircleGeometry(1.4, 24),
       new T.MeshBasicMaterial({
@@ -86,6 +110,7 @@ export class MeadowScene {
       this.scene.add(gem);
       this.relics.push(gem);
       this.glow(gem, '#ffeab5', 3.5);
+      this.pickupLabels.push(this.label(gem, '◆ +50', 1.3));
     });
     this.gem = new T.Group();
     this.gem.position.set(FLIGHT_GEM.x, FLIGHT_GEM.y, FLIGHT_GEM.z);
@@ -98,6 +123,7 @@ export class MeadowScene {
         roughness: 0.15,
       });
     this.glow(this.gem, '#8deaff', 6);
+    this.label(this.gem, 'FLIGHT · +100', 1.5);
     this.scene.add(this.gem);
     RINGS.forEach((r, i) => {
       const ring = new T.Mesh(
@@ -227,6 +253,27 @@ export class MeadowScene {
     sprite.scale.set(size, size, 1);
     parent.add(sprite);
   }
+  private label(parent: T.Object3D, text: string, y: number): T.Sprite {
+    const c = document.createElement('canvas');
+    c.width = 256;
+    c.height = 64;
+    const ctx = c.getContext('2d')!;
+    ctx.fillStyle = '#213247dd';
+    ctx.beginPath();
+    ctx.roundRect(10, 7, 236, 50, 14);
+    ctx.fill();
+    ctx.font = 'bold 24px sans-serif';
+    ctx.fillStyle = '#ffe5ac';
+    ctx.textAlign = 'center';
+    ctx.fillText(text, 128, 40);
+    const sprite = new T.Sprite(
+      new T.SpriteMaterial({ map: new T.CanvasTexture(c), transparent: true, depthWrite: false }),
+    );
+    sprite.position.y = y;
+    sprite.scale.set(3.5, 0.875, 1);
+    parent.add(sprite);
+    return sprite;
+  }
   private makeSky(): void {
     const sky = new T.Mesh(
       new T.SphereGeometry(400, 24, 16),
@@ -324,7 +371,7 @@ export class MeadowScene {
         group,
         j % 2 ? '#8384a4' : '#9294b0',
         Math.sin(a) * i.radius * 0.55,
-        -5 - this.random() * 3,
+        rockHeight(index, j),
         Math.cos(a) * i.radius * 0.55,
         3,
         5,
@@ -343,26 +390,37 @@ export class MeadowScene {
       );
       stone.rotation.y = j;
     }
-    for (let j = 0; j < 17; j++) {
-      const a = this.random() * Math.PI * 2,
-        r = i.radius * (0.47 + this.random() * 0.36),
-        x = Math.cos(a) * r,
-        z = Math.sin(a) * r;
-      if (Math.abs(x) < 2.2 && z > 0) continue;
-      if (j < 7 && i.biome !== 'castle') this.tree(group, x, z, i.biome, j);
-      else if (i.biome === 'ice') {
-        const crystal = this.mesh(
+    for (const o of SCENERY.filter((o) => o.island === index)) {
+      const { x, z, scale, variant } = o;
+      if (o.kind === 'tree') this.tree(group, x, z, i.biome, variant, scale);
+      else if (o.kind === 'ice')
+        this.mesh(
           group,
-          new T.ConeGeometry(0.5, 2 + this.random() * 2, 5),
+          new T.ConeGeometry(0.5 * scale, 3 * scale, 5),
           '#e2f1ef',
           x,
-          1,
+          1.5 * scale,
           z,
         );
-        crystal.rotation.z = 0.2;
-      } else if (i.biome !== 'castle') {
-        this.mesh(group, new T.CylinderGeometry(0.07, 0.1, 0.7, 5), '#d8cfb7', x, 0.35, z);
-        this.sphere(group, j % 2 ? '#e4a7bd' : '#e3bc8e', x, 0.85, z, 0.6, 0.25, 0.6);
+      else {
+        this.mesh(
+          group,
+          new T.CylinderGeometry(0.07 * scale, 0.1 * scale, 0.7 * scale, 5),
+          '#d8cfb7',
+          x,
+          0.35 * scale,
+          z,
+        );
+        this.sphere(
+          group,
+          variant % 2 ? '#e4a7bd' : '#e3bc8e',
+          x,
+          0.85 * scale,
+          z,
+          0.6 * scale,
+          0.25 * scale,
+          0.6 * scale,
+        );
       }
     }
     // Patches of tiny flowers and grass are batched into two instanced meshes per island.
@@ -441,8 +499,12 @@ export class MeadowScene {
       this.beacons[shrine] = beacon;
       this.mesh(beacon, new T.CylinderGeometry(2.3, 2.6, 0.3, 12), '#c1b7c9', 0, 0.15, 0);
       this.mesh(beacon, new T.CylinderGeometry(0.55, 0.8, 2.2, 8), '#e2c9be', 0, 1.3, 0);
-      const orb = this.mesh(beacon, new T.OctahedronGeometry(0.75), '#9b8da9', 0, 3, 0);
+      const orb = this.mesh(beacon, new T.SphereGeometry(0.58, 16, 12), '#9b8da9', 0, 3, 0);
       orb.name = 'lantern';
+      this.mesh(beacon, new T.CylinderGeometry(0.8, 0.8, 0.15, 12), '#b7a187', 0, 2.3, 0);
+      this.mesh(beacon, new T.ConeGeometry(0.85, 0.4, 8), '#b7a187', 0, 3.8, 0);
+      for (const x of [-0.65, 0.65])
+        this.mesh(beacon, new T.CylinderGeometry(0.05, 0.05, 1.4, 6), '#b7a187', x, 3, 0);
       const beam = this.mesh(
         beacon,
         new T.CylinderGeometry(0.22, 0.8, 32, 12),
@@ -531,10 +593,17 @@ export class MeadowScene {
       this.glow(portal, '#d3f9ed', 9);
     }
   }
-  private tree(parent: T.Object3D, x: number, z: number, biome: string, index: number): void {
+  private tree(
+    parent: T.Object3D,
+    x: number,
+    z: number,
+    biome: string,
+    index: number,
+    scale: number,
+  ): void {
     const group = new T.Group();
     group.position.set(x, 0, z);
-    group.scale.setScalar(0.75 + this.random() * 0.55);
+    group.scale.setScalar(scale);
     parent.add(group);
     this.mesh(group, new T.CylinderGeometry(0.15, 0.4, 3.7, 5), '#807380', 0, 1.8, 0);
     if (biome === 'ice') {
@@ -554,78 +623,14 @@ export class MeadowScene {
       this.sphere(group, color, -1, 3.9, 0.6, 1.5);
     }
   }
-  private makePony(name: string): void {
-    const skin = name === 'Clover' ? '#c2dc9a' : name === 'Miso' ? '#c5bdf3' : '#edbc9e';
-    const mane = name === 'Clover' ? '#398e91' : name === 'Miso' ? '#8076c8' : '#b27080';
-    this.sphere(this.pony, skin, 0, 1, 0, 0.65, 0.65, 1.1);
-    const neck = this.sphere(this.pony, skin, 0, 1.65, -0.7, 0.44, 0.7, 0.45);
-    neck.rotation.x = -0.3;
-    this.sphere(this.pony, skin, 0, 2.16, -0.95, 0.5, 0.5, 0.6);
-    this.sphere(this.pony, '#f4d3c3', 0, 2, -1.42, 0.4, 0.29, 0.36);
-    for (const side of [-1, 1]) {
-      this.mesh(
-        this.pony,
-        new T.ConeGeometry(0.2, 0.6, 5),
-        skin,
-        side * 0.33,
-        2.7,
-        -0.83,
-      ).rotation.z = -side * 0.2;
-      this.sphere(this.pony, '#253a50', side * 0.45, 2.26, -1.08, 0.065, 0.12, 0.13);
-      this.sphere(this.pony, '#ffffff', side * 0.49, 2.31, -1.13, 0.025);
-      for (const z of [-0.65, 0.65]) {
-        const leg = new T.Group();
-        leg.position.set(side * 0.43, 0.9, z);
-        this.pony.add(leg);
-        this.legs.push(leg);
-        this.mesh(leg, new T.CylinderGeometry(0.16, 0.13, 0.75, 6), skin, 0, -0.33, 0);
-        this.sphere(leg, '#786d83', 0, -0.74, -0.06, 0.18, 0.13, 0.24);
-      }
-      const wing = new T.Group();
-      wing.position.set(side * 0.45, 1.35, 0.05);
-      this.pony.add(wing);
-      this.wings.push(wing);
-      for (let j = 0; j < 5; j++) {
-        const feather = this.sphere(
-          wing,
-          skin,
-          side * (0.45 + j * 0.19),
-          0.05,
-          0.1 + j * 0.17,
-          0.7 - j * 0.065,
-          0.12,
-          0.22,
-        );
-        feather.rotation.y = side * (-0.3 + j * 0.13);
-      }
-    }
-    const horn = this.mesh(this.pony, new T.ConeGeometry(0.14, 0.85, 8), '#ffe1a4', 0, 2.8, -1.2);
-    horn.rotation.x = -0.23;
-    for (let j = 0; j < 7; j++)
-      this.sphere(
-        this.pony,
-        mane,
-        Math.sin(j) * 0.13,
-        2.56 - j * 0.17,
-        -0.6 + j * 0.14,
-        0.3,
-        0.28,
-        0.32,
-      );
-    for (let j = 0; j < 5; j++)
-      this.sphere(
-        this.pony,
-        mane,
-        Math.sin(j) * 0.16,
-        1.25 - j * 0.17,
-        1 + j * 0.15,
-        0.25,
-        0.3,
-        0.3,
-      );
-    this.glow(horn, '#ffdfac', 1.7);
-  }
-  render(g: WorldState, dt: number, yaw: number, pitch: number, attract = false): void {
+  render(
+    g: WorldState,
+    dt: number,
+    yaw: number,
+    pitch: number,
+    attract = false,
+    cameraDistance = DEFAULT_CAMERA_DISTANCE,
+  ): void {
     this.time += dt;
     const canvas = this.renderer.domElement,
       w = canvas.clientWidth,
@@ -643,16 +648,28 @@ export class MeadowScene {
     this.pony.rotation.y = g.yaw;
     const speed = Math.hypot(g.velocity.x, g.velocity.z);
     this.pony.rotation.z = g.grounded ? 0 : Math.sin(t * 2) * 0.03;
-    this.wings.forEach(
-      (wing, i) =>
-        (wing.rotation.z = (i === 0 ? 1 : -1) * (g.grounded ? 0.45 : Math.sin(t * 9) * 0.55 - 0.2)),
+    this.character.update(t, speed, g.grounded, g.equippedReward);
+    (this.trail.material as T.PointsMaterial).color.set(
+      g.equippedReward === null ? '#f9ddc4' : LANTERN_REWARDS[g.equippedReward].color,
     );
-    this.legs.forEach(
-      (leg, i) =>
-        (leg.rotation.x = g.grounded
-          ? Math.sin(t * 10 + (i % 2) * Math.PI) * Math.min(0.5, speed * 0.06)
-          : 0.3),
-    );
+    if (g.feedback && g.feedback.id !== this.feedbackId) {
+      this.feedbackId = g.feedback.id;
+      this.burstAt = t;
+      const q = g.feedback.position;
+      this.burst.position.set(q.x, q.y, q.z);
+    }
+    const age = t - this.burstAt;
+    this.burst.visible = age < 0.85;
+    if (this.burst.visible)
+      this.burst.children.forEach((piece, j) => {
+        const a = j * 2.399;
+        piece.position.set(
+          Math.cos(a) * age * 3,
+          Math.sin(a * 2) * age * 2 + age,
+          Math.sin(a) * age * 3,
+        );
+        piece.scale.setScalar(Math.max(0, 1 - age));
+      });
     const island = ISLANDS[g.island];
     this.shadow.visible = !!island;
     if (island) {
@@ -662,11 +679,12 @@ export class MeadowScene {
     if (this.castlePortal) this.castlePortal.visible = g.beacons.size === 4;
     this.gem.visible = !g.gem;
     this.gem.rotation.y = t;
-    this.gem.position.y = FLIGHT_GEM.y + Math.sin(t * 2) * 0.25;
+    this.gem.position.y = pickupPosition(FLIGHT_GEM, 0, g.elapsed).y;
     this.relics.forEach((relic, i) => {
       relic.visible = !g.relics.has(i);
       relic.rotation.y = t;
-      relic.position.y = RELICS[i].y + Math.sin(t * 2 + i) * 0.25;
+      this.pickupLabels[i].visible = relic.position.distanceTo(this.pony.position) < 22;
+      relic.position.y = pickupPosition(RELICS[i], i, g.elapsed).y;
     });
     this.beacons.forEach((beacon, i) => {
       const on = g.beacons.has(i);
@@ -712,15 +730,18 @@ export class MeadowScene {
       this.cameraPosition.set(43 + Math.sin(t * 0.035) * 10, 32, 59);
       this.target.set(0, 8, -24);
     } else {
-      const distance = 12 + Math.min(3, speed * 0.14);
-      this.cameraPosition.set(
-        p.x - Math.sin(yaw) * Math.cos(pitch) * distance,
-        p.y + 4 + Math.sin(pitch) * distance,
-        p.z + Math.cos(yaw) * Math.cos(pitch) * distance,
-      );
-      this.target.set(p.x, p.y + 1.6, p.z);
+      const rig = followRig(p, yaw, pitch, cameraDistance, this.camera.aspect);
+      this.target.set(rig.target.x, rig.target.y, rig.target.z);
+      const safe = safeFollowCamera(p, rig.camera, yaw, SOLIDS);
+      this.cameraPosition.set(safe.x, safe.y, safe.z);
     }
-    this.camera.position.lerp(this.cameraPosition, 1 - Math.exp(-dt * (attract ? 0.5 : 5)));
+    if (!attract && this.wasAttract) this.camera.position.copy(this.cameraPosition);
+    else this.camera.position.lerp(this.cameraPosition, 1 - Math.exp(-dt * (attract ? 0.5 : 5)));
+    if (!attract) {
+      const safe = clipCamera({ x: p.x, y: p.y + 1.45, z: p.z }, this.camera.position, SOLIDS);
+      this.camera.position.set(safe.x, safe.y, safe.z);
+    }
+    this.wasAttract = attract;
     this.camera.lookAt(this.target);
     this.renderer.render(this.scene, this.camera);
   }

@@ -1,3 +1,4 @@
+import { createScenery, scenerySolids, resolveSolid, touchesPickup } from './meadow-collisions';
 /** Deterministic simulation shared by the 3D renderer and gameplay tests. */
 export interface Vec3 {
   x: number;
@@ -28,6 +29,37 @@ export const ISLANDS: SkyIsland[] = [
   },
   { name: 'Apricot Orchard', x: 57, y: 11, z: -31, radius: 9, color: '#c2a688', biome: 'meadow' },
 ];
+export const SCENERY = createScenery(ISLANDS);
+export const SOLIDS = scenerySolids(ISLANDS, SCENERY);
+export const LANTERN_REWARDS = [
+  {
+    name: 'Riverlight wings',
+    description: 'Turquoise feathers and a silver-blue flight trail.',
+    color: '#79dce5',
+    icon: '〰',
+  },
+  {
+    name: 'Firefly wings',
+    description: 'Warm golden feathers that glow against the evening sky.',
+    color: '#efcf80',
+    icon: '✧',
+  },
+  {
+    name: 'Starlight wings',
+    description: 'Violet feathers and a trail of borrowed starlight.',
+    color: '#c5a4f2',
+    icon: '✦',
+  },
+  {
+    name: 'Moonlight crown',
+    description: 'A golden crown for the friend who restored the last lantern.',
+    color: '#ffe1a4',
+    icon: '♛',
+  },
+];
+export function pickupPosition(point: Vec3, index: number, time: number): Vec3 {
+  return { ...point, y: point.y + Math.sin(time * 2 + index) * 0.25 };
+}
 export const SHRINES = [
   {
     island: 1,
@@ -91,6 +123,7 @@ export const CURRENTS: Vec3[] = [
 export const WORLD_SAVE_KEY = 'moonbeam-meadow-sky-v1';
 export interface WorldSave {
   friend?: string;
+  cameraDistance?: number;
   gem: boolean;
   relics: number[];
   beacons: number[];
@@ -98,6 +131,8 @@ export interface WorldSave {
   checkpoint: number;
   completed: boolean;
   bestRace: number | null;
+  claimedRewards?: number[];
+  equippedReward?: number | null;
 }
 export interface WorldState {
   position: Vec3;
@@ -119,6 +154,11 @@ export interface WorldState {
   invincible: number;
   raceIndex: number;
   raceTime: number;
+  claimedRewards: Set<number>;
+  equippedReward: number | null;
+  feedback: { id: number; text: string; points: number; until: number; position: Vec3 } | null;
+  feedbackId: number;
+  bumpUntil: number;
   event: 'gem' | 'relic' | 'beacon' | 'hurt' | 'ring' | 'finish' | null;
 }
 export interface WorldInput {
@@ -146,8 +186,22 @@ export function readWorldSave(raw: string | null): WorldSave | null {
       RELICS.every((r, i) => r.shrine !== n || relics.includes(i)),
     );
     return {
+      cameraDistance:
+        typeof v.cameraDistance === 'number' && Number.isFinite(v.cameraDistance)
+          ? Math.max(14, Math.min(26, v.cameraDistance))
+          : 17,
       friend: ['Pippa', 'Clover', 'Miso'].includes(v.friend) ? v.friend : 'Pippa',
       gem: !!v.gem,
+      claimedRewards: ids(Array.isArray(v.claimedRewards) ? v.claimedRewards : [], 4).filter((n) =>
+        beacons.includes(n),
+      ),
+      equippedReward:
+        Number.isInteger(v.equippedReward) &&
+        Array.isArray(v.claimedRewards) &&
+        v.claimedRewards.includes(v.equippedReward) &&
+        beacons.includes(v.equippedReward)
+          ? v.equippedReward
+          : null,
       relics,
       beacons,
       visited: ids(v.visited, ISLANDS.length),
@@ -180,6 +234,11 @@ export function createWorld(save: WorldSave | null = null): WorldState {
     completed: save?.completed ?? false,
     bestRace: save?.bestRace ?? null,
     island: checkpoint,
+    claimedRewards: new Set(save?.claimedRewards),
+    equippedReward: save?.equippedReward ?? null,
+    feedback: null,
+    feedbackId: 0,
+    bumpUntil: 0,
     message: save?.completed
       ? 'Welcome back. The sky is yours to explore.'
       : save?.gem
@@ -201,6 +260,8 @@ export function worldSave(g: WorldState): WorldSave {
     checkpoint: g.checkpoint,
     completed: g.completed,
     bestRace: g.bestRace,
+    claimedRewards: [...g.claimedRewards],
+    equippedReward: g.equippedReward,
   };
 }
 function announce(g: WorldState, message: string): void {
@@ -229,25 +290,88 @@ export function guardianPosition(index: number, time: number): Vec3 {
     z: i.z + Math.sin(angle) * 8,
   };
 }
-export function nextObjective(g: WorldState): { point: Vec3; label: string } {
-  if (!g.gem) return { point: FLIGHT_GEM, label: 'Find the flight crystal' };
+export function score(g: WorldState): number {
+  return (
+    (g.gem ? 100 : 0) +
+    g.relics.size * 50 +
+    g.beacons.size * 250 +
+    Math.max(0, g.visited.size - 1) * 25 +
+    (g.bestRace !== null ? 300 : 0) +
+    (g.completed ? 500 : 0) +
+    g.claimedRewards.size * 100
+  );
+}
+function reward(g: WorldState, text: string, points: number, position: Vec3 = g.position): void {
+  g.feedback = {
+    id: ++g.feedbackId,
+    text,
+    points,
+    until: g.elapsed + 3,
+    position: { ...position, y: position.y + 1 },
+  };
+}
+export function claimReward(g: WorldState, index: number): boolean {
+  if (!g.beacons.has(index) || g.claimedRewards.has(index) || !LANTERN_REWARDS[index]) return false;
+  g.claimedRewards.add(index);
+  g.equippedReward = index;
+  reward(g, LANTERN_REWARDS[index].name + ' claimed & equipped', 100);
+  return true;
+}
+export function equipReward(g: WorldState, index: number): void {
+  if (g.claimedRewards.has(index)) g.equippedReward = g.equippedReward === index ? null : index;
+}
+export function nextObjective(g: WorldState): {
+  point: Vec3;
+  label: string;
+  kind: 'crystal' | 'diamond' | 'lantern' | 'castle';
+} {
+  if (!g.gem)
+    return {
+      point: pickupPosition(FLIGHT_GEM, 0, g.elapsed),
+      label: 'Blue crystal · unlock flight +100',
+      kind: 'crystal',
+    };
   if (g.beacons.size === 4)
     return {
       point: { ...ISLANDS[5], y: ISLANDS[5].y + 1 },
-      label: g.completed ? 'The sky is yours' : 'Enter Moon Castle',
+      label: g.completed ? 'The sky is yours' : 'Moon Castle · finish +500',
+      kind: 'castle',
     };
-  const shrine = SHRINES.findIndex((_, i) => !g.beacons.has(i));
-  const missing = RELICS.findIndex((r, i) => r.shrine === shrine && !g.relics.has(i));
-  return missing >= 0
-    ? { point: RELICS[missing], label: SHRINES[shrine].title }
-    : { point: ISLANDS[SHRINES[shrine].island], label: 'Land at the lantern · E to restore' };
+  const ready = SHRINES.map((s, index) => ({ s, index }))
+    .filter(
+      ({ index }) =>
+        !g.beacons.has(index) && RELICS.every((r, j) => r.shrine !== index || g.relics.has(j)),
+    )
+    .sort(
+      (a, b) =>
+        distance(g.position, ISLANDS[a.s.island]) - distance(g.position, ISLANDS[b.s.island]),
+    )[0];
+  if (ready)
+    return { point: ISLANDS[ready.s.island], label: 'Restore lantern · E · +250', kind: 'lantern' };
+  const missing = RELICS.map((r, index) => ({ r, index }))
+    .filter(({ index }) => !g.relics.has(index))
+    .sort((a, b) => distance(g.position, a.r) - distance(g.position, b.r))[0];
+  return {
+    point: pickupPosition(missing.r, missing.index, g.elapsed),
+    label: 'Gold diamond · fly through · +50',
+    kind: 'diamond',
+  };
 }
 export function stepWorld(g: WorldState, input: WorldInput, seconds: number): void {
+  let remaining = Math.min(0.04, Math.max(0, seconds));
+  g.event = null;
+  while (remaining > 0.000001) {
+    const dt = Math.min(0.008, remaining);
+    stepSlice(g, input, dt);
+    remaining -= dt;
+  }
+}
+function stepSlice(g: WorldState, input: WorldInput, seconds: number): void {
   const dt = Math.min(0.04, Math.max(0, seconds));
   g.elapsed += dt;
-  g.event = null;
   g.invincible = Math.max(0, g.invincible - dt);
   const p = g.position,
+    previous = { ...g.position },
     oldY = p.y;
   const n = Math.max(1, Math.hypot(input.forward, input.strafe));
   const f = input.forward / n,
@@ -291,26 +415,51 @@ export function stepWorld(g: WorldState, input: WorldInput, seconds: number): vo
         g.stamina = Math.min(100, g.stamina + dt * 38);
         if (!g.visited.has(j)) {
           g.visited.add(j);
+          reward(g, `Discovered ${i.name}`, 25);
           announce(g, `Discovered ${i.name}. A new place to catch your breath.`);
         }
         g.checkpoint = j;
       } else if (p.y > i.y && p.y < i.y + 9) g.island = j;
     }
   }
-  if (!g.gem && distance({ x: p.x, y: p.y + 1, z: p.z }, FLIGHT_GEM) < 2.5) {
+  for (let pass = 0; pass < 3; pass++)
+    for (const solid of SOLIDS) {
+      if (resolveSolid(p, g.velocity, solid)) {
+        if (g.elapsed > g.bumpUntil) {
+          g.bumpUntil = g.elapsed + 2;
+          if (!g.feedback || g.feedback.until < g.elapsed)
+            announce(
+              g,
+              solid.id.startsWith('tree')
+                ? 'That tree is solid. Go around it or fly over.'
+                : 'Solid stone. Find an opening or fly around.',
+            );
+        }
+        if (Math.abs(p.y - (solid.y + solid.ry)) < 0.02 && g.velocity.y <= 0) {
+          g.grounded = true;
+          g.stamina = Math.min(100, g.stamina + dt * 38);
+        }
+      }
+    }
+  if (!g.gem && touchesPickup(previous, p, pickupPosition(FLIGHT_GEM, 0, g.elapsed))) {
     g.gem = true;
     g.stamina = 100;
     g.event = 'gem';
-    announce(g, 'Your wings are awake! Hold Space to climb. Release to glide.');
+    reward(g, 'Flight crystal collected', 100, FLIGHT_GEM);
+    announce(g, '+100 points! Wings unlocked. Fly through GOLD diamonds to collect +50 each.');
   }
   RELICS.forEach((r, i) => {
-    if (!g.relics.has(i) && distance({ x: p.x, y: p.y + 1, z: p.z }, r) < 2.8) {
+    if (!g.relics.has(i) && touchesPickup(previous, p, pickupPosition(r, i, g.elapsed))) {
       g.relics.add(i);
       g.event = 'relic';
       g.stamina = Math.min(100, g.stamina + 25);
+      const found = RELICS.filter((r2, j) => r2.shrine === r.shrine && g.relics.has(j)).length;
+      reward(g, `Diamond collected · ${found} / 3 on this island`, 50, r);
       announce(
         g,
-        `${SHRINES[r.shrine].icon} Starlight found. ${RELICS.filter((r2, j) => r2.shrine === r.shrine && g.relics.has(j)).length} of 3 for this lantern.`,
+        found === 3
+          ? 'All three diamonds collected! Land beside the lantern and press E for +250 points and a reward.'
+          : `+50 points! ${found} of 3 diamonds collected for this lantern.`,
       );
     }
   });
@@ -321,7 +470,8 @@ export function stepWorld(g: WorldState, input: WorldInput, seconds: number): vo
       if (ready && input.interact) {
         g.beacons.add(j);
         g.event = 'beacon';
-        announce(g, `${s.reward} ${g.beacons.size} of 4 lanterns restored.`);
+        reward(g, `${LANTERN_REWARDS[j].name} unlocked`, 250, i);
+        announce(g, `+250 points! ${s.reward} Open Rewards to claim ${LANTERN_REWARDS[j].name}.`);
       } else if (ready && g.messageUntil < g.elapsed)
         announce(g, 'All three stars are here. Press E to restore this lantern.');
       else if (!ready && g.messageUntil < g.elapsed) announce(g, s.clue);
@@ -355,9 +505,11 @@ export function stepWorld(g: WorldState, input: WorldInput, seconds: number): vo
       g.raceTime = 0;
       announce(g, 'Sky ribbon started! Follow the golden rings.');
     } else if (g.raceIndex === RINGS.length - 1) {
+      const first = g.bestRace === null;
       const time = g.raceTime;
       g.bestRace = g.bestRace === null ? time : Math.min(g.bestRace, time);
       g.raceIndex = -1;
+      if (first) reward(g, 'Sky Ribbon race complete', 300);
       announce(g, `Sky ribbon complete in ${time.toFixed(1)}s. Best: ${g.bestRace.toFixed(1)}s.`);
     } else g.raceIndex++;
     g.stamina = 100;
@@ -366,6 +518,7 @@ export function stepWorld(g: WorldState, input: WorldInput, seconds: number): vo
   if (!g.completed && g.beacons.size === 4 && g.grounded && distance(p, ISLANDS[5]) < 4.5) {
     g.completed = true;
     g.event = 'finish';
+    reward(g, 'Moon Castle restored', 500);
     announce(g, 'Every lantern is lit. The Moonbeam Map is whole. The sky is yours.');
   }
 }

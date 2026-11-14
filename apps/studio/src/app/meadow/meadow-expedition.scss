@@ -1027,3 +1027,242 @@ kbd {
     transition: none !important;
   }
 }
+.points-display {
+  position: absolute;
+  bottom: 38px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 17px;
+  border: 1px solid #f2d8aa44;
+  background: #1b3046b8;
+  border-radius: 8px;
+  pointer-events: none;
+}
+.points-display strong {
+  font:
+    28px Georgia,
+    serif;
+  color: #ffe1a6;
+}
+.points-display span {
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  color: #d9d6d3;
+}
+.collection-toast {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 16px 26px;
+  background: #20344bd6;
+  border: 1px solid #f3d8aa7a;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px #121e2d44;
+}
+.collection-toast strong {
+  font:
+    42px Georgia,
+    serif;
+  color: #ffe1a6;
+  text-shadow: 0 0 20px #fcd89555;
+}
+.collection-toast small {
+  font:
+    11px 'Open Sans',
+    sans-serif;
+}
+.collection-toast > span {
+  font-size: 11px;
+  color: #f2dfc8;
+  white-space: nowrap;
+}
+.compass .altitude-hint {
+  color: #ffe2aa;
+}
+.rewards-panel {
+  position: relative;
+  width: min(740px, 100%);
+  max-height: calc(100dvh - 40px);
+  overflow: auto;
+  padding: 35px;
+  border: 1px solid #ddceb33b;
+  background: #1c3045f5;
+  border-radius: 14px;
+  box-shadow: 0 24px 90px #08182966;
+}
+.rewards-panel h2 {
+  font:
+    42px Georgia,
+    serif;
+  margin: 12px 0;
+}
+.rewards-panel > p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #ccd4df;
+}
+.rewards-panel .rewards-score {
+  font:
+    24px Georgia,
+    serif;
+  color: #f5d5a2;
+  margin-bottom: 10px;
+}
+.reward-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 22px 0;
+}
+.reward-grid article {
+  border: 1px solid #ddceb333;
+  border-radius: 10px;
+  background: #ffffff08;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+.reward-grid .reward-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+.reward-grid h3 {
+  font:
+    22px Georgia,
+    serif;
+  margin: 14px 0 9px;
+}
+.reward-grid p {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #cbd0db;
+  margin-bottom: 16px;
+}
+.reward-grid small {
+  font-size: 10px;
+  line-height: 1.5;
+  color: #d7b997;
+}
+.reward-grid .begin,
+.reward-equip {
+  font-size: 11px;
+  padding: 11px 14px;
+  gap: 0;
+  margin-top: auto;
+}
+.reward-equip {
+  background: transparent;
+  color: #f4d8ae;
+  border: 1px solid #e3cb9c66;
+  border-radius: 5px;
+}
+.reward-equip[aria-pressed='true'] {
+  background: #e4cda122;
+}
+.reward-locked {
+  opacity: 0.6;
+}
+.rewards-panel > .begin {
+  width: 100%;
+  justify-content: center;
+}
+@media (max-width: 800px) {
+  .points-display {
+    bottom: 90px;
+    padding: 6px 13px;
+  }
+  .points-display strong {
+    font-size: 22px;
+  }
+  .collection-toast {
+    top: 37%;
+    max-width: 90%;
+    padding: 12px 18px;
+  }
+  .collection-toast > span {
+    white-space: normal;
+    font-size: 10px;
+  }
+  .rewards-panel {
+    padding: 25px 20px;
+  }
+  .reward-grid {
+    gap: 10px;
+  }
+  .reward-grid article {
+    padding: 14px;
+  }
+  .reward-grid h3 {
+    font-size: 19px;
+  }
+  .reward-grid p {
+    font-size: 10px;
+  }
+  .reward-grid small {
+    font-size: 9px;
+  }
+  .reward-grid .begin {
+    font-size: 10px;
+  }
+  .rewards-toggle {
+    max-width: 145px;
+  }
+  .map-buttons {
+    gap: 5px;
+  }
+  .map-buttons button {
+    padding: 9px 11px;
+  }
+  .map-buttons .rewards-toggle span {
+    display: inline;
+  }
+}
+@media (pointer: coarse) {
+  .points-display {
+    bottom: 105px;
+  }
+  .collection-toast {
+    top: 34%;
+  }
+  .touch-input {
+    bottom: 95px;
+  }
+}
+@media (max-width: 400px) {
+  .reward-grid {
+    grid-template-columns: 1fr;
+  }
+  .points-display {
+    bottom: 90px;
+  }
+  .map-buttons .rewards-toggle span {
+    display: none;
+  }
+}
+.camera-setting {
+  display: block;
+  margin-top: 25px;
+  text-align: left;
+  font-size: 11px;
+  color: #e6d4bc;
+}
+.camera-setting span {
+  float: right;
+  color: #bec8d6;
+}
+.camera-setting input {
+  display: block;
+  width: 100%;
+  margin: 13px 0 6px;
+  accent-color: #e6c99e;
+}
