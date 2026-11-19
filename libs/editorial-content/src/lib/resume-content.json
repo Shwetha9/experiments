@@ -19,7 +19,7 @@
     },
     {
       "title": "Applied AI engineering",
-      "detail": "LLM integrations, structured outputs, safety checks and fallback behaviour in personal projects."
+      "detail": "LLM integrations, structured outputs, safety checks and fallback behaviour."
     },
     {
       "title": "Product judgment",
@@ -36,18 +36,6 @@
       "Architect modern, scalable Angular ecosystems and reusable design systems for enterprise SaaS transformation.",
       "Lead projects with an AI-first transformation focus.",
       "Demonstrated the field service management (FSM) product to a customer and gathered requirements and feedback on product gaps."
-    ]
-  },
-  "project": {
-    "name": "Growing Humans",
-    "context": "Personal engineering project",
-    "url": "/growing-human/",
-    "intro": "Built an Angular and NestJS application combining an age-aware AI guide, knowledge exploration and NASA-based STEAM activities.",
-    "bullets": [
-      "Integrated OpenRouter behind a server-side provider boundary, with structured model responses, validation and timeouts.",
-      "Implemented input and output safety checks for the guide, with confidence gates and reviewed fallback responses when AI is unavailable or unsuitable.",
-      "Designed the STEAM workflow to send fixed selection IDs instead of child-authored text; validated generated activities and gated release through a separate safety decision.",
-      "Kept provider credentials server-side and implemented API validation, throttling and configurable AI feature controls."
     ]
   },
   "previousExperience": [

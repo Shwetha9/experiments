@@ -95,18 +95,6 @@
           </article>
         </section>
 
-        <section class="project-section" aria-labelledby="project-title">
-          <p class="eyebrow">{{ content.project.context }}</p>
-          <h2 id="project-title">{{ content.project.name }}</h2>
-          <p>{{ content.project.intro }}</p>
-          <ul>
-            @for (bullet of content.project.bullets; track bullet) {
-              <li>{{ bullet }}</li>
-            }
-          </ul>
-          <a class="project-link" [href]="content.project.url">Explore the project</a>
-        </section>
-
         <section aria-labelledby="previous-title">
           <p class="eyebrow">Engineering, design &amp; product</p>
           <h2 id="previous-title">Career history</h2>

@@ -64,6 +64,18 @@ def section(label):
     return para(label.upper(), "Section")
 
 
+def history_blocks(roles):
+    for role in roles:
+        block = [
+            para(role["company"], "HistoryCompany"),
+            para(role["title"] + " | " + role["dates"], "HistoryRole"),
+        ]
+        if role["detail"]:
+            block.append(para(role["detail"], "SmallCopy"))
+        block.append(Spacer(1, 4))
+        yield KeepTogether(block)
+
+
 def footer(canvas, doc):
     canvas.saveState()
     canvas.setStrokeColor(LINE)
@@ -93,29 +105,16 @@ for role in data["currentExperience"]["roles"]:
     story.append(para(role["title"] + " | " + role["dates"], "Role"))
 story.append(Spacer(1, 3))
 story.extend(bullet(item) for item in data["currentExperience"]["bullets"])
-story.extend([
-    section("Selected engineering project"),
-    para(data["project"]["name"] + " | " + data["project"]["context"], "Company"),
-    para(data["project"]["intro"]),
-])
-story.extend(bullet(item) for item in data["project"]["bullets"])
-story.append(Paragraph(link("Explore Growing Humans", data["website"] + data["project"]["url"]), styles["SmallCopy"]))
+story.append(section("Previous experience"))
+story.extend(history_blocks(data["previousExperience"][:4]))
 story.append(section("Technical skills"))
 for skill in data["skills"]:
     story.append(Paragraph("<b>" + escape(skill["title"]) + ":</b> " + escape(skill["detail"]), styles["SmallCopy"]))
 
 story.append(PageBreak())
-story.append(para(data["name"] + " | Career history & qualifications", "Headline"))
-story.append(section("Previous experience"))
-for role in data["previousExperience"]:
-    block = [
-        para(role["company"], "HistoryCompany"),
-        para(role["title"] + " | " + role["dates"], "HistoryRole"),
-    ]
-    if role["detail"]:
-        block.append(para(role["detail"], "SmallCopy"))
-    block.append(Spacer(1, 4))
-    story.append(KeepTogether(block))
+story.append(para(data["name"] + " | Earlier experience & qualifications", "Headline"))
+story.append(section("Earlier experience"))
+story.extend(history_blocks(data["previousExperience"][4:]))
 
 story.append(section("Education"))
 for item in data["education"]:
@@ -143,10 +142,7 @@ md.extend(["", "## Current experience", "", "### " + data["currentExperience"]["
 md.extend("- **" + role["title"] + "** | " + role["dates"] for role in data["currentExperience"]["roles"])
 md.append("")
 md.extend("- " + item for item in data["currentExperience"]["bullets"])
-md.extend(["", "## Selected engineering project", "", "### " + data["project"]["name"], "",
-           data["project"]["context"], "", data["project"]["intro"], ""])
-md.extend("- " + item for item in data["project"]["bullets"])
-md.extend(["", "[Explore Growing Humans](" + data["website"] + data["project"]["url"] + ")", "", "## Previous experience", ""])
+md.extend(["", "## Previous experience", ""])
 for role in data["previousExperience"]:
     md.extend(["### " + role["company"], "", "**" + role["title"] + "** | " + role["dates"], ""])
     if role["detail"]:

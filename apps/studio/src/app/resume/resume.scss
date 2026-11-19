@@ -205,20 +205,6 @@ ul {
 .resume-body li + li {
   margin-top: 0.65rem;
 }
-.project-section {
-  background: var(--surface-soft);
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  padding: clamp(1.4rem, 3vw, 2.25rem);
-}
-.project-section > p:not(.eyebrow) {
-  margin-bottom: 1.5rem;
-}
-.project-link {
-  display: inline-block;
-  font-weight: 700;
-  margin-top: 0.75rem;
-}
 .past-role {
   border-top: 1px solid var(--line);
   padding-block: 1.5rem;
@@ -323,11 +309,7 @@ footer {
     break-inside: avoid;
     margin-block: 1.5rem;
   }
-  .resume-body article,
-  .project-section {
+  .resume-body article {
     break-inside: avoid;
-  }
-  .project-section {
-    padding: 1rem;
   }
 }

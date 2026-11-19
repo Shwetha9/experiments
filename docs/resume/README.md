@@ -22,9 +22,10 @@ validate the Angular page.
 - The customer demonstration and requirements / product-gap feedback come from
   Shwetha's account of her FSM customer call on 19 November 2026. No customer
   identity or confidential requirements are included.
-- The personal project description is supported by this repository's Angular
-  application, NestJS API and provider / safety implementations. It does not
-  claim enterprise customer deployment, adoption figures or measured impact.
+- The resume focuses on professional experience. Growing Humans was removed
+  from the resume at Shwetha's request. AI skills remain supported by the
+  repository's provider and safety implementations; they do not assert
+  enterprise customer deployment or measured commercial impact.
 - Lead Forward Deployed Engineer is the target role. Actual employment titles
   are retained. The overlapping Allegis Group and EnergyAustralia entries are
   presented as one client engagement to avoid double-counting.
