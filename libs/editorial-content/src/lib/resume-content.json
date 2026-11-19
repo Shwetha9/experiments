@@ -1,0 +1,150 @@
+{
+  "name": "Shwetha Anand",
+  "targetRole": "Lead Forward Deployed Engineer",
+  "headline": "Principal Engineer | Customer discovery, AI systems & technical delivery",
+  "location": "Melbourne, Australia",
+  "email": "sa9.designer@gmail.com",
+  "website": "https://shwetha9.com",
+  "linkedin": "https://www.linkedin.com/in/shwetha-anand",
+  "pdfPath": "/files/shwetha-anand-resume.pdf",
+  "summary": "Principal Engineer with more than a decade in frontend engineering and earlier product ownership experience across enterprise SaaS, energy and financial services. Architects Angular ecosystems and reusable design systems, with an AI-first transformation focus. Brings direct customer engagement, human-centred design and hands-on engineering to understanding requirements and building useful software.",
+  "strengths": [
+    {
+      "title": "Customer discovery",
+      "detail": "Product demonstrations, requirements gathering and product-gap feedback."
+    },
+    {
+      "title": "Technical direction",
+      "detail": "Angular architecture, enterprise SaaS transformation and reusable design systems."
+    },
+    {
+      "title": "Applied AI engineering",
+      "detail": "LLM integrations, structured outputs, safety checks and fallback behaviour in personal projects."
+    },
+    {
+      "title": "Product judgment",
+      "detail": "Product ownership, human-centred design, user journeys and accessible interfaces."
+    }
+  ],
+  "currentExperience": {
+    "company": "Simpro Software",
+    "roles": [
+      { "title": "Principal Engineer", "dates": "Apr 2025 - Present" },
+      { "title": "Senior Software Engineer", "dates": "Feb 2024 - Apr 2025" }
+    ],
+    "bullets": [
+      "Architect modern, scalable Angular ecosystems and reusable design systems for enterprise SaaS transformation.",
+      "Lead projects with an AI-first transformation focus.",
+      "Demonstrated the field service management (FSM) product to a customer and gathered requirements and feedback on product gaps."
+    ]
+  },
+  "project": {
+    "name": "Growing Humans",
+    "context": "Personal engineering project",
+    "url": "/growing-human/",
+    "intro": "Built an Angular and NestJS application combining an age-aware AI guide, knowledge exploration and NASA-based STEAM activities.",
+    "bullets": [
+      "Integrated OpenRouter behind a server-side provider boundary, with structured model responses, validation and timeouts.",
+      "Implemented input and output safety checks for the guide, with confidence gates and reviewed fallback responses when AI is unavailable or unsuitable.",
+      "Designed the STEAM workflow to send fixed selection IDs instead of child-authored text; validated generated activities and gated release through a separate safety decision.",
+      "Kept provider credentials server-side and implemented API validation, throttling and configurable AI feature controls."
+    ]
+  },
+  "previousExperience": [
+    {
+      "company": "EnergyAustralia / Allegis Group",
+      "title": "Senior Developer / Digital Developer",
+      "dates": "Dec 2022 - Jan 2024",
+      "detail": "EnergyAustralia client engagement through Allegis Group."
+    },
+    {
+      "company": "Vanguard Australia",
+      "title": "Application Engineer",
+      "dates": "Jan 2021 - Dec 2022",
+      "detail": ""
+    },
+    {
+      "company": "City FM Australia",
+      "title": "UX, UI and Front End Engineer",
+      "dates": "Jan 2020 - Dec 2020",
+      "detail": ""
+    },
+    {
+      "company": "Findex",
+      "title": "Front End Developer",
+      "dates": "Jul 2018 - Dec 2019",
+      "detail": ""
+    },
+    {
+      "company": "Noel Leeming",
+      "title": "UX Designer (Contract)",
+      "dates": "Feb 2017 - Jul 2017",
+      "detail": "Implemented UX solutions and landing pages; mapped user journeys and developed reusable UI patterns and design systems."
+    },
+    {
+      "company": "Real Estate Institute of New Zealand (REINZ)",
+      "title": "Front End Developer",
+      "dates": "Mar 2016 - Dec 2016",
+      "detail": "Created high-fidelity website wireframes using Angular and frontend technologies; designed reusable patterns and systems for sub-brands."
+    },
+    {
+      "company": "Finitiatives Learning India (FLIP)",
+      "title": "Front End Developer",
+      "dates": "Sep 2015 - Feb 2016",
+      "detail": "Project-managed a mobile-responsive website overhaul, including frontend implementation, wireframes and reusable design patterns."
+    },
+    {
+      "company": "Bookabach",
+      "title": "Front End Developer",
+      "dates": "Aug 2014 - Aug 2015",
+      "detail": "Developed frontend designs and wireframes for new pages and website overhauls, with reusable patterns and design systems."
+    },
+    {
+      "company": "Conferenz",
+      "title": "Product Owner",
+      "dates": "Nov 2011 - Apr 2014",
+      "detail": "Owned the marketing, strategy and design aspects of conferences."
+    }
+  ],
+  "skills": [
+    {
+      "title": "Engineering",
+      "detail": "Angular, TypeScript, JavaScript, NestJS, HTML, CSS, Sass, Git, REST APIs, responsive interfaces and design systems."
+    },
+    {
+      "title": "AI application development",
+      "detail": "OpenRouter integration, prompt design, structured outputs, schema validation, safety gates, fallbacks and server-side credential boundaries."
+    },
+    {
+      "title": "Design and discovery",
+      "detail": "Human-centred design, WCAG / W3C accessibility, customer feedback, user journey mapping, wireframing and product ownership."
+    }
+  ],
+  "education": [
+    {
+      "qualification": "Bachelor's degree, Electronics and Communications",
+      "institution": "The National Institute of Engineering, Mysuru",
+      "dates": "2003 - 2007"
+    },
+    {
+      "qualification": "AAS, Advertising and Marketing Communications",
+      "institution": "Fashion Institute of Technology",
+      "dates": "2008 - 2009"
+    },
+    {
+      "qualification": "Diploma in Screenwriting",
+      "institution": "New York Film Academy",
+      "dates": "2009"
+    },
+    {
+      "qualification": "Digital and Web Design Bootcamp",
+      "institution": "ACG YOOBEE School of Design",
+      "dates": "2014"
+    }
+  ],
+  "certifications": [
+    "Certified Practitioner of Human-Centered Design",
+    "DevOps Foundations: DevSecOps"
+  ],
+  "languages": ["English", "Hindi", "Kannada"]
+}

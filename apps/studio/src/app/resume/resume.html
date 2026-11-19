@@ -1,0 +1,141 @@
+<div class="resume-site">
+  <a class="skip-link" href="/resume#resume-main">Skip to resume</a>
+  <header class="resume-header">
+    <a class="brand" routerLink="/" aria-label="Shwetha home"
+      >Shwetha<span aria-hidden="true">.</span></a
+    >
+    <nav aria-label="Resume navigation">
+      <a routerLink="/">Portfolio</a>
+      <a [href]="content.pdfPath" download class="download-link">Download PDF</a>
+      <button
+        type="button"
+        class="theme-toggle"
+        (click)="toggleTheme()"
+        [attr.aria-pressed]="isDark()"
+        [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+      >
+        <i class="pi" [class.pi-sun]="isDark()" [class.pi-moon]="!isDark()" aria-hidden="true"></i>
+      </button>
+    </nav>
+  </header>
+
+  <main id="resume-main" tabindex="-1">
+    <section class="resume-intro" aria-labelledby="resume-name">
+      <p class="eyebrow">Resume · Target role: {{ content.targetRole }}</p>
+      <h1 id="resume-name">{{ content.name }}</h1>
+      <p class="headline">{{ content.headline }}</p>
+      <p class="summary">{{ content.summary }}</p>
+      <div class="contact-links" aria-label="Contact details">
+        <span>{{ content.location }}</span>
+        <a [href]="'mailto:' + content.email">{{ content.email }}</a>
+        <a [href]="content.linkedin">LinkedIn</a>
+      </div>
+    </section>
+
+    <div class="resume-layout">
+      <aside class="resume-sidebar" aria-label="Capabilities and qualifications">
+        <section aria-labelledby="focus-title">
+          <h2 id="focus-title">What I bring</h2>
+          @for (strength of content.strengths; track strength.title) {
+            <div class="strength">
+              <h3>{{ strength.title }}</h3>
+              <p>{{ strength.detail }}</p>
+            </div>
+          }
+        </section>
+        <section aria-labelledby="skills-title">
+          <h2 id="skills-title">Technical skills</h2>
+          @for (skill of content.skills; track skill.title) {
+            <div class="strength">
+              <h3>{{ skill.title }}</h3>
+              <p>{{ skill.detail }}</p>
+            </div>
+          }
+        </section>
+        <section aria-labelledby="education-title">
+          <h2 id="education-title">Education</h2>
+          @for (item of content.education; track item.institution) {
+            <div class="qualification">
+              <h3>{{ item.qualification }}</h3>
+              <p>{{ item.institution }}<br />{{ item.dates }}</p>
+            </div>
+          }
+        </section>
+        <section aria-labelledby="certifications-title">
+          <h2 id="certifications-title">Certifications</h2>
+          <ul class="plain-list">
+            @for (certification of content.certifications; track certification) {
+              <li>{{ certification }}</li>
+            }
+          </ul>
+        </section>
+        <section aria-labelledby="languages-title">
+          <h2 id="languages-title">Languages</h2>
+          <p>{{ content.languages.join(' · ') }}</p>
+        </section>
+      </aside>
+
+      <div class="resume-body">
+        <section aria-labelledby="current-title">
+          <p class="eyebrow">Customer engagement &amp; enterprise engineering</p>
+          <h2 id="current-title">Current experience</h2>
+          <article class="current-role">
+            <h3 class="company">{{ content.currentExperience.company }}</h3>
+            @for (role of content.currentExperience.roles; track role.title) {
+              <div class="role-line">
+                <h4>{{ role.title }}</h4>
+                <p>{{ role.dates }}</p>
+              </div>
+            }
+            <ul>
+              @for (bullet of content.currentExperience.bullets; track bullet) {
+                <li>{{ bullet }}</li>
+              }
+            </ul>
+          </article>
+        </section>
+
+        <section class="project-section" aria-labelledby="project-title">
+          <p class="eyebrow">{{ content.project.context }}</p>
+          <h2 id="project-title">{{ content.project.name }}</h2>
+          <p>{{ content.project.intro }}</p>
+          <ul>
+            @for (bullet of content.project.bullets; track bullet) {
+              <li>{{ bullet }}</li>
+            }
+          </ul>
+          <a class="project-link" [href]="content.project.url">Explore the project</a>
+        </section>
+
+        <section aria-labelledby="previous-title">
+          <p class="eyebrow">Engineering, design &amp; product</p>
+          <h2 id="previous-title">Career history</h2>
+          @for (role of content.previousExperience; track role.company) {
+            <article class="past-role">
+              <h3>{{ role.company }}</h3>
+              <div class="role-line">
+                <h4>{{ role.title }}</h4>
+                <p>{{ role.dates }}</p>
+              </div>
+              @if (role.detail) {
+                <p class="role-detail">{{ role.detail }}</p>
+              }
+            </article>
+          }
+        </section>
+      </div>
+    </div>
+
+    <section class="resume-contact" aria-label="Get in touch">
+      <h2>Start with the customer’s problem.</h2>
+      <p>
+        Let’s talk about the requirements, the technical choices and what it will take to deliver.
+      </p>
+      <a [href]="'mailto:' + content.email">Email Shwetha</a>
+      <a [href]="content.pdfPath" download>Download resume PDF</a>
+    </section>
+  </main>
+  <footer>
+    <a routerLink="/">Shwetha · Portfolio</a><span>{{ content.location }}</span>
+  </footer>
+</div>

@@ -7,6 +7,11 @@ export const routes: Routes = [
     loadComponent: () => import('./landing/landing').then((m) => m.LandingPage),
   },
   {
+    path: 'resume',
+    title: 'Shwetha Anand · Resume · Lead Forward Deployed Engineer',
+    loadComponent: () => import('./resume/resume').then((m) => m.ResumePage),
+  },
+  {
     path: 'quotes',
     title: 'Quotes · Shwetha',
     loadComponent: () => import('./quotes/quotes').then((m) => m.QuotesPage),

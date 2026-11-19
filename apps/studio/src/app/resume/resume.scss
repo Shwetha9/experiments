@@ -1,0 +1,333 @@
+@use 'palettes';
+
+:host {
+  display: block;
+}
+.resume-site {
+  @include palettes.studio;
+  background: var(--canvas);
+  color: var(--text);
+  min-height: 100vh;
+}
+:host-context(html[data-theme='dark']) .resume-site {
+  @include palettes.studio-dark;
+}
+a {
+  color: inherit;
+  text-underline-offset: 0.25em;
+}
+a:hover {
+  text-decoration-thickness: 2px;
+}
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--coral);
+  outline-offset: 5px;
+}
+.skip-link {
+  background: var(--surface);
+  left: 1rem;
+  padding: 1rem;
+  position: fixed;
+  top: -6rem;
+  z-index: 10;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+.resume-header,
+main,
+footer {
+  margin: 0 auto;
+  max-width: 1280px;
+  padding-inline: clamp(1.25rem, 5vw, 4.5rem);
+}
+.resume-header {
+  align-items: center;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: space-between;
+  padding-block: 1.5rem;
+}
+.brand {
+  font:
+    700 1.9rem/1 Georgia,
+    serif;
+  letter-spacing: -0.04em;
+  text-decoration: none;
+}
+.brand span {
+  color: var(--coral);
+}
+nav {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(0.9rem, 2vw, 1.75rem);
+  font-size: 0.875rem;
+}
+.download-link {
+  border: 1px solid var(--line);
+  border-radius: 2rem;
+  padding: 0.7rem 1.1rem;
+  text-decoration: none;
+}
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: inherit;
+  cursor: pointer;
+  height: 2.75rem;
+  width: 2.75rem;
+}
+.resume-intro {
+  border-bottom: 1px solid var(--line);
+  padding-block: clamp(3rem, 7vw, 6.5rem) 3rem;
+}
+.eyebrow {
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  line-height: 1.65;
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+}
+h1 {
+  font:
+    500 clamp(3.5rem, 8vw, 6.5rem) / 1.05 Georgia,
+    serif;
+  letter-spacing: -0.055em;
+  margin: 0 0 1.25rem;
+}
+.headline {
+  font-size: clamp(1.125rem, 2vw, 1.45rem);
+  line-height: 1.6;
+  margin: 0 0 1.4rem;
+  max-width: 50rem;
+}
+.summary {
+  color: var(--muted);
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  max-width: 51rem;
+}
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.75rem;
+  margin-top: 2rem;
+}
+.resume-layout {
+  align-items: start;
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 6rem);
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.65fr);
+  padding-block: 3.5rem 4.5rem;
+}
+.resume-sidebar {
+  border-right: 1px solid var(--line);
+  padding-right: clamp(1.5rem, 3vw, 3rem);
+}
+.resume-sidebar section + section,
+.resume-body section + section {
+  margin-top: 3.5rem;
+}
+h2 {
+  font:
+    500 2.25rem/1.2 Georgia,
+    serif;
+  letter-spacing: -0.035em;
+  margin: 0 0 1.5rem;
+}
+.resume-sidebar h2 {
+  font-size: 1.65rem;
+}
+h3,
+h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.55;
+  margin: 0;
+}
+p,
+li {
+  font-size: 1rem;
+  line-height: 1.8;
+}
+.strength + .strength,
+.qualification + .qualification {
+  margin-top: 1.5rem;
+}
+.strength p,
+.qualification p,
+.resume-sidebar section > p {
+  color: var(--muted);
+  margin: 0.35rem 0 0;
+}
+.plain-list {
+  list-style: none;
+  padding: 0;
+}
+.plain-list li + li {
+  margin-top: 0.75rem;
+}
+.company {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+.role-line {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  justify-content: space-between;
+}
+.role-line + .role-line {
+  margin-top: 0.65rem;
+}
+.role-line h4 {
+  font-weight: 600;
+}
+.role-line p {
+  color: var(--muted);
+  font-size: 0.875rem;
+  margin: 0;
+}
+ul {
+  list-style: disc;
+  padding-left: 1.2rem;
+}
+.resume-body li {
+  padding-left: 0.25rem;
+}
+.resume-body li + li {
+  margin-top: 0.65rem;
+}
+.project-section {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: clamp(1.4rem, 3vw, 2.25rem);
+}
+.project-section > p:not(.eyebrow) {
+  margin-bottom: 1.5rem;
+}
+.project-link {
+  display: inline-block;
+  font-weight: 700;
+  margin-top: 0.75rem;
+}
+.past-role {
+  border-top: 1px solid var(--line);
+  padding-block: 1.5rem;
+}
+.past-role h3 {
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+}
+.role-detail {
+  color: var(--muted);
+  margin: 0.65rem 0 0;
+}
+.resume-contact {
+  border-top: 1px solid var(--line);
+  padding-block: 3rem 4rem;
+}
+.resume-contact h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+.resume-contact p {
+  color: var(--muted);
+  max-width: 40rem;
+}
+.resume-contact a {
+  display: inline-block;
+  font-weight: 700;
+  margin: 1rem 2rem 0 0;
+}
+footer {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  padding-block: 1.5rem;
+  font-size: 0.875rem;
+}
+@media (max-width: 800px) {
+  .resume-layout {
+    display: flex;
+    flex-direction: column;
+  }
+  .resume-body {
+    order: -1;
+    width: 100%;
+  }
+  .resume-sidebar {
+    border-right: 0;
+    border-top: 1px solid var(--line);
+    padding: 2.5rem 0 0;
+    width: 100%;
+  }
+}
+@media (max-width: 450px) {
+  .resume-header {
+    align-items: start;
+    flex-direction: column;
+  }
+  nav {
+    justify-content: space-between;
+    width: 100%;
+  }
+  .contact-links {
+    align-items: start;
+    flex-direction: column;
+  }
+}
+@media print {
+  .resume-site {
+    --canvas: white;
+    --text: #13231f;
+    --muted: #47574f;
+    --surface-soft: white;
+    --line: #c8d4ce;
+  }
+  .resume-header,
+  .resume-contact,
+  footer,
+  .skip-link {
+    display: none;
+  }
+  main {
+    max-width: none;
+    padding: 0;
+  }
+  .resume-intro {
+    padding-top: 0;
+  }
+  h1 {
+    font-size: 36pt;
+  }
+  .resume-layout {
+    display: block;
+    padding-top: 1rem;
+  }
+  .resume-sidebar {
+    border: 0;
+    padding: 0;
+  }
+  .resume-sidebar section {
+    break-inside: avoid;
+    margin-block: 1.5rem;
+  }
+  .resume-body article,
+  .project-section {
+    break-inside: avoid;
+  }
+  .project-section {
+    padding: 1rem;
+  }
+}
